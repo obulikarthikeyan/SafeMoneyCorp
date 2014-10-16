@@ -21,11 +21,13 @@
         <intercept-url pattern="/js/**" access="permitAll" />
 		
 		<intercept-url pattern="/images/**" access="permitAll" />
-		<intercept-url pattern="/font*/**" access="permitAll" />
+		<intercept-url pattern="/fonts/**" access="permitAll" />
+		<intercept-url pattern="/font-awesome-4.1.0/**" access="permitAll" />
 		<intercept-url pattern="/css/**" access="permitAll" />
-        <intercept-url pattern="/**" access="isAuthenticated()" />
+		<intercept-url pattern="/less/**" access="permitAll" />
+       	<intercept-url pattern="/**" access="isAuthenticated()" /> 
         <form-login login-page="/login" default-target-url="/landing" authentication-failure-url="/home"></form-login>
-        <logout logout-success-url="/logout"></logout>
+        <logout logout-success-url="/logout" delete-cookies="JSESSIONID" invalidate-session="true"></logout>
     </http>
    
     
