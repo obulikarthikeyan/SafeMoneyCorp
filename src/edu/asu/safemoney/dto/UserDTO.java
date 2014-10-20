@@ -6,18 +6,25 @@
 package edu.asu.safemoney.dto;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -31,26 +38,134 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "UserDTO.findByMemberId", query = "SELECT u FROM UserDTO u WHERE u.memberId = :memberId"),
     @NamedQuery(name = "UserDTO.findByFirstName", query = "SELECT u FROM UserDTO u WHERE u.firstName = :firstName"),
     @NamedQuery(name = "UserDTO.findByLastName", query = "SELECT u FROM UserDTO u WHERE u.lastName = :lastName"),
-    @NamedQuery(name = "UserDTO.findByEmailId", query = "SELECT u FROM UserDTO u WHERE u.emailId = :emailId")})
+    @NamedQuery(name = "UserDTO.findByEmailId", query = "SELECT u FROM UserDTO u WHERE u.emailId = :emailId"),
+    @NamedQuery(name = "UserDTO.findByContactNo", query = "SELECT u FROM UserDTO u WHERE u.contactNo = :contactNo"),
+    @NamedQuery(name = "UserDTO.findByAddress1", query = "SELECT u FROM UserDTO u WHERE u.address1 = :address1"),
+    @NamedQuery(name = "UserDTO.findByAddress2", query = "SELECT u FROM UserDTO u WHERE u.address2 = :address2"),
+    @NamedQuery(name = "UserDTO.findByCity", query = "SELECT u FROM UserDTO u WHERE u.city = :city"),
+    @NamedQuery(name = "UserDTO.findByState", query = "SELECT u FROM UserDTO u WHERE u.state = :state"),
+    @NamedQuery(name = "UserDTO.findByZip", query = "SELECT u FROM UserDTO u WHERE u.zip = :zip"),
+    @NamedQuery(name = "UserDTO.findBySsn", query = "SELECT u FROM UserDTO u WHERE u.ssn = :ssn"),
+    @NamedQuery(name = "UserDTO.findBySecQuestion1", query = "SELECT u FROM UserDTO u WHERE u.secQuestion1 = :secQuestion1"),
+    @NamedQuery(name = "UserDTO.findBySecQuestion2", query = "SELECT u FROM UserDTO u WHERE u.secQuestion2 = :secQuestion2"),
+    @NamedQuery(name = "UserDTO.findBySecQuestion3", query = "SELECT u FROM UserDTO u WHERE u.secQuestion3 = :secQuestion3"),
+    @NamedQuery(name = "UserDTO.findBySecAnswer1", query = "SELECT u FROM UserDTO u WHERE u.secAnswer1 = :secAnswer1"),
+    @NamedQuery(name = "UserDTO.findBySecAnswer2", query = "SELECT u FROM UserDTO u WHERE u.secAnswer2 = :secAnswer2"),
+    @NamedQuery(name = "UserDTO.findBySecAnswer3", query = "SELECT u FROM UserDTO u WHERE u.secAnswer3 = :secAnswer3"),
+    @NamedQuery(name = "UserDTO.findByDateOfBirth", query = "SELECT u FROM UserDTO u WHERE u.dateOfBirth = :dateOfBirth"),
+    @NamedQuery(name = "UserDTO.findByAge", query = "SELECT u FROM UserDTO u WHERE u.age = :age"),
+    @NamedQuery(name = "UserDTO.findByIsCustomer", query = "SELECT u FROM UserDTO u WHERE u.isCustomer = :isCustomer"),
+    @NamedQuery(name = "UserDTO.findByCreatedBy", query = "SELECT u FROM UserDTO u WHERE u.createdBy = :createdBy"),
+    @NamedQuery(name = "UserDTO.findByCreatedDate", query = "SELECT u FROM UserDTO u WHERE u.createdDate = :createdDate"),
+    @NamedQuery(name = "UserDTO.findByExpiryDate", query = "SELECT u FROM UserDTO u WHERE u.expiryDate = :expiryDate"),
+    @NamedQuery(name = "UserDTO.findByIsActive", query = "SELECT u FROM UserDTO u WHERE u.isActive = :isActive")})
 public class UserDTO implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "member_id")
     private Integer memberId;
-    @Basic(optional = false)
+    @Size(max = 25)
     @Column(name = "first_name")
     private String firstName;
-    @Basic(optional = false)
+    @Size(max = 25)
     @Column(name = "last_name")
     private String lastName;
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 30)
     @Column(name = "email_id")
     private String emailId;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "memberId")
-    private List<MemberUserTypeMapDTO> memberUserTypeMapDTOList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private List<LoginDTO> loginDTOList;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "contact_no")
+    private long contactNo;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 50)
+    @Column(name = "address_1")
+    private String address1;
+    @Size(max = 50)
+    @Column(name = "address_2")
+    private String address2;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 15)
+    private String city;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 2)
+    private String state;
+    @Basic(optional = false)
+    @NotNull
+    private long zip;
+    private long ssn;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 200)
+    @Column(name = "sec_question_1")
+    private String secQuestion1;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 200)
+    @Column(name = "sec_question_2")
+    private String secQuestion2;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 200)
+    @Column(name = "sec_question_3")
+    private String secQuestion3;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 25)
+    @Column(name = "sec_answer_1")
+    private String secAnswer1;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 25)
+    @Column(name = "sec_answer_2")
+    private String secAnswer2;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 25)
+    @Column(name = "sec_answer_3")
+    private String secAnswer3;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "date_of_birth")
+    @Temporal(TemporalType.DATE)
+    private Date dateOfBirth;
+    private Integer age;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 5)
+    private String isCustomer;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 10)
+    @Column(name = "created_by")
+    private String createdBy;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "created_date")
+    @Temporal(TemporalType.DATE)
+    private Date createdDate;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "expiry_date")
+    @Temporal(TemporalType.DATE)
+    private Date expiryDate;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 5)
+    @Column(name = "is_active")
+    private String isActive;
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "userDTO")
+    private LoginDTO loginDTO;
+    @JoinColumn(name = "user_type_id", referencedColumnName = "user_type_id")
+    @ManyToOne(optional = false)
+    private UserTypeDTO userTypeId;
 
     public UserDTO() {
     }
@@ -59,11 +174,26 @@ public class UserDTO implements Serializable {
         this.memberId = memberId;
     }
 
-    public UserDTO(Integer memberId, String firstName, String lastName, String emailId) {
+    public UserDTO(Integer memberId, String emailId, long contactNo, String address1, String city, String state, long zip, String secQuestion1, String secQuestion2, String secQuestion3, String secAnswer1, String secAnswer2, String secAnswer3, Date dateOfBirth, String isCustomer, String createdBy, Date createdDate, Date expiryDate, String isActive) {
         this.memberId = memberId;
-        this.firstName = firstName;
-        this.lastName = lastName;
         this.emailId = emailId;
+        this.contactNo = contactNo;
+        this.address1 = address1;
+        this.city = city;
+        this.state = state;
+        this.zip = zip;
+        this.secQuestion1 = secQuestion1;
+        this.secQuestion2 = secQuestion2;
+        this.secQuestion3 = secQuestion3;
+        this.secAnswer1 = secAnswer1;
+        this.secAnswer2 = secAnswer2;
+        this.secAnswer3 = secAnswer3;
+        this.dateOfBirth = dateOfBirth;
+        this.isCustomer = isCustomer;
+        this.createdBy = createdBy;
+        this.createdDate = createdDate;
+        this.expiryDate = expiryDate;
+        this.isActive = isActive;
     }
 
     public Integer getMemberId() {
@@ -98,22 +228,180 @@ public class UserDTO implements Serializable {
         this.emailId = emailId;
     }
 
-    @XmlTransient
-    public List<MemberUserTypeMapDTO> getMemberUserTypeMapDTOList() {
-        return memberUserTypeMapDTOList;
+    public long getContactNo() {
+        return contactNo;
     }
 
-    public void setMemberUserTypeMapDTOList(List<MemberUserTypeMapDTO> memberUserTypeMapDTOList) {
-        this.memberUserTypeMapDTOList = memberUserTypeMapDTOList;
+    public void setContactNo(long contactNo) {
+        this.contactNo = contactNo;
     }
 
-    @XmlTransient
-    public List<LoginDTO> getLoginDTOList() {
-        return loginDTOList;
+    public String getAddress1() {
+        return address1;
     }
 
-    public void setLoginDTOList(List<LoginDTO> loginDTOList) {
-        this.loginDTOList = loginDTOList;
+    public void setAddress1(String address1) {
+        this.address1 = address1;
+    }
+
+    public String getAddress2() {
+        return address2;
+    }
+
+    public void setAddress2(String address2) {
+        this.address2 = address2;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public long getZip() {
+        return zip;
+    }
+
+    public void setZip(long zip) {
+        this.zip = zip;
+    }
+
+    public long getSsn() {
+        return ssn;
+    }
+
+    public void setSsn(long ssn) {
+        this.ssn = ssn;
+    }
+
+    public String getSecQuestion1() {
+        return secQuestion1;
+    }
+
+    public void setSecQuestion1(String secQuestion1) {
+        this.secQuestion1 = secQuestion1;
+    }
+
+    public String getSecQuestion2() {
+        return secQuestion2;
+    }
+
+    public void setSecQuestion2(String secQuestion2) {
+        this.secQuestion2 = secQuestion2;
+    }
+
+    public String getSecQuestion3() {
+        return secQuestion3;
+    }
+
+    public void setSecQuestion3(String secQuestion3) {
+        this.secQuestion3 = secQuestion3;
+    }
+
+    public String getSecAnswer1() {
+        return secAnswer1;
+    }
+
+    public void setSecAnswer1(String secAnswer1) {
+        this.secAnswer1 = secAnswer1;
+    }
+
+    public String getSecAnswer2() {
+        return secAnswer2;
+    }
+
+    public void setSecAnswer2(String secAnswer2) {
+        this.secAnswer2 = secAnswer2;
+    }
+
+    public String getSecAnswer3() {
+        return secAnswer3;
+    }
+
+    public void setSecAnswer3(String secAnswer3) {
+        this.secAnswer3 = secAnswer3;
+    }
+
+    public Date getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public String getIsCustomer() {
+        return isCustomer;
+    }
+
+    public void setIsCustomer(String isCustomer) {
+        this.isCustomer = isCustomer;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public Date getExpiryDate() {
+        return expiryDate;
+    }
+
+    public void setExpiryDate(Date expiryDate) {
+        this.expiryDate = expiryDate;
+    }
+
+    public String getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(String isActive) {
+        this.isActive = isActive;
+    }
+
+    public LoginDTO getLoginDTO() {
+        return loginDTO;
+    }
+
+    public void setLoginDTO(LoginDTO loginDTO) {
+        this.loginDTO = loginDTO;
+    }
+
+    public UserTypeDTO getUserTypeId() {
+        return userTypeId;
+    }
+
+    public void setUserTypeId(UserTypeDTO userTypeId) {
+        this.userTypeId = userTypeId;
     }
 
     @Override
@@ -138,7 +426,7 @@ public class UserDTO implements Serializable {
 
     @Override
     public String toString() {
-        return "newpackage1.UserDTO[ memberId=" + memberId + " ]";
+        return "edu.asu.safemoney.dto.UserDTO[ memberId=" + memberId + " ]";
     }
     
 }

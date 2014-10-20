@@ -6,7 +6,7 @@
 package edu.asu.safemoney.dto;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -16,6 +16,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -36,19 +38,25 @@ public class UserTypeDTO implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
+    @NotNull
     @Column(name = "user_type_id")
     private Integer userTypeId;
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 15)
     @Column(name = "user_type")
     private String userType;
     @Basic(optional = false)
-    @Column(name = "description")
+    @NotNull
+    @Size(min = 1, max = 50)
     private String description;
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 5)
     @Column(name = "is_active")
     private String isActive;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userTypeId")
-    private List<MemberUserTypeMapDTO> memberUserTypeMapDTOList;
+    private Collection<UserDTO> userDTOCollection;
 
     public UserTypeDTO() {
     }
@@ -97,12 +105,12 @@ public class UserTypeDTO implements Serializable {
     }
 
     @XmlTransient
-    public List<MemberUserTypeMapDTO> getMemberUserTypeMapDTOList() {
-        return memberUserTypeMapDTOList;
+    public Collection<UserDTO> getUserDTOCollection() {
+        return userDTOCollection;
     }
 
-    public void setMemberUserTypeMapDTOList(List<MemberUserTypeMapDTO> memberUserTypeMapDTOList) {
-        this.memberUserTypeMapDTOList = memberUserTypeMapDTOList;
+    public void setUserDTOCollection(Collection<UserDTO> userDTOCollection) {
+        this.userDTOCollection = userDTOCollection;
     }
 
     @Override
@@ -127,7 +135,7 @@ public class UserTypeDTO implements Serializable {
 
     @Override
     public String toString() {
-        return "newpackage1.UserTypeDTO[ userTypeId=" + userTypeId + " ]";
+        return "edu.asu.safemoney.dto.UserTypeDTO[ userTypeId=" + userTypeId + " ]";
     }
     
 }

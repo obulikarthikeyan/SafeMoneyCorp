@@ -2,6 +2,7 @@ package edu.asu.safemoney.dao;
 
 import edu.asu.safemoney.dto.LoginDTO;
 import edu.asu.safemoney.dto.UserDTO;
+import edu.asu.safemoney.model.UserModel;
 
 public interface LoginDAO {
 
@@ -12,4 +13,6 @@ public interface LoginDAO {
 	public int getMemberIdByUserName(String userName);
 	
 	public LoginDTO getLoginDetails(String userName);
+	
+	public void createUser(UserModel user);
 }

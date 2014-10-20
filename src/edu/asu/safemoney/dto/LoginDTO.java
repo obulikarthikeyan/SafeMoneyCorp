@@ -9,14 +9,14 @@ import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -28,50 +28,55 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "LoginDTO.findAll", query = "SELECT l FROM LoginDTO l"),
-    @NamedQuery(name = "LoginDTO.findByLoginId", query = "SELECT l FROM LoginDTO l WHERE l.loginId = :loginId"),
+    @NamedQuery(name = "LoginDTO.findByMemberId", query = "SELECT l FROM LoginDTO l WHERE l.memberId = :memberId"),
     @NamedQuery(name = "LoginDTO.findByUserName", query = "SELECT l FROM LoginDTO l WHERE l.userName = :userName"),
     @NamedQuery(name = "LoginDTO.findByPassword", query = "SELECT l FROM LoginDTO l WHERE l.password = :password"),
     @NamedQuery(name = "LoginDTO.findBySiteKey", query = "SELECT l FROM LoginDTO l WHERE l.siteKey = :siteKey")})
 public class LoginDTO implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "login_id")
-    private Integer loginId;
+    @NotNull
+    @Column(name = "member_id")
+    private Integer memberId;
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 15)
     @Column(name = "user_name")
     private String userName;
     @Basic(optional = false)
-    @Column(name = "password")
+    @NotNull
+    @Size(min = 1, max = 15)
     private String password;
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 20)
     @Column(name = "site_key")
     private String siteKey;
-    @JoinColumn(name = "member_id", referencedColumnName = "member_id")
-    @ManyToOne(optional = false)
-    private UserDTO user;
+    @JoinColumn(name = "member_id", referencedColumnName = "member_id", insertable = false, updatable = false)
+    @OneToOne(optional = false)
+    private UserDTO userDTO;
 
     public LoginDTO() {
     }
 
-    public LoginDTO(Integer loginId) {
-        this.loginId = loginId;
+    public LoginDTO(Integer memberId) {
+        this.memberId = memberId;
     }
 
-    public LoginDTO(Integer loginId, String userName, String password, String siteKey) {
-        this.loginId = loginId;
+    public LoginDTO(Integer memberId, String userName, String password, String siteKey) {
+        this.memberId = memberId;
         this.userName = userName;
         this.password = password;
         this.siteKey = siteKey;
     }
 
-    public Integer getLoginId() {
-        return loginId;
+    public Integer getMemberId() {
+        return memberId;
     }
 
-    public void setLoginId(Integer loginId) {
-        this.loginId = loginId;
+    public void setMemberId(Integer memberId) {
+        this.memberId = memberId;
     }
 
     public String getUserName() {
@@ -98,30 +103,29 @@ public class LoginDTO implements Serializable {
         this.siteKey = siteKey;
     }
 
+    public UserDTO getUserDTO() {
+        return userDTO;
+    }
+
+    public void setUserDTO(UserDTO userDTO) {
+        this.userDTO = userDTO;
+    }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (loginId != null ? loginId.hashCode() : 0);
+        hash += (memberId != null ? memberId.hashCode() : 0);
         return hash;
     }
 
-    public UserDTO getUser() {
-		return user;
-	}
-
-	public void setUser(UserDTO user) {
-		this.user = user;
-	}
-
-	@Override
+    @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof LoginDTO)) {
             return false;
         }
         LoginDTO other = (LoginDTO) object;
-        if ((this.loginId == null && other.loginId != null) || (this.loginId != null && !this.loginId.equals(other.loginId))) {
+        if ((this.memberId == null && other.memberId != null) || (this.memberId != null && !this.memberId.equals(other.memberId))) {
             return false;
         }
         return true;
@@ -129,7 +133,7 @@ public class LoginDTO implements Serializable {
 
     @Override
     public String toString() {
-        return "newpackage1.LoginDTO[ loginId=" + loginId + " ]";
+        return "edu.asu.safemoney.dto.LoginDTO[ memberId=" + memberId + " ]";
     }
     
 }

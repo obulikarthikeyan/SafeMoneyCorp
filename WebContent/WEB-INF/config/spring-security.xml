@@ -18,6 +18,8 @@
         <intercept-url pattern="/logout" access="permitAll"></intercept-url>
         <intercept-url pattern="/home" access="permitAll"></intercept-url>
         <intercept-url pattern="/userNameLogin" access="permitAll"></intercept-url>
+        <intercept-url pattern="/signUp" access="permitAll"></intercept-url>
+        <intercept-url pattern="/userSignUp" access="permitAll"></intercept-url>
         <intercept-url pattern="/js/**" access="permitAll" />
 		
 		<intercept-url pattern="/images/**" access="permitAll" />

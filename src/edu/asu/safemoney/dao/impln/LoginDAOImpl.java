@@ -1,24 +1,26 @@
 package edu.asu.safemoney.dao.impln;
 
 
+import java.util.Date;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-
-
-
 import edu.asu.safemoney.dao.LoginDAO;
 import edu.asu.safemoney.dto.LoginDTO;
 import edu.asu.safemoney.dto.UserDTO;
+import edu.asu.safemoney.dto.UserTypeDTO;
+import edu.asu.safemoney.model.UserModel;
 
 @Repository
 public class LoginDAOImpl implements LoginDAO{
 	
 	@Autowired
 	private SessionFactory sessionFactory;
+	
 	
 	public String getSiteKey(String userName)
 	{
@@ -69,9 +71,62 @@ public class LoginDAOImpl implements LoginDAO{
 		LoginDTO loginDTO = (LoginDTO) query.uniqueResult();
 		if(loginDTO != null)
 		{
-			return loginDTO.getUser().getMemberId();
+			return loginDTO.getUserDTO().getMemberId();
 		}
 		return -1;
+	}
+	
+	public void createUser(UserModel user)
+	{
+		UserDTO userDTO = copyToUserDTO(user);
+		Session session = sessionFactory.getCurrentSession();
+		session.save(userDTO);
+	}
+	
+	public UserDTO copyToUserDTO(UserModel user)
+	{
+		
+		UserDTO userDTO = new UserDTO();
+		userDTO.setFirstName(user.getFirstName());
+		userDTO.setLastName(user.getLastName());
+		userDTO.setContactNo(user.getContactNo());
+		userDTO.setEmailId(user.getEmailId());
+		userDTO.setAddress1(user.getAddress1());
+		userDTO.setAddress2(user.getAddress2());
+		userDTO.setCity(user.getCity());
+		userDTO.setState(user.getState());
+		userDTO.setZip(user.getZip());
+		userDTO.setDateOfBirth(user.getDateOfBirth());
+		userDTO.setAge(user.getAge());
+		userDTO.setSsn(user.getSsn());
+		userDTO.setIsCustomer(user.getIsCustomer());
+		userDTO.setSecQuestion1(user.getSecQuestion1());
+		userDTO.setSecAnswer1(user.getSecAnswer1());
+		userDTO.setSecQuestion2(user.getSecQuestion2());
+		userDTO.setSecAnswer2(user.getSecAnswer2());
+		userDTO.setSecQuestion3(user.getSecQuestion3());
+		userDTO.setSecAnswer3(user.getSecAnswer3());
+		userDTO.setCreatedBy(user.getCreatedBy());
+		userDTO.setCreatedDate(user.getCreatedDate());
+		userDTO.setExpiryDate(user.getExpiryDate());
+		userDTO.setIsActive("true");
+		
+		Session session = sessionFactory.getCurrentSession();
+		Query query = session.getNamedQuery("UserTypeDTO.findByUserTypeId").setInteger("userTypeId", user.getUserTypeId());
+		UserTypeDTO userTypeDTO = (UserTypeDTO) query.uniqueResult();
+		
+		userDTO.setUserTypeId(userTypeDTO);
+		
+		LoginDTO loginDTO = new LoginDTO();
+		loginDTO.setUserName(user.getUserName());
+		loginDTO.setPassword(user.getPassword());
+		loginDTO.setSiteKey(user.getSiteKey());
+		loginDTO.setMemberId(userDTO.getMemberId());
+		loginDTO.setUserDTO(userDTO);
+		
+		
+		System.out.println("fisrtNAme = " + user.getFirstName() + " lastName = "  + user.getFirstName());
+		return userDTO;
 	}
 
 }

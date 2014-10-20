@@ -1,17 +1,26 @@
 package edu.asu.safemoney.controller;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
+import edu.asu.safemoney.model.UserModel;
 import edu.asu.safemoney.service.LoginService;
 
 @Controller
@@ -20,8 +29,9 @@ public class LoginController {
 	@Autowired
 	private LoginService loginService;
 	
+	
 	@RequestMapping(value="/userNameLogin", method=RequestMethod.POST)
-	public ModelAndView userNameValidation(@RequestParam("username") String userName, HttpServletRequest request, HttpSession sessionID)
+	public ModelAndView userNameValidation(@RequestParam("userName") String userName, HttpServletRequest request, HttpSession sessionID)
 	{
 		String siteKey = loginService.getSiteKeyForUserName(userName);
 		boolean isUserNameAvailable = false;
@@ -65,5 +75,19 @@ public class LoginController {
 	public String redirectToHome(ModelMap model) {
 		return "shared/home";
 	}
+	
+	@RequestMapping(value="/signUp", method = RequestMethod.POST)
+	public String redirectToSignUp(ModelMap model) {
+		return "shared/signup";
+	}
+	
+	@RequestMapping(value="/userSignUp", method = RequestMethod.POST)
+	public ModelAndView doUserSignUp(@ModelAttribute("signUpForm") UserModel userModel)
+	{
+		System.out.println("date = " + userModel.getDateOfBirth());
+		loginService.createUser(userModel);
+		return new ModelAndView("shared/home");
+	}
+	
 
 }
