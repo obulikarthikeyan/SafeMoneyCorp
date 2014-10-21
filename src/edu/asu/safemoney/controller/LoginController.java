@@ -82,7 +82,7 @@ public class LoginController {
 	}
 	
 	@RequestMapping(value="/userSignUp", method = RequestMethod.POST)
-	public ModelAndView doUserSignUp(@ModelAttribute("signUpForm") UserModel userModel)
+	public ModelAndView doUserSignUp(@ModelAttribute("signUpForm") UserModel userModel, ModelMap model)
 	{
 		System.out.println("date = " + userModel.getDateOfBirth());
 		loginService.createUser(userModel);
