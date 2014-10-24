@@ -9,6 +9,8 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.WebDataBinder;
@@ -24,6 +26,7 @@ import edu.asu.safemoney.model.UserModel;
 import edu.asu.safemoney.service.LoginService;
 
 @Controller
+@SessionAttributes
 public class LoginController {
 	
 	@Autowired
@@ -67,7 +70,10 @@ public class LoginController {
 	}
 
 	@RequestMapping(value="/landing", method = RequestMethod.GET)
-	public String redirectToLanding(ModelMap model) {
+	public String redirectToLanding(ModelMap model, HttpSession session) {
+		User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		int memberId = loginService.getMemberId(user.getUsername());
+		session.setAttribute("memberId", memberId);
 		return "shared/landing";
 	}
 	

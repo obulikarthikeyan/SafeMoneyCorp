@@ -109,5 +109,16 @@ public class LoginServiceImpl implements LoginService, UserDetailsService {
 		Date expiryDate = cal.getTime();
 		return expiryDate;
 	}
+	
+	public int getMemberId(String userName)
+	{
+		int memberId = -1;
+		LoginDTO loginDTO = loginDAO.getLoginDetails(userName);
+		if(loginDTO != null)
+		{
+			memberId = loginDTO.getMemberId();
+		}
+		return memberId;
+	}
 
 }

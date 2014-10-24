@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 20, 2014 at 06:56 AM
+-- Generation Time: Oct 24, 2014 at 07:25 PM
 -- Server version: 5.5.32
 -- PHP Version: 5.4.19
 
@@ -25,6 +25,29 @@ USE `safemoneycorp`;
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `account`
+--
+
+CREATE TABLE IF NOT EXISTS `account` (
+  `account_no` bigint(10) NOT NULL,
+  `member_id` int(11) NOT NULL,
+  `amount` double DEFAULT NULL,
+  `is_active` varchar(5) DEFAULT NULL,
+  PRIMARY KEY (`account_no`),
+  KEY `accountAndUser` (`member_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `account`
+--
+
+INSERT INTO `account` (`account_no`, `member_id`, `amount`, `is_active`) VALUES
+(6987456, 996364, 5000, 'true'),
+(56352145, 996363, 2000, 'true');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `login`
 --
 
@@ -36,6 +59,51 @@ CREATE TABLE IF NOT EXISTS `login` (
   PRIMARY KEY (`member_id`),
   UNIQUE KEY `user_name` (`user_name`),
   KEY `memberid` (`member_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `login`
+--
+
+INSERT INTO `login` (`member_id`, `user_name`, `password`, `site_key`) VALUES
+(996363, 'alice123', 'parker321', 'eclipse'),
+(996364, 'john123', 'doe321', 'helio');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `request`
+--
+
+CREATE TABLE IF NOT EXISTS `request` (
+  `request_id` bigint(10) NOT NULL,
+  `member_id` int(11) NOT NULL,
+  `request_type` varchar(45) DEFAULT NULL,
+  `authorizing_member_id` int(11) DEFAULT NULL,
+  `status` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`request_id`),
+  KEY `request_user` (`member_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `transaction`
+--
+
+CREATE TABLE IF NOT EXISTS `transaction` (
+  `transaction_id` bigint(10) NOT NULL,
+  `member_id` int(11) NOT NULL,
+  `from_account` bigint(10) DEFAULT NULL,
+  `to_account` bigint(10) DEFAULT NULL,
+  `date` datetime DEFAULT NULL,
+  `amount` double DEFAULT NULL,
+  `status` varchar(45) DEFAULT NULL,
+  `transaction_type` varchar(45) DEFAULT NULL,
+  `is_critical` tinyint(1) DEFAULT NULL,
+  `is_authorized` tinyint(1) DEFAULT NULL,
+  PRIMARY KEY (`transaction_id`),
+  KEY `transaction_member` (`member_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -113,10 +181,28 @@ INSERT INTO `user_type` (`user_type_id`, `user_type`, `description`, `is_active`
 --
 
 --
+-- Constraints for table `account`
+--
+ALTER TABLE `account`
+  ADD CONSTRAINT `memberId` FOREIGN KEY (`member_id`) REFERENCES `user` (`member_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
 -- Constraints for table `login`
 --
 ALTER TABLE `login`
   ADD CONSTRAINT `login_ibfk_1` FOREIGN KEY (`member_id`) REFERENCES `user` (`member_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `request`
+--
+ALTER TABLE `request`
+  ADD CONSTRAINT `requestMemberId` FOREIGN KEY (`member_id`) REFERENCES `user` (`member_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `transaction`
+--
+ALTER TABLE `transaction`
+  ADD CONSTRAINT `transactionMemberId` FOREIGN KEY (`member_id`) REFERENCES `user` (`member_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `user`
