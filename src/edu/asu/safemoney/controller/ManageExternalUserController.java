@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
+import edu.asu.safemoney.dto.UserDTO;
 import edu.asu.safemoney.model.UserModel;
 import edu.asu.safemoney.service.ManageExternalUserAccountService;
 
@@ -33,12 +34,14 @@ public class ManageExternalUserController {
 	// How to populate values ***
 	
 	@RequestMapping(value="/displayExternalUserDetails", method=RequestMethod.GET)
-	public ModelAndView populateExternalUserAccount(@ModelAttribute("ExternalUserAccountForm") UserModel userModel, ModelMap model) {
-		manageExternalUserAccountService.displayUserAccount(userModel);
+	// get userName from session and use @RequestParam
+	public ModelAndView populateExternalUserAccount(HttpSession session) {
+		int memberId= (Integer)session.getAttribute("memberId");
+		UserDTO userDTO= manageExternalUserAccountService.displayUserAccount(memberId);
 		// Should redirect to "ManageExternalUserAccount.jsp" page
-		return new ModelAndView("shared/ManageExternalUserAccount");	
+		return new ModelAndView("shared/ManageExternalUserAccount").addObject("userDTO",userDTO);	
 	}
-	
+		
 	
 	// Redirect to Update Page 
 	@RequestMapping(value="updateButton", method=RequestMethod.GET)
