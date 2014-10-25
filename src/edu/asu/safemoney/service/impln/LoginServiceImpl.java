@@ -110,6 +110,7 @@ public class LoginServiceImpl implements LoginService, UserDetailsService {
 		return expiryDate;
 	}
 	
+	@Transactional
 	public int getMemberId(String userName)
 	{
 		int memberId = -1;

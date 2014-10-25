@@ -57,7 +57,7 @@
             <!-- /.navbar-header -->
 
             <ul class="nav navbar-top-links navbar-right">
-                
+                Logged in as <i><strong> ${ sessionScope.SPRING_SECURITY_CONTEXT.authentication.principal.username }</strong></i>
                 <!-- /.dropdown -->
                 
                 <!-- /.dropdown -->

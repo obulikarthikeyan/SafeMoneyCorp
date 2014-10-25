@@ -6,7 +6,7 @@
 <title>SafeMoneyCorp - Transactions</title>
 </head>
 <body>
-<jsp:include page="sidebar.jsp"></jsp:include>
+<jsp:include page="<%=request.getContextPath() %>/pages/shared/sidebar.jsp"></jsp:include>
 <div id="page-wrapper">
 				<div class="row">
 					<div class="col-lg-12">
@@ -201,38 +201,28 @@
 									<br>
 									<div class="panel panel-default">
 									<div class="panel-heading">
-									Basic Table
+									Account Information
 									</div>
 							<!-- /.panel-heading -->
 									<div class="panel-body">
 									<div class="table-responsive">
-									<table class="table">
-										<thead>
-											<tr>
-												<th>#</th>
-												<th>Name</th>
-												<th>Account Number</th>
-												<th>Balance</th>
-											</tr>
-										</thead>
+									<table style="width:60%;height:20%">
+										
 										<tbody>
 											<tr>
-												<td>1</td>
-												<td>Mark</td>
-												<td>Otto</td>
-												<td>@mdo</td>
+												<td><b>Account Number</b></td>
+												<td>12344556</td>
+												
 											</tr>
 											<tr>
-												<td>2</td>
+												<td><b>Name</b></td>
 												<td>Jacob</td>
-												<td>Thornton</td>
-												<td>@fat</td>
+												
 											</tr>
 											<tr>
-												<td>3</td>
-												<td>Larry</td>
-												<td>the Bird</td>
-												<td>@twitter</td>
+												<td><b>Balance</b></td>
+												<td>$2000.00</td>
+								
 											</tr>
 										</tbody>
 									</table>
