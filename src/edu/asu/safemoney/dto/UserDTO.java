@@ -7,6 +7,7 @@ package edu.asu.safemoney.dto;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -18,6 +19,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -25,6 +27,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -92,14 +95,18 @@ public class UserDTO implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 15)
+    @Column(name = "city")
     private String city;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 2)
+    @Column(name = "state")
     private String state;
     @Basic(optional = false)
     @NotNull
+    @Column(name = "zip")
     private long zip;
+    @Column(name = "ssn")
     private long ssn;
     @Basic(optional = false)
     @NotNull
@@ -136,10 +143,12 @@ public class UserDTO implements Serializable {
     @Column(name = "date_of_birth")
     @Temporal(TemporalType.DATE)
     private Date dateOfBirth;
+    @Column(name = "age")
     private Integer age;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 5)
+    @Column(name = "isCustomer")
     private String isCustomer;
     @Basic(optional = false)
     @NotNull
@@ -161,6 +170,12 @@ public class UserDTO implements Serializable {
     @Size(min = 1, max = 5)
     @Column(name = "is_active")
     private String isActive;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "memberId")
+    private List<TransactionDTO> transactionDTOList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "memberId")
+    private List<RequestDTO> requestDTOList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "memberId")
+    private List<AccountDTO> accountDTOList;
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "userDTO")
     private LoginDTO loginDTO;
     @JoinColumn(name = "user_type_id", referencedColumnName = "user_type_id")
@@ -386,6 +401,33 @@ public class UserDTO implements Serializable {
 
     public void setIsActive(String isActive) {
         this.isActive = isActive;
+    }
+
+    @XmlTransient
+    public List<TransactionDTO> getTransactionDTOList() {
+        return transactionDTOList;
+    }
+
+    public void setTransactionDTOList(List<TransactionDTO> transactionDTOList) {
+        this.transactionDTOList = transactionDTOList;
+    }
+
+    @XmlTransient
+    public List<RequestDTO> getRequestDTOList() {
+        return requestDTOList;
+    }
+
+    public void setRequestDTOList(List<RequestDTO> requestDTOList) {
+        this.requestDTOList = requestDTOList;
+    }
+
+    @XmlTransient
+    public List<AccountDTO> getAccountDTOList() {
+        return accountDTOList;
+    }
+
+    public void setAccountDTOList(List<AccountDTO> accountDTOList) {
+        this.accountDTOList = accountDTOList;
     }
 
     public LoginDTO getLoginDTO() {

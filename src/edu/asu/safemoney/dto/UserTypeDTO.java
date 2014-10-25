@@ -6,7 +6,7 @@
 package edu.asu.safemoney.dto;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -49,6 +49,7 @@ public class UserTypeDTO implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
+    @Column(name = "description")
     private String description;
     @Basic(optional = false)
     @NotNull
@@ -56,7 +57,7 @@ public class UserTypeDTO implements Serializable {
     @Column(name = "is_active")
     private String isActive;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userTypeId")
-    private Collection<UserDTO> userDTOCollection;
+    private List<UserDTO> userDTOList;
 
     public UserTypeDTO() {
     }
@@ -105,12 +106,12 @@ public class UserTypeDTO implements Serializable {
     }
 
     @XmlTransient
-    public Collection<UserDTO> getUserDTOCollection() {
-        return userDTOCollection;
+    public List<UserDTO> getUserDTOList() {
+        return userDTOList;
     }
 
-    public void setUserDTOCollection(Collection<UserDTO> userDTOCollection) {
-        this.userDTOCollection = userDTOCollection;
+    public void setUserDTOList(List<UserDTO> userDTOList) {
+        this.userDTOList = userDTOList;
     }
 
     @Override

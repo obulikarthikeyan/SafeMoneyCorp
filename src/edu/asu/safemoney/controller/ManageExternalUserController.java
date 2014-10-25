@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
+import edu.asu.safemoney.model.AccountModel;
 import edu.asu.safemoney.model.UserModel;
 import edu.asu.safemoney.service.ManageExternalUserAccountService;
 
@@ -32,13 +33,13 @@ public class ManageExternalUserController {
 	// Form name in ManageExternalUsers should be "ExternalUserAccountForm"
 	// How to populate values ***
 	
-	@RequestMapping(value="/displayExternalUserDetails", method=RequestMethod.GET)
+	/*@RequestMapping(value="/displayExternalUserDetails", method=RequestMethod.GET)
 	public ModelAndView populateExternalUserAccount(@ModelAttribute("ExternalUserAccountForm") UserModel userModel, ModelMap model) {
 		manageExternalUserAccountService.displayUserAccount(userModel);
 		// Should redirect to "ManageExternalUserAccount.jsp" page
-		return new ModelAndView("shared/ManageExternalUserAccount");	
+		return new ModelAndView("shared/ManageExternalUserAccount");
 	}
-	
+	*/
 	
 	// Redirect to Update Page 
 	@RequestMapping(value="updateButton", method=RequestMethod.GET)
@@ -73,6 +74,14 @@ public class ManageExternalUserController {
 		manageExternalUserAccountService.deleteUser(UserName);
 		// Should redirect to "updateExternalUserAccount"
 		return "shared/deleteSuccessPage";
+	}
+	
+	@RequestMapping(value="/transactions", method = RequestMethod.GET)
+	public ModelAndView doTransaction(HttpSession session)
+	{
+		int memberId = (Integer) session.getAttribute("memberId");
+		AccountModel accountModel = manageExternalUserAccountService.getAccountDetails(memberId);
+		return new ModelAndView("external/transactions").addObject("account", accountModel);
 	}
 	
 }

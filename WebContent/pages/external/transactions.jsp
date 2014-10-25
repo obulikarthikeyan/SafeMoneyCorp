@@ -6,7 +6,7 @@
 <title>SafeMoneyCorp - Transactions</title>
 </head>
 <body>
-<jsp:include page="<%=request.getContextPath() %>/pages/shared/sidebar.jsp"></jsp:include>
+<jsp:include page="sidebar.jsp"></jsp:include>
 <div id="page-wrapper">
 				<div class="row">
 					<div class="col-lg-12">
@@ -211,17 +211,22 @@
 										<tbody>
 											<tr>
 												<td><b>Account Number</b></td>
-												<td>12344556</td>
+												<td>${account.accountNo }</td>
 												
 											</tr>
 											<tr>
-												<td><b>Name</b></td>
-												<td>Jacob</td>
+												<td><b>First Name</b></td>
+												<td>${account.firstName }</td>
+												
+											</tr>
+											<tr>
+												<td><b>Last Name</b></td>
+												<td>${account.lastName }</td>
 												
 											</tr>
 											<tr>
 												<td><b>Balance</b></td>
-												<td>$2000.00</td>
+												<td>$ ${account.amount }</td>
 								
 											</tr>
 										</tbody>

@@ -47,6 +47,7 @@ public class LoginDTO implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 15)
+    @Column(name = "password")
     private String password;
     @Basic(optional = false)
     @NotNull
