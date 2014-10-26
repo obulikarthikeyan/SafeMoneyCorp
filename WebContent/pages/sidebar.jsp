@@ -146,25 +146,25 @@
                     <ul class="nav" id="side-menu">
                         <sec:authorize access="hasAnyRole('EXT_IND_CUST', 'EXT_MERCHANT')">
                         <li>
-                            <a class="active" href="<%=request.getContextPath() %>/external/transactions"><i class="fa fa-dashboard fa-fw"></i><strong> Manage Transactions</strong></a>
+                            <a class="active" href="<%=request.getContextPath() %>/external/transactions"><i class="fa fa-dashboard fa-fw"></i> Manage Transactions</a>
                         </li>
                         <li>
-                            <a href="forms.html"><i class="fa fa-edit fa-fw"></i><strong> Manage Account</strong></a>
+                            <a href="forms.html"><i class="fa fa-edit fa-fw"></i> Manage Account</a>
                         </li>
                         <li>
-                            <a href="tables.html"><i class="fa fa-table fa-fw"></i> <strong>View Transaction History</strong></a>
+                            <a href="tables.html"><i class="fa fa-table fa-fw"></i> View Transaction History</a>
                         </li>
 						<li>
-                            <a href="tables.html"><i class="fa fa-table fa-fw"></i><strong> View Requests</strong></a>
+                            <a href="tables.html"><i class="fa fa-table fa-fw"></i> View Requests</a>
                         </li>
                         <li>
-                            <a href="tables.html"><i class="fa fa-gear fa-fw"></i><strong> Manage Transaction Requests</strong></a>
+                            <a href="tables.html"><i class="fa fa-gear fa-fw"></i> Manage Transaction Requests</a>
                         </li>
                         
                         </sec:authorize>
                         <sec:authorize access="hasRole('EXT_MERCHANT')">
                         <li>
-                            <a href="tables.html"><i class="fa fa-gear fa-fw"></i><strong> Payment Requests</strong></a>
+                            <a href="tables.html"><i class="fa fa-gear fa-fw"></i> Payment Requests</a>
                         </li>
                         </sec:authorize>
                         

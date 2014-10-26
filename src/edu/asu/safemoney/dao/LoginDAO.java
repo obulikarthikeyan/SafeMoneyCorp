@@ -18,3 +18,4 @@ public interface LoginDAO {
 	
 	public boolean isEmailExists(String emailId);
 }
+

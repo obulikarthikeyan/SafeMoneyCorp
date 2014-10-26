@@ -12,4 +12,4 @@
 <h2>Welcome ${ sessionScope.SPRING_SECURITY_CONTEXT.authentication.principal.username }</h2>
 </div>
 </body>
-</html>
+
