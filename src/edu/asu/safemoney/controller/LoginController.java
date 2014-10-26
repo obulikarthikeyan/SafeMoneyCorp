@@ -89,11 +89,18 @@ public class LoginController {
 	}
 	
 	@RequestMapping(value="/userSignUp", method = RequestMethod.POST)
-	public ModelAndView doUserSignUp(@ModelAttribute("signUpForm") UserModel userModel, ModelMap model)
+	public ModelAndView doUserSignUp(@ModelAttribute("signUpForm") UserModel userModel)
 	{
 		System.out.println("date = " + userModel.getDateOfBirth());
-		loginService.createUser(userModel);
-		return new ModelAndView("shared/home");
+		boolean isSuccess = loginService.createUser(userModel);
+		if(!isSuccess)
+		{
+			return new ModelAndView("shared/signup").addObject("signUpForm", userModel);
+		}
+		else
+		{
+			return new ModelAndView("shared/home");
+		}
 	}
 	
 

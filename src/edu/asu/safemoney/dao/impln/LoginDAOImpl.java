@@ -129,6 +129,18 @@ public class LoginDAOImpl implements LoginDAO{
 		return userDTO;
 	}
 	
+	public boolean isEmailExists(String emailId)
+	{
+		Session session = sessionFactory.getCurrentSession();
+		Query query = session.getNamedQuery("UserDTO.findByEmailId").setString("emailId", emailId);
+		UserDTO userDTO = (UserDTO) query.uniqueResult();
+		if(userDTO != null)
+		{
+			return true;
+		} else {
+			return false;
+		}
+	}
 	
 
 }

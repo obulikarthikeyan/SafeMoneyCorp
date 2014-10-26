@@ -4,10 +4,10 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+<title>SafeMoneyCorp - User Home</title>
 </head>
 <body>
-<jsp:include page="sidebar.jsp"></jsp:include>
+<jsp:include page="/pages/sidebar.jsp"></jsp:include>
 <div id="page-wrapper">
 <h2>Welcome ${ sessionScope.SPRING_SECURITY_CONTEXT.authentication.principal.username }</h2>
 </div>

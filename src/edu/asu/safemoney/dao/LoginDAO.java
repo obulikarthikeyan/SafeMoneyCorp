@@ -15,4 +15,6 @@ public interface LoginDAO {
 	public LoginDTO getLoginDetails(String userName);
 	
 	public void createUser(UserModel user);
+	
+	public boolean isEmailExists(String emailId);
 }

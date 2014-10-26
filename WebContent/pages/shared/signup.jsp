@@ -1,4 +1,5 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -75,11 +76,15 @@
 
 
 					<div class="panel-body">
-					<form:form id="signUpForm" commandName="signUpForm" role="form" method="POST" action="userSignUp">
+					<form id="signUpForm" role="form" method="POST" action="userSignUp">
 						<fieldset>
 						<div class="row">
 									<div class="col-md-10 col-md-offset-1">
-										
+										<c:if test="${signUpForm != null }">
+											<div style="color:red">
+												Please Enter a different UserName or Email ID.
+											</div>
+										</c:if>
 											<div>
 												<div class="radio">
 													<label> <input type="radio" name="userType"
@@ -97,9 +102,9 @@
 												</div>
 												
 										<div class="col-md-5">
-												<div class="form-group">
-													<input class="form-control" placeholder="First Name" maxLength="25"
-														name="firstName" tabindex="3" required>
+												<div class="form-group" style="color:red">
+													<input class="form-control" placeholder="First Name" maxlength="25" id="firstName"
+														name="firstName" tabindex="3" value="${signUpForm.firstName }">
 												</div>
 
 
@@ -108,21 +113,21 @@
 												
 												<div class="form-group">
 													<input id="contactNo" class="form-control"
-														placeholder="Contact No" name="contactNo" tabindex="5" maxLength="10" required>
+														placeholder="Contact No" name="contactNo" tabindex="5" maxlength="10" value="${signUpForm.contactNo }" >
 												</div>
 												<div class="form-group">
 													<input id="address1" class="form-control"
-														placeholder="Address Line 1" name="address1" tabindex="7" required>
+														placeholder="Address Line 1" name="address1" tabindex="7" value="${signUpForm.address1 }" >
 												</div>
 												<div class="form-group">
 													<input id="city" class="form-control"
-														placeholder="City" name="city" tabindex="9" required>
+														placeholder="City" name="city" tabindex="9" value="${signUpForm.city }" >
 												</div>
 												<div class="form-group">
 												
 													<label>Date of Birth</label>
 													<input id="dateOfBirth" class="form-control datepicker"
-														placeholder="Date of Birth" name="dateOfBirth" tabindex="12" required>
+														placeholder="Date of Birth" name="dateOfBirth" tabindex="12" >
 														<script type="text/javascript">
 															$('.datepicker').datepicker({
 	 														autoclose: true,
@@ -136,7 +141,7 @@
 												</div>
 												<div class="form-group">
 													<input id="ssn" class="form-control"
-														placeholder="Social Security" name="ssn" tabindex="14" required>
+														placeholder="Social Security" name="ssn" tabindex="14" value="${signUpForm.ssn }" >
 												</div>
 												<div>
 													<br>
@@ -150,27 +155,27 @@
 										<div class="col-md-5 col-md-offset-1">
 											
 											<div class="form-group">
-												<input class="form-control" placeholder="Last Name"
-													name="lastName" tabindex="4" required>
+												<input class="form-control" placeholder="Last Name" id="lastName"
+													name="lastName" tabindex="4" value="${signUpForm.lastName }" >
 											</div>
 											<div class="form-group">
 													<input id="emailId" class="form-control" 
-														placeholder="Email ID" name="emailId" tabindex="6" required>
+														placeholder="Email ID" name="emailId" tabindex="6" value="${signUpForm.emailId }" >
 											</div>
 											<div class="form-group">
 													<input id="address2" class="form-control"
-														placeholder="Address Line 2" name="address2" tabindex="8">
+														placeholder="Address Line 2" name="address2" tabindex="8" value="${signUpForm.address2}">
 											</div>
 											<div class="col-md-5 col-md-offset-0">
 												<div class="form-group">
 													<input id="state" class="form-control"
-														placeholder="State" name="state" tabindex="10" required>
+														placeholder="State" name="state" tabindex="10" value="${signUpForm.state }" >
 												</div>
 											</div>
 											<div class="col-md-5 col-md-offset-0">
 												<div class="form-group">
 													<input id="zip" class="form-control"
-														placeholder="Zip" name="zip" tabindex="11" required>
+														placeholder="Zip" name="zip" tabindex="11" value="${signUpForm.zip }" >
 												</div>
 												<br>
 											</div>
@@ -178,7 +183,7 @@
 											<div class="form-group">
 											
 													<input id="age" class="form-control"
-														placeholder="Age" name="age" tabindex="13">
+														placeholder="Age" name="age" tabindex="13" value="${signUpForm.age }">
 											</div>
 											<div>
 											<br>
@@ -205,8 +210,8 @@
 												</div>
 												
 												<div class="form-group">
-													<input class="form-control" placeholder="User Name" style="width:25%"
-														name="userName" tabindex="15">
+													<input class="form-control" placeholder="User Name" style="width:25%" id="userName"
+														name="userName" tabindex="15" value="${signUpForm.userName }">
 												</div>
 											<div class="col-md-5">
 												<div class="form-group">
@@ -215,20 +220,20 @@
 												</div>
 												<div class="form-group">
 													<input id="secQuestion1" class="form-control"
-														placeholder="Security Question 1" name="secQuestion1" tabindex="18">
+														placeholder="Security Question 1" name="secQuestion1" value="${signUpForm.secQuestion1 }" tabindex="18">
 												</div>
 												<div class="form-group">
 													<input id="secQuestion2" class="form-control"
-														placeholder="Security Question 2" name="secQuestion2" tabindex="20">
+														placeholder="Security Question 2" name="secQuestion2" value="${signUpForm.secQuestion2 }" tabindex="20">
 												</div>
 												<div class="form-group">
 												
 													<input id="secQuestion3" class="form-control"
-														placeholder="Security Question 3" name="secQuestion3" tabindex="22">
+														placeholder="Security Question 3" name="secQuestion3" value="${signUpForm.secQuestion3 }" tabindex="22">
 												</div>
 												<div class="form-group">
 													<input id="siteKey" class="form-control"
-														placeholder="NetBanking SiteKey" name="siteKey" tabindex="24">
+														placeholder="NetBanking SiteKey" name="siteKey" value="${signUpForm.siteKey }" tabindex="24">
 												</div>
 												<div>
 													<br>
@@ -240,8 +245,8 @@
 												<div>
 
 												<!-- Change this to a button or input when using this as a form -->
-												<button type="submit"
-													class="btn btn-lg btn-success btn-block" tabindex="25">Sign Up</button>
+												<input type="submit"
+													class="btn btn-lg btn-success btn-block" tabindex="25" value="Sign Up"/  	>
 
 											</div>
 										</div>
@@ -250,7 +255,7 @@
 											
 											<div class="form-group">
 											
-													<input id="password1" class="form-control" type="password"
+													<input id="passwordConfirm" class="form-control" type="password"
 														placeholder="Confirm Password" name="password1" tabindex="17">
 											</div>
 										
@@ -258,16 +263,16 @@
 											
 											<div class="form-group">
 													<input id="secAnswer1" class="form-control"
-														placeholder="Security Answer 1" name="secAnswer1" tabindex="19">
+														placeholder="Security Answer 1" name="secAnswer1" value="${signUpForm.secAnswer1}" tabindex="19">
 												</div>
 												<div class="form-group">
 													<input id="secAnswer2" class="form-control"
-														placeholder="Security Answer 2" name="secAnswer2" tabindex="21">
+														placeholder="Security Answer 2" name="secAnswer2" value="${signUpForm.secAnswer2}" tabindex="21">
 												</div>
 												<div class="form-group">
 												
 													<input id="secAnswer3" class="form-control"
-														placeholder="Security Answer 3" name="secAnswer3" tabindex="23">
+														placeholder="Security Answer 3" name="secAnswer3" value="${signUpForm.secAnswer3}" tabindex="23">
 												</div>
 											<div>
 											<br>
@@ -280,24 +285,192 @@
 									</div>
 						</div>
 						</fieldset>
-						</form:form>
+						</form>
 					</div>
 								
 				</div>
 			</div>
 		</div>
 		
-	</div>
+	</div> 
 	
 	<script type="text/javascript">
+	$.validator.addMethod('alphabetsOnly', function( val, element ) {
+	    var regexp = new RegExp("^[a-zA-Z]+$");
+
+	    if (!regexp.test(val)) {
+	       return false;
+	    }
+	    return true;
+	}, "Please type alphabets only");
+	$.validator.addMethod('addressField', function( val, element ) {
+	    var regexp = new RegExp("^[a-zA-Z0-9,._;-]+$");
+
+	    if (!regexp.test(val)) {
+	       return false;
+	    }
+	    return true;
+	}, "Please use characters [a-zA-Z], [0-9], [,][.][_][;][-]");
+	
+	$.validator.addMethod('userNameField', function( val, element ) {
+	    var regexp = new RegExp("^[a-zA-Z0-9,._]+$");
+
+	    if (!regexp.test(val)) {
+	       return false;
+	    }
+	    return true;
+	}, "Please use characters [a-zA-Z], [0-9], [.][_]");
+		
+	$.validator.addMethod('passwordField', function( val, element ) {
+	    var regexp = new RegExp("/^.*(?=.{8,})(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%&]).*$/;");
+
+	    if (!regexp.test(val)) {
+	       return false;
+	    }
+	    return true;
+	}, "Please make your password strong by having atleast 8 characters<br>"+
+		"[atleast 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character in [@#$%&]]");
+	
+	$.validator.addMethod('questionField', function( val, element ) {
+	    var regexp = new RegExp("^[a-zA-Z0-9,._;-?]+$");
+
+	    if (!regexp.test(val)) {
+	       return false;
+	    }
+	    return true;
+	}, "Please use characters [a-zA-Z], [0-9], [,][.][_][;][-][?]");
+	
 	$("#signUpForm").validate({
 		rules: {
 			emailId: {
 				required: true,
 				email: true
 			},
+			firstName: {
+				required: true,
+				alphabetsOnly: true,
+				maxlength: 25
+			},
+			lastName: {
+				required: true,
+				alphabetsOnly: true,
+				maxlength: 25
+			},
+			contactNo: {
+				required: true,
+				phoneUS: true
+			},
+			address1: {
+				required: true,
+				addressField: true,
+				maxlength: 50
+			},
+			address2: {
+				addressField: true,
+				maxlength: 50
+			},
+			city: {
+				required: true,
+				alphabetsOnly: true,
+				maxlength: 15
+			},
+			state: {
+				required: true,
+				alphabetsOnly: true,
+				minlength: 2,
+				maxlength: 2
+			},
+			zip: {
+				required: true,
+				digits: true,
+		   		minlength: 5,
+		    	maxlength: 5
+			},
+			dateOfBirth: {
+				required: true,
+				date: true
+			},
+			age: {
+				required: true,
+				digits: true,
+				minlength: 2,
+				maxlength: 3
+			},
+			userName: {
+				required: true,
+				userNameField: true,
+				minlength: 5,
+				maxlength: 15
+			},
+			password: {
+				required: true,
+				maxlength: 15,
+				passwordField: true				
+			},
+			passwordConfirm: {
+				required: true,
+				maxlength: 15,
+				passwordField: true,
+				equalTo: "#password"
+			},
+			secQuestion1: {
+				required: true,
+				maxlength: 200,
+				questionField: true
+			},
+			secQuestion2: {
+				required: true,
+				maxlength: 200,
+				questionField: true
+			},
+			secQuestion3: {
+				required: true,
+				maxlength: 200,
+				questionField: true
+			},
+			secAnswer1: {
+				required: true,
+				maxlength: 25,
+				questionField: true
+			},
+			secAnswer2: {
+				required: true,
+				maxlength: 25,
+				questionField: true
+			},
+			secAnswer3: {
+				required: true,
+				maxlength: 25,
+				questionField: true
+			},
+			siteKey: {
+				required: true,
+				minlength: 5,
+				maxlength: 20
+			},
 		messages: {
-			emailId: "Please Enter a valid Email ID"
+			emailId: "Please Enter a valid Email ID",
+			firstName: "Please Enter your First Name (must be less than 25 characters)",
+			lastName: "Please Enter your Last Name (must be less than 25 characters)",
+			contactNo: "Please Enter your contact number",
+			address1: "Please Enter your address (must be less than 50 characters)",
+			address2: "Please Enter less than 50 characters",
+			city: "Please Enter your city (must be less than 12 characters)",
+			state: "Please Enter a valid state (must be 2 charcters)",
+			zip: "Please Enter a valid 5 digit ZIP",
+			dateOfBirth: "Please Enter a valid date in (MM/DD/YYYY) format",
+			age: "Please Enter a valid date (maximum of 3 digits)",
+			userName: "Please Enter a vlaid user name (character range [5-15])",
+			password: "Please Enter a vlaid password (character range [8-15])",
+			passwordConfirm: "Passwords doesn't match",
+			secQuestion1: "Please Enter a valid Security question (character range [1-200])",
+			secQuestion2: "Please Enter a valid Security question (character range [1-200])",
+			secQuestion3: "Please Enter a valid Security question (character range [1-200])",
+			secAnswer1: "Please Enter a valid Security answer (character range [1-25])",
+			secAnswer2: "Please Enter a valid Security answer (character range [1-25])",
+			secAnswer3: "Please Enter a valid Security answer (character range [1-25])",
+			siteKey: "Please Enter a valid SiteKey (charcter range [5-20])"
+			
 		}
 			
 		}

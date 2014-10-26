@@ -85,21 +85,32 @@ public class LoginServiceImpl implements LoginService, UserDetailsService {
 	}
 
 	@Transactional
-	public void createUser(UserModel userModel) {
-		userModel.setCreatedBy("SYSTEM");
-		userModel.setCreatedDate(new Date());
-		userModel.setExpiryDate(calcuateExpiryDate());
-		userModel.setIsActive("true");
-		if (userModel.getUserType().equalsIgnoreCase("indCust")) {
-			userModel.setUserType("Individual Customer");
-			userModel.setUserTypeId(322);
-			userModel.setIsCustomer("true");
-		} else {
-			userModel.setUserType("Merchant/Organization");
-			userModel.setUserTypeId(366);
-			userModel.setIsCustomer("false");
+	public boolean createUser(UserModel userModel) {
+		String siteKey = loginDAO.getSiteKey(userModel.getUserName());
+		if(siteKey != null && !siteKey.isEmpty())
+		{
+
+			return false;
 		}
-		loginDAO.createUser(userModel);
+		else
+		{
+			userModel.setCreatedBy("SYSTEM");
+			userModel.setCreatedDate(new Date());
+			userModel.setExpiryDate(calcuateExpiryDate());
+			userModel.setIsActive("true");
+			if (userModel.getUserType().equalsIgnoreCase("indCust")) {
+				userModel.setUserType("Individual Customer");
+				userModel.setUserTypeId(322);
+				userModel.setIsCustomer("true");
+			} else {
+				userModel.setUserType("Merchant/Organization");
+				userModel.setUserTypeId(366);
+				userModel.setIsCustomer("false");
+			}
+			loginDAO.createUser(userModel);
+			return true;
+		}
+		
 	}
 
 	private Date calcuateExpiryDate() {
@@ -120,6 +131,20 @@ public class LoginServiceImpl implements LoginService, UserDetailsService {
 			memberId = loginDTO.getMemberId();
 		}
 		return memberId;
+	}
+	
+	@Transactional
+	private boolean validateNewUser(UserModel userModel)
+	{
+		String siteKey = loginDAO.getSiteKey(userModel.getUserName());
+		boolean isEmailExists = loginDAO.isEmailExists(userModel.getEmailId());
+		if((siteKey != null && !siteKey.isEmpty()) || isEmailExists)
+		{
+			return false;
+		} else {
+			return true;
+		}
+		
 	}
 
 }

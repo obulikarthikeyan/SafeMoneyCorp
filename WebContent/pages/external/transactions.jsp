@@ -6,7 +6,7 @@
 <title>SafeMoneyCorp - Transactions</title>
 </head>
 <body>
-<jsp:include page="sidebar.jsp"></jsp:include>
+<jsp:include page="/pages/sidebar.jsp"></jsp:include>
 <div id="page-wrapper">
 				<div class="row">
 					<div class="col-lg-12">
@@ -20,7 +20,7 @@
 				 
 						<div class="panel panel-default">
 							<div class="panel-heading">
-								Pill Tabs
+								
 							</div>
 							<!-- /.panel-heading -->
 							<div class="panel-body" >

@@ -79,7 +79,7 @@ public class ManageExternalUserController {
 		return "shared/deleteSuccessPage";
 	}
 	
-	@RequestMapping(value="/transactions", method = RequestMethod.GET)
+	@RequestMapping(value="/external/transactions", method = RequestMethod.GET)
 	public ModelAndView doTransaction(HttpSession session)
 	{
 		int memberId = (Integer) session.getAttribute("memberId");
