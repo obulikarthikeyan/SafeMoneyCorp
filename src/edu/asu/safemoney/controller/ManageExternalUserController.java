@@ -24,6 +24,7 @@ import edu.asu.safemoney.model.UserModel;
 import edu.asu.safemoney.service.ManageExternalUserAccountService;
 
 @Controller
+@SessionAttributes
 public class ManageExternalUserController {
 
 	@Autowired ManageExternalUserAccountService manageExternalUserAccountService;
@@ -34,13 +35,13 @@ public class ManageExternalUserController {
 	// Form name in ManageExternalUsers should be "ExternalUserAccountForm"
 	// How to populate values ***
 	
-	@RequestMapping(value="/displayExternalUserDetails", method=RequestMethod.GET)
+	@RequestMapping(value="/external/displayExternalUserDetails", method=RequestMethod.GET)
 	// get userName from session and use @RequestParam
 	public ModelAndView populateExternalUserAccount(HttpSession session) {
-		int memberId= (Integer)session.getAttribute("memberId");
-		UserDTO userDTO= manageExternalUserAccountService.displayUserAccount(memberId);
+		//int memberId= (Integer)session.getAttribute("memberId");
+		UserDTO userDTO= manageExternalUserAccountService.displayUserAccount(996363);
 		// Should redirect to "ManageExternalUserAccount.jsp" page
-		return new ModelAndView("shared/ManageExternalUserAccount").addObject("userDTO",userDTO);	
+		return new ModelAndView("external/ManageExternalUser").addObject("userDTO",userDTO);	
 	}
 		
 	

@@ -87,6 +87,8 @@
 											
 										</tbody>
 									</table>
+									<button type="button"> Update Account</button>
+									<button type="button"> Delete Account</button>
 									</div>
 									<!-- /.table-responsive -->
 									</div>
@@ -100,6 +102,7 @@
 						</div>
 						<!-- /.panel -->
 					</div>
+					
 			</div>
 </body>
 </html>
