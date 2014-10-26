@@ -46,6 +46,11 @@
 				{%>
 				<p style="position:absolute;left:505px;top:470px;color:red;font-size:13px" class="label label-warning">* ${InvalidUserName} *</p>	
 				<%}%>
+				<%
+				if(request.getAttribute("authError") != null)
+				{%>
+				<p style="position:absolute;left:505px;top:470px;color:red;font-size:13px" class="label label-warning">* ${authError} *</p>	
+				<%}%>
 				
 				
 		

@@ -45,6 +45,8 @@ public class LoginController {
 		if(isUserNameAvailable)
 		{
 			sessionID.setAttribute("userName", userName);
+			int memberId = loginService.getMemberId(userName);
+			sessionID.setAttribute("memberId", memberId);
 			return new ModelAndView("/shared/authentication").addObject("siteKey", siteKey);
 		}
 		else
@@ -72,15 +74,12 @@ public class LoginController {
 
 	@RequestMapping(value="/landing", method = RequestMethod.GET)
 	public String redirectToLanding(ModelMap model, HttpSession session) {
-		User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		int memberId = loginService.getMemberId(user.getUsername());
-		session.setAttribute("memberId", memberId);
 		return "shared/landing";
 	}
 	
 	@RequestMapping(value="/home", method = RequestMethod.GET)
-	public String redirectToHome(ModelMap model) {
-		return "shared/home";
+	public ModelAndView redirectToHome(ModelMap model) {
+		return new ModelAndView("shared/home").addObject("authError", "Authentication Failed");
 	}
 	
 	@RequestMapping(value="/signUp", method = RequestMethod.POST)

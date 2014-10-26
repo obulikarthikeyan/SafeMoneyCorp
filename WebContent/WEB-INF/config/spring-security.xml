@@ -30,7 +30,7 @@
 		<intercept-url pattern="/external/**" access="hasAnyRole('EXT_IND_CUST', 'EXT_MERCHANT')" />
        	<intercept-url pattern="/**" access="isAuthenticated()" /> 
         <form-login login-page="/login" default-target-url="/landing" authentication-failure-url="/home"></form-login>
-        <logout logout-success-url="/logout" delete-cookies="JSESSIONID" invalidate-session="true"></logout>
+        <logout logout-success-url="/logout" logout-url="/j_spring_security_logout" delete-cookies="JSESSIONID" invalidate-session="true"></logout>
     </http>
    
     

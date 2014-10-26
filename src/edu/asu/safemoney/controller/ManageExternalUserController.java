@@ -1,6 +1,8 @@
 package edu.asu.safemoney.controller;
 
 
+import java.util.Enumeration;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -38,8 +40,11 @@ public class ManageExternalUserController {
 	@RequestMapping(value="/external/displayExternalUserDetails", method=RequestMethod.GET)
 	// get userName from session and use @RequestParam
 	public ModelAndView populateExternalUserAccount(HttpSession session) {
-		//int memberId= (Integer)session.getAttribute("memberId");
-		UserDTO userDTO= manageExternalUserAccountService.displayUserAccount(996363);
+		Enumeration<String> enumstring= session.getAttributeNames();
+		while(enumstring.hasMoreElements())
+			System.out.println("session attributes: " + enumstring.nextElement());
+		int memberId= (Integer)session.getAttribute("memberId");
+		UserDTO userDTO= manageExternalUserAccountService.displayUserAccount(memberId);
 		// Should redirect to "ManageExternalUserAccount.jsp" page
 		return new ModelAndView("external/ManageExternalUser").addObject("userDTO",userDTO);	
 	}
@@ -62,11 +67,12 @@ public class ManageExternalUserController {
 	// This takes place in "UpdateExternalUserAccount.jsp" page
 	// Update User Account. Action for the update button should be "updateExternalUserDetails". 
 	// Form name should be "ExternalUserUpdateForm".
-	@RequestMapping(value="/updateExternalUserDetials", method= RequestMethod.POST)
-	public String doUpdateAccount(@ModelAttribute("ExternalUserUpdateForm") UserModel userModel, ModelMap model) {
-		manageExternalUserAccountService.updateUser(userModel);
+	@RequestMapping(value="/external/updateExternalUserDetails", method= RequestMethod.POST)
+	public String doUpdateAccount(@ModelAttribute("updateUser") UserModel userModel, ModelMap model) {
+		System.out.println("EmailId: " + userModel.getEmailId());
+		//manageExternalUserAccountService.updateUser(userModel);
 		// Should redirect to "updateSuccess.jsp"
-		return "shared/UpdateSuccessPage"; 
+		return "shared/landing"; 
 		// can check for fail condition also ***
 	}
 	
