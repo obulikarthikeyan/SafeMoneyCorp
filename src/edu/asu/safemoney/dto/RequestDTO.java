@@ -9,6 +9,8 @@ import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -31,12 +33,14 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "RequestDTO.findByRequestId", query = "SELECT r FROM RequestDTO r WHERE r.requestId = :requestId"),
     @NamedQuery(name = "RequestDTO.findByRequestType", query = "SELECT r FROM RequestDTO r WHERE r.requestType = :requestType"),
     @NamedQuery(name = "RequestDTO.findByAuthorizingMemberId", query = "SELECT r FROM RequestDTO r WHERE r.authorizingMemberId = :authorizingMemberId"),
-    @NamedQuery(name = "RequestDTO.findByStatus", query = "SELECT r FROM RequestDTO r WHERE r.status = :status")})
+    @NamedQuery(name = "RequestDTO.findByStatus", query = "SELECT r FROM RequestDTO r WHERE r.status = :status"),
+    @NamedQuery(name = "RequestDTO.findByAuthorizingAuthority", query = "SELECT r FROM RequestDTO r WHERE r.authorizingAuthority = :authorizingAuthority"),
+    @NamedQuery(name = "RequestDTO.findByAuthorityUserTypeId", query = "SELECT r FROM RequestDTO r WHERE r.authorityUserTypeId = :authorityUserTypeId")})
 public class RequestDTO implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @NotNull
     @Column(name = "request_id")
     private Long requestId;
     @Size(max = 45)
@@ -47,6 +51,15 @@ public class RequestDTO implements Serializable {
     @Size(max = 45)
     @Column(name = "status")
     private String status;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 20)
+    @Column(name = "authorizing_authority")
+    private String authorizingAuthority;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "authority_user_type_id")
+    private int authorityUserTypeId;
     @JoinColumn(name = "member_id", referencedColumnName = "member_id")
     @ManyToOne(optional = false)
     private UserDTO memberId;
@@ -56,6 +69,12 @@ public class RequestDTO implements Serializable {
 
     public RequestDTO(Long requestId) {
         this.requestId = requestId;
+    }
+
+    public RequestDTO(Long requestId, String authorizingAuthority, int authorityUserTypeId) {
+        this.requestId = requestId;
+        this.authorizingAuthority = authorizingAuthority;
+        this.authorityUserTypeId = authorityUserTypeId;
     }
 
     public Long getRequestId() {
@@ -88,6 +107,22 @@ public class RequestDTO implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getAuthorizingAuthority() {
+        return authorizingAuthority;
+    }
+
+    public void setAuthorizingAuthority(String authorizingAuthority) {
+        this.authorizingAuthority = authorizingAuthority;
+    }
+
+    public int getAuthorityUserTypeId() {
+        return authorityUserTypeId;
+    }
+
+    public void setAuthorityUserTypeId(int authorityUserTypeId) {
+        this.authorityUserTypeId = authorityUserTypeId;
     }
 
     public UserDTO getMemberId() {

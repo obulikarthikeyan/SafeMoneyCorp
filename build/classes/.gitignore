@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-*.class
+/snippet/
 /edu/
-=======
-/edu/
->>>>>>> 1bfbcd1bc031ded84c3adbf45a3cac59a2862132
+/log4j.properties

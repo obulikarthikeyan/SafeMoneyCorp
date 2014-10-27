@@ -26,7 +26,7 @@
 				<!-- /.panel-heading -->
 				<div class="panel-body">
 					<div class="table-responsive">
-						<table style="width: 60%; height: 50%">
+						<table style="width: 70%; height: 60%">
 
 							<tbody>
 								<tr>
@@ -89,10 +89,10 @@
 								</tr>
 								<tr>
 									<td><button class="btn btn-primary btn-lg"
-											data-toggle="modal" data-target="#myModal" style="width: 40%">
+											data-toggle="modal" data-target="#myModal" style="width: 50%">
 											Update Account</button></td>
 									<td><button type="button"
-											class="btn btn-lg btn-danger btn-block" style="width: 40%">
+											class="btn btn-lg btn-danger btn-block" style="width: 50%">
 											Delete Account</button></td>
 
 								</tr>

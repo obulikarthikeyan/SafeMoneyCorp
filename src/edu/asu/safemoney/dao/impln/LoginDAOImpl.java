@@ -1,7 +1,9 @@
 package edu.asu.safemoney.dao.impln;
 
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import edu.asu.safemoney.dao.LoginDAO;
 import edu.asu.safemoney.dto.LoginDTO;
+import edu.asu.safemoney.dto.RequestDTO;
 import edu.asu.safemoney.dto.UserDTO;
 import edu.asu.safemoney.dto.UserTypeDTO;
 import edu.asu.safemoney.model.UserModel;
@@ -76,11 +79,21 @@ public class LoginDAOImpl implements LoginDAO{
 		return -1;
 	}
 	
-	public void createUser(UserModel user)
+	public boolean createUser(UserModel user)
 	{
 		UserDTO userDTO = copyToUserDTO(user);
-		Session session = sessionFactory.getCurrentSession();
-		session.save(userDTO);
+		try
+		{
+			Session session = sessionFactory.getCurrentSession();
+			session.save(userDTO);
+			return true;
+			
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			return false;
+		}
 	}
 	
 	public UserDTO copyToUserDTO(UserModel user)
@@ -123,6 +136,18 @@ public class LoginDAOImpl implements LoginDAO{
 		loginDTO.setSiteKey(user.getSiteKey());
 		loginDTO.setMemberId(userDTO.getMemberId());
 		loginDTO.setUserDTO(userDTO);
+		
+		RequestDTO requestDTO = new RequestDTO();
+		requestDTO.setMemberId(userDTO);
+		requestDTO.setAuthorizingAuthority("ADMIN");
+		requestDTO.setRequestType("CREATE_ACCOUNT");
+		requestDTO.setAuthorityUserTypeId(123);
+		requestDTO.setStatus("NEW");
+		
+		List<RequestDTO> requestList = new ArrayList<RequestDTO>();
+		requestList.add(requestDTO);
+		
+		userDTO.setRequestDTOList(requestList);
 		
 		
 		System.out.println("fisrtNAme = " + user.getFirstName() + " lastName = "  + user.getFirstName());

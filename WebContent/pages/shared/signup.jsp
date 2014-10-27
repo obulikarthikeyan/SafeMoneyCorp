@@ -142,7 +142,7 @@
 												</div>
 												<div class="form-group">
 													<input id="ssn" class="form-control"
-														placeholder="Social Security" name="ssn" tabindex="14" value="${signUpForm.ssn }" >
+														placeholder="Social Security" name="ssn" maxlength="9" tabindex="14" value="${signUpForm.ssn }" >
 												</div>
 												<div>
 													<br>
@@ -170,13 +170,13 @@
 											<div class="col-md-5 col-md-offset-0">
 												<div class="form-group">
 													<input id="state" class="form-control"
-														placeholder="State" name="state" tabindex="10" value="${signUpForm.state }" >
+														placeholder="State" name="state" maxlength="2" tabindex="10" value="${signUpForm.state }" >
 												</div>
 											</div>
 											<div class="col-md-5 col-md-offset-0">
 												<div class="form-group">
 													<input id="zip" class="form-control"
-														placeholder="Zip" name="zip" tabindex="11" value="${signUpForm.zip }" >
+														placeholder="Zip" name="zip" maxlength="5" tabindex="11" value="${signUpForm.zip }" >
 												</div>
 												<br>
 											</div>
@@ -184,7 +184,7 @@
 											<div class="form-group">
 											
 													<input id="age" class="form-control"
-														placeholder="Age" name="age" tabindex="13" value="${signUpForm.age }">
+														placeholder="Age" name="age" maxlength="3" tabindex="13" value="${signUpForm.age }">
 											</div>
 											<div>
 											<br>
@@ -406,12 +406,10 @@
 			password: {
 				required: true,
 				maxlength: 15,
-				passwordField: true				
 			},
 			passwordConfirm: {
 				required: true,
 				maxlength: 15,
-				passwordField: true,
 				equalTo: "#password"
 			},
 			secQuestion1: {
@@ -484,6 +482,8 @@
 	
 	<!-- Bootstrap Core JavaScript -->
 	<script src="js/bootstrap.min.js"></script>
+	
+	<script src="http://jqueryvalidation.org/files/dist/additional-methods.min.js"></script>
 
 	<!-- Metis Menu Plugin JavaScript -->
 	<script src="js/plugins/metisMenu/metisMenu.min.js"></script>

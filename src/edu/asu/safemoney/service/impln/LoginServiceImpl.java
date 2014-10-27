@@ -16,7 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import edu.asu.safemoney.dao.LoginDAO;
+import edu.asu.safemoney.dao.RequestDAO;
 import edu.asu.safemoney.dto.LoginDTO;
+import edu.asu.safemoney.dto.RequestDTO;
 import edu.asu.safemoney.dto.UserDTO;
 import edu.asu.safemoney.dto.UserTypeDTO;
 import edu.asu.safemoney.model.UserModel;
@@ -27,6 +29,9 @@ public class LoginServiceImpl implements LoginService, UserDetailsService {
 
 	@Autowired
 	private LoginDAO loginDAO;
+	
+	@Autowired
+	private RequestDAO requestDAO;
 
 	@Override
 	@Transactional
@@ -87,6 +92,7 @@ public class LoginServiceImpl implements LoginService, UserDetailsService {
 	@Transactional
 	public boolean createUser(UserModel userModel) {
 		String siteKey = loginDAO.getSiteKey(userModel.getUserName());
+		boolean isCreationSuccess = false; 
 		if(siteKey != null && !siteKey.isEmpty())
 		{
 
@@ -107,8 +113,34 @@ public class LoginServiceImpl implements LoginService, UserDetailsService {
 				userModel.setUserTypeId(366);
 				userModel.setIsCustomer("false");
 			}
-			loginDAO.createUser(userModel);
-			return true;
+			isCreationSuccess = loginDAO.createUser(userModel);
+			if(isCreationSuccess)
+			{
+				/*int memberId = loginDAO.getMemberIdByUserName(userModel.getUserName());
+				System.out.println("MemebrID: " + memberId);
+				UserDTO userDTO = loginDAO.getUserByMemberId(memberId);
+				System.out.println("UserDTO memberId " + userDTO.getMemberId());
+				//UserDTO userDTO = loginDAO.copyToUserDTO(userModel);
+				RequestDTO requestDTO = new RequestDTO();
+				requestDTO.setMemberId(userDTO);
+				requestDTO.setAuthorizingAuthority("ADMIN");
+				requestDTO.setRequestType("CREATE_ACCOUNT");
+				requestDTO.setStatus("NEW");
+				boolean isRequestSent = requestDAO.generateRequest(requestDTO);
+				if(isRequestSent)
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}*/
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 		}
 		
 	}

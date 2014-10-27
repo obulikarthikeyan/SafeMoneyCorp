@@ -6,6 +6,7 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -32,6 +33,8 @@ public class LoginController {
 	@Autowired
 	private LoginService loginService;
 	
+	public static final Logger logger = Logger.getLogger(LoginController.class);
+	
 	
 	@RequestMapping(value="/userNameLogin", method=RequestMethod.POST)
 	public ModelAndView userNameValidation(@RequestParam("userName") String userName, HttpServletRequest request, HttpSession sessionID)
@@ -51,7 +54,10 @@ public class LoginController {
 		}
 		else
 		{
-			return new ModelAndView("/shared/Login").addObject("InvalidUserName", "UserName is invalid. Please enter a valid UserName");
+			logger.error("UserLogin Attempt - InvalidUserName");
+			System.out.println("Home" + System.getProperty("catalina.home"));
+			System.out.println("base: " + System.getProperty("catalina.base"));
+			return new ModelAndView("/shared/home").addObject("InvalidUserName", "UserName is invalid. Please enter a valid UserName");
 		}
 	}
 	

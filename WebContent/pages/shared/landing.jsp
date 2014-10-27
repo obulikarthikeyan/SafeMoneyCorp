@@ -10,6 +10,11 @@
 <jsp:include page="/pages/sidebar.jsp"></jsp:include>
 <div id="page-wrapper">
 <h2>Welcome ${ sessionScope.SPRING_SECURITY_CONTEXT.authentication.principal.username }</h2>
+<br>
+<br>
+<h4>We appreciate your Business with us.</h4>
+<br>
+<p>Please use the Navigation Bar on the left to use our services.</p>
 </div>
 </body>
 
