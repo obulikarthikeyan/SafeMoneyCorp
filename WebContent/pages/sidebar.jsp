@@ -210,6 +210,12 @@
 
 	<!-- jQuery Version 1.11.0 -->
 	<script src="<%=request.getContextPath()%>/js/jquery-1.11.0.js"></script>
+	
+	<script src="<%=request.getContextPath() %>/js/jquery-ui.js"></script>
+	
+	<script src="<%=request.getContextPath() %>/js/jquery-ui.min.js"></script>
+	
+	<script src="<%=request.getContextPath() %>/js/jquery.validate.js"></script>
 
 	<!-- Bootstrap Core JavaScript -->
 	<script src="<%=request.getContextPath()%>/js/bootstrap.min.js"></script>

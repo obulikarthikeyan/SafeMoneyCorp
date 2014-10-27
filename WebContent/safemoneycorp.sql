@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 24, 2014 at 07:25 PM
+-- Generation Time: Oct 27, 2014 at 05:41 AM
 -- Server version: 5.5.32
 -- PHP Version: 5.4.19
 
@@ -42,7 +42,9 @@ CREATE TABLE IF NOT EXISTS `account` (
 --
 
 INSERT INTO `account` (`account_no`, `member_id`, `amount`, `is_active`) VALUES
+(1545151, 996368, 3000, 'true'),
 (6987456, 996364, 5000, 'true'),
+(8765433, 996369, 400, 'true'),
 (56352145, 996363, 2000, 'true');
 
 -- --------------------------------------------------------
@@ -66,8 +68,10 @@ CREATE TABLE IF NOT EXISTS `login` (
 --
 
 INSERT INTO `login` (`member_id`, `user_name`, `password`, `site_key`) VALUES
-(996363, 'alice123', 'parker321', 'eclipse'),
-(996364, 'john123', 'doe321', 'helio');
+(996363, 'cust', 'cust', 'eclipse'),
+(996364, 'mer', 'mer', 'helio'),
+(996368, 'emp', 'emp', 'helio'),
+(996369, 'admin', 'admin', 'helio');
 
 -- --------------------------------------------------------
 
@@ -76,14 +80,23 @@ INSERT INTO `login` (`member_id`, `user_name`, `password`, `site_key`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `request` (
-  `request_id` bigint(10) NOT NULL,
+  `request_id` bigint(10) NOT NULL AUTO_INCREMENT,
   `member_id` int(11) NOT NULL,
   `request_type` varchar(45) DEFAULT NULL,
   `authorizing_member_id` int(11) DEFAULT NULL,
   `status` varchar(45) DEFAULT NULL,
+  `authorizing_authority` varchar(20) NOT NULL,
+  `authority_user_type_id` int(11) NOT NULL,
   PRIMARY KEY (`request_id`),
   KEY `request_user` (`member_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=56346 ;
+
+--
+-- Dumping data for table `request`
+--
+
+INSERT INTO `request` (`request_id`, `member_id`, `request_type`, `authorizing_member_id`, `status`, `authorizing_authority`, `authority_user_type_id`) VALUES
+(56345, 996374, 'CREATE_ACCOUNT', NULL, 'NEW', 'INT_BANK_ADM', 123);
 
 -- --------------------------------------------------------
 
@@ -142,7 +155,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   UNIQUE KEY `email_id` (`email_id`),
   KEY `member_id` (`member_id`),
   KEY `user_type_idx` (`user_type_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=996365 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=996375 ;
 
 --
 -- Dumping data for table `user`
@@ -150,7 +163,10 @@ CREATE TABLE IF NOT EXISTS `user` (
 
 INSERT INTO `user` (`member_id`, `first_name`, `last_name`, `email_id`, `contact_no`, `address_1`, `address_2`, `city`, `state`, `zip`, `ssn`, `sec_question_1`, `sec_question_2`, `sec_question_3`, `sec_answer_1`, `sec_answer_2`, `sec_answer_3`, `date_of_birth`, `age`, `isCustomer`, `user_type_id`, `created_by`, `created_date`, `expiry_date`, `is_active`) VALUES
 (996363, 'Alice', 'Parker', 'alice@smc.corp', 8890008765, 'xxxxxxx', 'yyyyyyyyy', 'zzzzz', 'AZ', 89963, 345678912, 'What is your favorite place?', 'What is your right eye power?', 'What is the name of your family doctor?', 'dallas', '0.0', 'Dr.Adam', '2014-10-17', 26, 'true', 322, 'SYSTEM', '2014-10-19', '2015-10-19', 'true'),
-(996364, 'John', 'Doe', 'john@smc.corp', 1234509876, 'xxxxxxx', 'yyyyyyy', 'zzzzz', 'NY', 23564, 789456123, 'What is your model name of your first phone?', 'What is the last 5 digits in your driving license?', 'what is name of your favorite teacher in high school?', 'XC01', '56897', 'Jennifer', '2014-09-09', 36, 'true', 322, 'SYSTEM', '2014-10-19', '2015-10-19', 'true');
+(996364, 'John', 'Doe', 'john@smc.corp', 1234509876, 'xxxxxxx', 'yyyyyyy', 'zzzzz', 'NY', 23564, 789456123, 'What is your model name of your first phone?', 'What is the last 5 digits in your driving license?', 'what is name of your favorite teacher in high school?', 'XC01', '56897', 'Jennifer', '2014-09-09', 36, 'true', 366, 'SYSTEM', '2014-10-19', '2015-10-19', 'true'),
+(996368, 'Bank', 'Employee', 'bank.employee@smcorp', 1234509876, 'xxxxxxx', 'yyyyyyy', 'zzzzz', 'NY', 23564, 789456123, 'What is your model name of your first phone?', 'What is the last 5 digits in your driving license?', 'what is name of your favorite teacher in high school?', 'XC01', '56897', 'Jennifer', '2014-09-09', 36, 'true', 125, 'SYSTEM', '2014-10-19', '2015-10-19', 'true'),
+(996369, 'Bank', 'Admin', 'bank.admin@smcorp', 8890008765, 'xxxxxxx', 'yyyyyyyyy', 'zzzzz', 'AZ', 89963, 345678912, 'What is your favorite place?', 'What is your right eye power?', 'What is the name of your family doctor?', 'dallas', '0.0', 'Dr.Adam', '2014-10-17', 26, 'true', 123, 'SYSTEM', '2014-10-19', '2015-10-19', 'true'),
+(996374, 'hhkjh', 'khkjhkjhhj', 'jhjhj@kjk.com', 7898798798, 'hjhjhg', 'hghgjg', 'gghj', 'hg', 78787, 777777777, 'hkklkl', 'hgfhgfgh', 'hgjhg', 'jljkhj', 'fhfh', 'jggjh', '2014-10-26', 878, 'true', 322, 'SYSTEM', '2014-10-26', '2015-10-26', 'true');
 
 -- --------------------------------------------------------
 

@@ -7,6 +7,7 @@ import edu.asu.safemoney.dto.UserDTO;
 import edu.asu.safemoney.model.AccountModel;
 import edu.asu.safemoney.model.UserModel;
 
+import edu.asu.safemoney.model.*;
 
 public interface ManageExternalUserAccountService {
 
@@ -15,6 +16,9 @@ public interface ManageExternalUserAccountService {
 	public void deleteUser(String userName);
 	public UserDTO displayUserAccount(int memberId);
 	public AccountModel getAccountDetails(int memberId);
-	// edu.asu.safemoney.service.impln.List<UserDTO> displayUserAccount(
+	public double getAccountBalance(int memberId);
+	public boolean makeCreditTransaction(int memberID, double amount);
+	public String makeDebitTransaction(int memberID, double amount);
+		// edu.asu.safemoney.service.impln.List<UserDTO> displayUserAccount(
 	//		String nameOfUser);
 }

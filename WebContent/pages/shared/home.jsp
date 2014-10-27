@@ -41,7 +41,6 @@
 					<span style="position:absolute;width:300px;left:505px;top:565px;">&nbsp;</span>
 				</form>
 			<%
-				
 				if(request.getAttribute("InvalidUserName") != null)
 				{%>
 				<p style="position:absolute;left:505px;top:470px;color:red;font-size:13px" class="label label-warning">* ${InvalidUserName} *</p>	

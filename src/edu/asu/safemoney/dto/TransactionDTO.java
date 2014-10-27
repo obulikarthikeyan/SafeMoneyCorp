@@ -49,9 +49,9 @@ public class TransactionDTO implements Serializable {
     @Column(name = "transaction_id")
     private Long transactionId;
     @Column(name = "from_account")
-    private BigInteger fromAccount;
+    private long fromAccount;
     @Column(name = "to_account")
-    private BigInteger toAccount;
+    private long toAccount;
     @Column(name = "date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
@@ -87,19 +87,19 @@ public class TransactionDTO implements Serializable {
         this.transactionId = transactionId;
     }
 
-    public BigInteger getFromAccount() {
+    public long getFromAccount() {
         return fromAccount;
     }
 
-    public void setFromAccount(BigInteger fromAccount) {
+    public void setFromAccount(long fromAccount) {
         this.fromAccount = fromAccount;
     }
 
-    public BigInteger getToAccount() {
+    public long getToAccount() {
         return toAccount;
     }
 
-    public void setToAccount(BigInteger toAccount) {
+    public void setToAccount(long toAccount) {
         this.toAccount = toAccount;
     }
 

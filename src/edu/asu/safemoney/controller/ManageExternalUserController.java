@@ -1,6 +1,5 @@
 package edu.asu.safemoney.controller;
 
-
 import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import edu.asu.safemoney.dto.UserDTO;
 import edu.asu.safemoney.model.AccountModel;
+import edu.asu.safemoney.model.TransactionModel;
 import edu.asu.safemoney.model.UserModel;
 import edu.asu.safemoney.service.ManageExternalUserAccountService;
 
@@ -29,69 +29,112 @@ import edu.asu.safemoney.service.ManageExternalUserAccountService;
 @SessionAttributes
 public class ManageExternalUserController {
 
-	@Autowired ManageExternalUserAccountService manageExternalUserAccountService;
-	
-	//Takes place in the URL for ManageAccount in side menu
+	@Autowired
+	ManageExternalUserAccountService manageExternalUserAccountService;
+
+	// Takes place in the URL for ManageAccount in side menu
 	// Populate External user details in the form.
-	// Action for the ManageAccount URL in side menu should be "displayExternalUserDetails"
+	// Action for the ManageAccount URL in side menu should be
+	// "displayExternalUserDetails"
 	// Form name in ManageExternalUsers should be "ExternalUserAccountForm"
 	// How to populate values ***
-	
-	@RequestMapping(value="/external/displayExternalUserDetails", method=RequestMethod.GET)
+
+	@RequestMapping(value = "/external/displayExternalUserDetails", method = RequestMethod.GET)
 	// get userName from session and use @RequestParam
 	public ModelAndView populateExternalUserAccount(HttpSession session) {
-		Enumeration<String> enumstring= session.getAttributeNames();
-		while(enumstring.hasMoreElements())
-			System.out.println("session attributes: " + enumstring.nextElement());
-		int memberId= (Integer)session.getAttribute("memberId");
-		UserDTO userDTO= manageExternalUserAccountService.displayUserAccount(memberId);
+		Enumeration<String> enumstring = session.getAttributeNames();
+		while (enumstring.hasMoreElements())
+			System.out.println("session attributes: "
+					+ enumstring.nextElement());
+		int memberId = (Integer) session.getAttribute("memberId");
+		UserDTO userDTO = manageExternalUserAccountService
+				.displayUserAccount(memberId);
 		// Should redirect to "ManageExternalUserAccount.jsp" page
-		return new ModelAndView("external/ManageExternalUser").addObject("userDTO",userDTO);	
+		return new ModelAndView("external/ManageExternalUser").addObject(
+				"userDTO", userDTO);
 	}
-		
-	
-	// Redirect to Update Page 
-	@RequestMapping(value="updateButton", method=RequestMethod.GET)
-	public String redirectToUpdateExternalUserAccount(ModelMap model){
-		return "shared/UpdateExternalUserAccount"; 
+
+	// Redirect to Update Page
+	@RequestMapping(value = "updateButton", method = RequestMethod.GET)
+	public String redirectToUpdateExternalUserAccount(ModelMap model) {
+		return "shared/UpdateExternalUserAccount";
 	}
-	
-	
+
 	// Redirect to Delete Page
-	@RequestMapping(value="deleteButton", method=RequestMethod.GET)
-	public String redirectToDeleteExternalUserAccount(ModelMap model){
+	@RequestMapping(value = "deleteButton", method = RequestMethod.GET)
+	public String redirectToDeleteExternalUserAccount(ModelMap model) {
 		return "shared/DeleteExternalUserAccount";
 	}
-	
-	
+
 	// This takes place in "UpdateExternalUserAccount.jsp" page
-	// Update User Account. Action for the update button should be "updateExternalUserDetails". 
+	// Update User Account. Action for the update button should be
+	// "updateExternalUserDetails".
 	// Form name should be "ExternalUserUpdateForm".
-	@RequestMapping(value="/external/updateExternalUserDetails", method= RequestMethod.POST)
-	public String doUpdateAccount(@ModelAttribute("updateUser") UserModel userModel, ModelMap model) {
+	@RequestMapping(value = "/external/updateExternalUserDetails", method = RequestMethod.POST)
+	public String doUpdateAccount(
+			@ModelAttribute("updateUser") UserModel userModel, ModelMap model) {
 		System.out.println("EmailId: " + userModel.getEmailId());
-		//manageExternalUserAccountService.updateUser(userModel);
+		// manageExternalUserAccountService.updateUser(userModel);
 		// Should redirect to "updateSuccess.jsp"
-		return "shared/landing"; 
+		return "shared/landing";
 		// can check for fail condition also ***
 	}
-	
-	
+
 	// happens when you click the delete account button in the delete page.
 	// how can you pass just the User name ***
-	@RequestMapping(value="/deleteExternalUserDetials", method= RequestMethod.POST)
+	@RequestMapping(value = "/deleteExternalUserDetials", method = RequestMethod.POST)
 	public String doDeleteAccount(String UserName) {
 		manageExternalUserAccountService.deleteUser(UserName);
 		// Should redirect to "updateExternalUserAccount"
 		return "shared/deleteSuccessPage";
 	}
-	
-	@RequestMapping(value="/external/transactions", method = RequestMethod.GET)
-	public ModelAndView doTransaction(HttpSession session)
+
+	@RequestMapping(value = "/external/transactions", method = RequestMethod.GET)
+	public ModelAndView doTransaction(HttpSession session) {
+		int memberId = (Integer) session.getAttribute("memberId");
+		AccountModel accountModel = manageExternalUserAccountService
+				.getAccountDetails(memberId);
+		
+		return new ModelAndView("external/transactions").addObject("account",
+				accountModel);
+	}
+
+	@RequestMapping(value = "/external/creditDebit", method = RequestMethod.POST)
+	public ModelAndView doCreditOrDebit(
+			@RequestParam("creditDebitAmount") double amount,
+			@RequestParam("optionsRadiosInline") Integer type,
+			HttpSession session)
+	// @ModelAttribute("doCreditOrDebit") TransactionModel transaction
 	{
 		int memberId = (Integer) session.getAttribute("memberId");
-		AccountModel accountModel = manageExternalUserAccountService.getAccountDetails(memberId);
-		return new ModelAndView("external/transactions").addObject("account", accountModel);
+
+		if (type == 1) {
+			boolean result = manageExternalUserAccountService
+					.makeCreditTransaction(memberId, amount);
+			return new ModelAndView("external/transactions");
+		} else if (type == 2) {
+			String result = manageExternalUserAccountService
+					.makeDebitTransaction(memberId, amount);
+			AccountModel accountModel = manageExternalUserAccountService.getAccountDetails(memberId);
+			if (result.equals("success")) {
+
+				return new ModelAndView("external/transactions").addObject(
+						"message", "Debit Transaction Successfull.").addObject("account",
+								accountModel);
+			} else if (result.equals("failure")) {
+				return new ModelAndView("external/transactions").addObject(
+						"error", "Debit Transaction failed.").addObject("account",
+								accountModel);
+			} else if (result.equals("NOFUND")) {
+				return new ModelAndView("external/transactions")
+						.addObject("error",
+								"There is no sufficient fund in your account.").addObject("account",
+										accountModel);
+
+			}
+		}
+		return new ModelAndView("external/transactions");
+
 	}
-	
+
 }

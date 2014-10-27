@@ -1,4 +1,3 @@
-
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
@@ -305,7 +304,7 @@
 	    return true;
 	}, "Please type alphabets only");
 	$.validator.addMethod('addressField', function( val, element ) {
-	    var regexp = new RegExp("^[a-zA-Z0-9,._;-]+$");
+	    var regexp = new RegExp("^[a-zA-Z0-9,. _;-]+$");
 
 	    if (!regexp.test(val)) {
 	       return false;
