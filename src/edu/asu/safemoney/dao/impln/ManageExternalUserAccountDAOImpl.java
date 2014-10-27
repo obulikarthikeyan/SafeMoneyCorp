@@ -126,4 +126,18 @@ public class ManageExternalUserAccountDAOImpl implements ManageExternalUserAccou
 		}
 		
 	}
+
+	@Override
+	public boolean createAccount(AccountDTO accountDTO) {
+		// TODO Auto-generated method stub
+		try
+		{
+			Session session = sessionFactory.getCurrentSession();
+			session.save(accountDTO);
+			return true;
+		} catch(Exception e)
+		{
+			return false;
+		}
+	}
 }

@@ -17,5 +17,7 @@ public interface ManageExternalUserAccountDAO {
 	public boolean updateAccountBalance(int memberId, double amount);
 	public boolean createTransaction(TransactionDTO transactionDTO);
 	
+	public boolean createAccount(AccountDTO accountDTO);
+	
 	
 }

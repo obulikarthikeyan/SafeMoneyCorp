@@ -23,6 +23,22 @@
 				<div class="panel-heading"><strong>REQUESTS FOR ADMIN</strong></div>
 
 					<div class="panel-body">
+					<%
+										if (request.getAttribute("message") != null) {
+									%>
+									<p class="label label-success" style="font-size:13px">${message }</p>
+									<br>
+									<%
+										}
+									%>
+									<%
+										if (request.getAttribute("error") != null) {
+									%>
+									<p class="label label-warning" style="font-size:13px">${error }</p>
+									<br>
+									<%
+										}
+									%>
 						<div class="table-responsive">
 							<table class="table" style="width: 120%">
 								<thead>
@@ -37,16 +53,39 @@
 								</thead>
 								<tbody>
 									<c:if test="${not empty requestList}">
-										<c:forEach var="request" items="${requestList}">
+										<c:forEach var="request" items="${requestList}" varStatus="status">
 											<tr>
+												
 												<td>${request.requestId }</td>
 												<td>${request.memberId.memberId }</td>
 												<td>${request.requestType }</td>
-												<td>${request.status }</td>
+												<td><strong>${request.status }</strong></td>
 												<td>ADMIN</td>
-												<c:if test="${request.status } == 'NEW' ">
-													<td><button class="btn btn-primary btn-lg"
-											data-toggle="modal" data-target="#myModal"></button></td>
+												
+												<c:if test="${request.status == 'NEW' }">
+													<td><button id="viewButton${request.requestId}" class="btn btn-success" 
+											data-toggle="modal" data-target="#viewUser">View</button></td>
+												<script type="text/javascript">
+													$('#viewButton${request.requestId}').click(function(){
+													var firstName = '${request.memberId.firstName}';
+													var lastName = '${request.memberId.lastName}';
+													var contactNo = '${request.memberId.contactNo}';
+													var emailId = '${request.memberId.emailId}';
+													var isCustomer = '${request.memberId.isCustomer}';
+													var requestId = '${request.requestId}';
+													var type = 'Customer';
+													if(isCustomer == 'false')
+														type = 'Merchant';
+														
+												   	 $('#firstName').text(firstName);
+												   	 $('#lastName').text(lastName);
+												   	 $('#contactNo').text(contactNo);
+												   	 $('#emailId').text(emailId);
+												   	 $('#type').text(type);
+												   	 $('#requestId').val(requestId);
+												   	 $('#status').val(status);
+													});
+												</script>
 												</c:if>
 											</tr>
 										</c:forEach>
@@ -58,6 +97,59 @@
 				</div>
 			</div>
 		</div>
-	</div>
+		<div class="modal fade" id="viewUser" tabindex="-1" role="dialog"
+						aria-labelledby="myModalLabel" aria-hidden="true">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal"
+										aria-hidden="true">&times;</button>
+									<h4 class="modal-title" id="myModalLabel">User Details</h4>
+								</div>
+
+								<form id="updateUser" role="form" method="POST"
+									action="approveExtUserAccount">
+									<input type="hidden" id="requestId" name="requestId"/>
+									<div class="modal-body">
+									<table class="table" style="width:40%">
+										<tbody>
+											<tr>
+												<td></td>
+												<td></td>
+											</tr>
+											<tr>
+												<td><label>First Name</label></td>
+												<td id="firstName"></td>
+											</tr>
+											<tr>
+												<td><label>Last Name</label></td>
+												<td id="lastName"></td>
+											</tr>
+											<tr>
+												<td><label>ContactNo</label></td>
+												<td id="contactNo"></td>
+											</tr>
+											<tr>
+												<td><label>Email</label></td>
+												<td id="emailId"></td>
+											</tr>
+											<tr>
+												<td><label>Customer Type</label></td>
+												<td id="type"></td>
+											</tr>
+										</tbody>
+									</table>	
+									</div>
+									<div class="modal-footer">
+									<button type="submit" class="btn btn-primary">Approve</button>
+										<button type="button" class="btn btn-default"
+											data-dismiss="modal">Close</button>
+										
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+					
 </body>
 </html>

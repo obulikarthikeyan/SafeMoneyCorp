@@ -50,5 +50,33 @@ public class RequestDAOImpl implements RequestDAO {
 		
 		return requestList;
 	}
+
+	@Override
+	public RequestDTO getRequestByRequestId(long requestId) {
+		// TODO Auto-generated method stub
+		Session session =sessionFactory.getCurrentSession();
+		Query query = session.getNamedQuery("RequestDTO.findByRequestId").setLong("requestId", requestId);
+		RequestDTO requestDTO = (RequestDTO) query.uniqueResult();
+		return requestDTO;
+	}
+
+	@Override
+	public boolean updateRequest(RequestDTO requestDTO) {
+		// TODO Auto-generated method stub
+		if(requestDTO != null)
+		{
+			try
+			{
+				Session session = sessionFactory.getCurrentSession();
+				session.saveOrUpdate(requestDTO);
+				return true;
+			}
+			catch(Exception e)
+			{
+				return false;
+			}
+		}
+		return false;
+	}
 	
 }
