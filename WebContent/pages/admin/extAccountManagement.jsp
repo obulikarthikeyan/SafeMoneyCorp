@@ -32,6 +32,7 @@
 										<th>Request Type</th>
 										<th>Status</th>
 										<th>Authorizing Authority</th>
+										<th>Action</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -43,6 +44,10 @@
 												<td>${request.requestType }</td>
 												<td>${request.status }</td>
 												<td>ADMIN</td>
+												<c:if test="${request.status } == 'NEW' ">
+													<td><button class="btn btn-primary btn-lg"
+											data-toggle="modal" data-target="#myModal"></button></td>
+												</c:if>
 											</tr>
 										</c:forEach>
 									</c:if>
