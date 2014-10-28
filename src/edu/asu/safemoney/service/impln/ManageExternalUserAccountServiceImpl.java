@@ -12,6 +12,7 @@ import edu.asu.safemoney.dto.TransactionDTO;
 import edu.asu.safemoney.dto.UserDTO;
 import edu.asu.safemoney.helper.ExternalUserHelper;
 import edu.asu.safemoney.model.AccountModel;
+import edu.asu.safemoney.model.ModifyUserModel;
 import edu.asu.safemoney.model.TransactionModel;
 import edu.asu.safemoney.model.UserModel;
 import edu.asu.safemoney.service.ManageExternalUserAccountService;
@@ -35,8 +36,13 @@ public class ManageExternalUserAccountServiceImpl implements
 
 	@Override
 	@Transactional
-	public void updateUser(UserModel userModel) {
-		manageExternalUserAccountDAO.updateUser(userModel);
+	public boolean updateUser(ModifyUserModel modifyUserModel) {
+		boolean isUpdated = manageExternalUserAccountDAO.updateUser(modifyUserModel);
+		if(isUpdated)
+		{
+			return true;
+		}
+		return false;
 	}
 
 	@Override

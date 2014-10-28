@@ -21,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import edu.asu.safemoney.dto.UserDTO;
 import edu.asu.safemoney.model.AccountModel;
+import edu.asu.safemoney.model.ModifyUserModel;
 import edu.asu.safemoney.model.TransactionModel;
 import edu.asu.safemoney.model.UserModel;
 import edu.asu.safemoney.service.ManageExternalUserAccountService;
@@ -71,12 +72,24 @@ public class ManageExternalUserController {
 	// "updateExternalUserDetails".
 	// Form name should be "ExternalUserUpdateForm".
 	@RequestMapping(value = "/external/updateExternalUserDetails", method = RequestMethod.POST)
-	public String doUpdateAccount(
-			@ModelAttribute("updateUser") UserModel userModel, ModelMap model) {
-		System.out.println("EmailId: " + userModel.getEmailId());
+	public ModelAndView doUpdateAccount(
+			@ModelAttribute("updateUser") ModifyUserModel modifyUserModel, ModelMap model) {
 		// manageExternalUserAccountService.updateUser(userModel);
 		// Should redirect to "updateSuccess.jsp"
-		return "shared/landing";
+		boolean isUpdated = manageExternalUserAccountService.updateUser(modifyUserModel);
+		UserDTO userDTO = manageExternalUserAccountService.displayUserAccount(modifyUserModel.getMemberId());
+		ModelAndView mv = new ModelAndView("external/ManageExternalUser").addObject("userDTO", userDTO);
+		
+		if(isUpdated)
+		{
+			return mv.addObject("message", "Profile Updated Successfully");
+		}
+		else
+		{
+			
+			return mv.addObject("error", "Update Failed!");
+		}
+		
 		// can check for fail condition also ***
 	}
 

@@ -4,14 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import antlr.collections.List;
 import edu.asu.safemoney.dto.UserDTO;
-import edu.asu.safemoney.model.AccountModel;
-import edu.asu.safemoney.model.UserModel;
-
 import edu.asu.safemoney.model.*;
 
 public interface ManageExternalUserAccountService {
 
-	public void updateUser(UserModel userModel);
+	public boolean updateUser(ModifyUserModel modifyUserModel);
 	// Can pass User Name in deleteUser ***
 	public void deleteUser(String userName);
 	public UserDTO displayUserAccount(int memberId);
