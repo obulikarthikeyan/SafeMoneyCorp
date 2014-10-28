@@ -21,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import edu.asu.safemoney.dto.UserDTO;
 import edu.asu.safemoney.model.AccountModel;
+import edu.asu.safemoney.model.ModifyUserModel;
 import edu.asu.safemoney.model.TransactionModel;
 import edu.asu.safemoney.model.UserModel;
 import edu.asu.safemoney.service.ManageExternalUserAccountService;
@@ -42,7 +43,10 @@ public class ManageExternalUserController {
 	@RequestMapping(value = "/external/displayExternalUserDetails", method = RequestMethod.GET)
 	// get userName from session and use @RequestParam
 	public ModelAndView populateExternalUserAccount(HttpSession session) {
-		
+		Enumeration<String> enumstring = session.getAttributeNames();
+		while (enumstring.hasMoreElements())
+			System.out.println("session attributes: "
+					+ enumstring.nextElement());
 		int memberId = (Integer) session.getAttribute("memberId");
 		UserDTO userDTO = manageExternalUserAccountService
 				.displayUserAccount(memberId);
@@ -68,11 +72,24 @@ public class ManageExternalUserController {
 	// "updateExternalUserDetails".
 	// Form name should be "ExternalUserUpdateForm".
 	@RequestMapping(value = "/external/updateExternalUserDetails", method = RequestMethod.POST)
-	public String doUpdateAccount(
-			@ModelAttribute("updateUser") UserModel userModel, ModelMap model) {
+	public ModelAndView doUpdateAccount(
+			@ModelAttribute("updateUser") ModifyUserModel modifyUserModel, ModelMap model) {
 		// manageExternalUserAccountService.updateUser(userModel);
 		// Should redirect to "updateSuccess.jsp"
-		return "shared/landing";
+		boolean isUpdated = manageExternalUserAccountService.updateUser(modifyUserModel);
+		UserDTO userDTO = manageExternalUserAccountService.displayUserAccount(modifyUserModel.getMemberId());
+		ModelAndView mv = new ModelAndView("external/ManageExternalUser").addObject("userDTO", userDTO);
+		
+		if(isUpdated)
+		{
+			return mv.addObject("message", "Profile Updated Successfully");
+		}
+		else
+		{
+			
+			return mv.addObject("error", "Update Failed!");
+		}
+		
 		// can check for fail condition also ***
 	}
 
@@ -105,12 +122,42 @@ public class ManageExternalUserController {
 		int memberId = (Integer) session.getAttribute("memberId");
 
 		if (type == 1) {
-			boolean result = manageExternalUserAccountService
-					.makeCreditTransaction(memberId, amount);
-			return new ModelAndView("external/transactions");
+			String result = manageExternalUserAccountService
+					.makeCreditTransaction(memberId, amount,memberId);
+			System.out.println(type);
+			System.out.println(result);
+			AccountModel accountModel = manageExternalUserAccountService.getAccountDetails(memberId);
+			if (result.equals("success")) {
+
+				return new ModelAndView("external/transactions").addObject(
+						"message", "Credit Transaction Successfull.").addObject("account",
+								accountModel);
+			} else if (result.equals("failure")) {
+				return new ModelAndView("external/transactions").addObject(
+						"error", "Credit Transaction failed.").addObject("account",
+								accountModel);
+			} else if (result.equals("NOFUND")) {
+				return new ModelAndView("external/transactions")
+						.addObject("error",
+								"There is no sufficient fund in your account.").addObject("account",
+										accountModel);
+
+			} else if (result.equals("CriticalDebit")){
+				return new ModelAndView("external/transactions")
+				.addObject("message",
+						"This is a critical debit, please wait for authorization").addObject("account",
+								accountModel);
+			} else if (result.equals("CriticalCredit")){
+				return new ModelAndView("external/transactions")
+				.addObject("message",
+						"This is a critical Credit, please wait for authorization").addObject("account",
+								accountModel);
+			}
 		} else if (type == 2) {
 			String result = manageExternalUserAccountService
-					.makeDebitTransaction(memberId, amount);
+					.makeDebitTransaction(memberId, amount,memberId);
+			System.out.println(type);
+			System.out.println(result);
 			AccountModel accountModel = manageExternalUserAccountService.getAccountDetails(memberId);
 			if (result.equals("success")) {
 
@@ -127,10 +174,55 @@ public class ManageExternalUserController {
 								"There is no sufficient fund in your account.").addObject("account",
 										accountModel);
 
+			} else if (result.equals("CriticalDebit")){
+				return new ModelAndView("external/transactions")
+				.addObject("message",
+						"This is a critical debit, please wait for authorization").addObject("account",
+								accountModel);
+			} else if (result.equals("CriticalCredit")){
+				return new ModelAndView("external/transactions")
+				.addObject("message",
+						"This is a critical credit, please wait for authorization").addObject("account",
+								accountModel);
 			}
 		}
 		return new ModelAndView("external/transactions");
 
+	}
+	
+	
+	
+	@RequestMapping(value = "/external/transfer", method = RequestMethod.POST)
+	public ModelAndView doTransform(
+			@RequestParam("toAccountNumber") long toAccount,
+			@RequestParam("transformAmount") double amount,
+			HttpSession session)
+	{
+		int memberId = (Integer) session.getAttribute("memberId");
+		
+		String result = manageExternalUserAccountService.makeTransform(memberId, amount,toAccount);
+		AccountModel accountModel = manageExternalUserAccountService.getAccountDetails(memberId);
+		if (result.equals("success")) {
+
+			return new ModelAndView("external/transactions").addObject(
+					"message", "Transform Transaction Successfull.").addObject("account",
+							accountModel);
+		} else if (result.startsWith("failure")) {
+			return new ModelAndView("external/transactions").addObject(
+					"error", "Transform Transaction failed.").addObject("account",
+							accountModel);
+		} else if (result.startsWith("NOFUND")) {
+			return new ModelAndView("external/transactions")
+					.addObject("error",
+							"There is no sufficient fund in your account.").addObject("account",
+									accountModel);
+		} else if(result.startsWith("Critical")) {
+			return new ModelAndView("external/transactions")
+			.addObject("message",
+					"This is a critical transaction, please wait for authorization.").addObject("account",
+							accountModel);
+		}
+		return new ModelAndView("external/transactions");
 	}
 
 }
