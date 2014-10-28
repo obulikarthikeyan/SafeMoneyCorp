@@ -19,5 +19,7 @@ public interface ManageExternalUserAccountDAO {
 	
 	public boolean createAccount(AccountDTO accountDTO);
 	
+	public boolean deleteExtUserAccount(int memberId);
+	
 	
 }

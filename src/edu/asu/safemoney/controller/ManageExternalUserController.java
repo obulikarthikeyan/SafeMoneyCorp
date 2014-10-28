@@ -42,10 +42,7 @@ public class ManageExternalUserController {
 	@RequestMapping(value = "/external/displayExternalUserDetails", method = RequestMethod.GET)
 	// get userName from session and use @RequestParam
 	public ModelAndView populateExternalUserAccount(HttpSession session) {
-		Enumeration<String> enumstring = session.getAttributeNames();
-		while (enumstring.hasMoreElements())
-			System.out.println("session attributes: "
-					+ enumstring.nextElement());
+		
 		int memberId = (Integer) session.getAttribute("memberId");
 		UserDTO userDTO = manageExternalUserAccountService
 				.displayUserAccount(memberId);
@@ -73,7 +70,6 @@ public class ManageExternalUserController {
 	@RequestMapping(value = "/external/updateExternalUserDetails", method = RequestMethod.POST)
 	public String doUpdateAccount(
 			@ModelAttribute("updateUser") UserModel userModel, ModelMap model) {
-		System.out.println("EmailId: " + userModel.getEmailId());
 		// manageExternalUserAccountService.updateUser(userModel);
 		// Should redirect to "updateSuccess.jsp"
 		return "shared/landing";

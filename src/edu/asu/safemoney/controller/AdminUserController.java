@@ -18,31 +18,48 @@ import edu.asu.safemoney.service.AdminUserService;
 @Controller
 @SessionAttributes
 public class AdminUserController {
-	
+
 	@Autowired
 	private AdminUserService adminUserService;
-	
+
 	@RequestMapping("/admin/extUserAccount")
-	public ModelAndView getExternalUserAccountRequests()
-	{	
-		List<RequestDTO> requestList= adminUserService.getExterUserAccountRequests();
-		return new ModelAndView("/admin/extAccountManagement").addObject("requestList", requestList);
+	public ModelAndView getExternalUserAccountRequests() {
+		List<RequestDTO> requestList = adminUserService
+				.getExterUserAccountRequests();
+		return new ModelAndView("/admin/extAccountManagement").addObject(
+				"requestList", requestList);
 	}
-	
+
 	@RequestMapping("/admin/approveExtUserAccount")
-	public ModelAndView approveExtUserAccountRequest(@RequestParam("requestId") long requestId)
-	{
+	public ModelAndView approveExtUserAccountRequest(
+			@RequestParam("requestId") long requestId,
+			@RequestParam("requestType") String requestType) {
 		boolean isApproved = adminUserService.approveExtUserRequest(requestId);
-		List<RequestDTO> requestList= adminUserService.getExterUserAccountRequests();
+		List<RequestDTO> requestList = adminUserService
+				.getExterUserAccountRequests();
 		ModelAndView mv = new ModelAndView("/admin/extAccountManagement");
-		if(isApproved)
-		{
-			mv.addObject("message", "Request has been Processed. Bank Account has been created for the user");
-		}else
-		{
-			mv.addObject("error", "Sorry! The request could not be processed.");
-		}
 		mv.addObject("requestList", requestList);
+		if (requestType.equals("CREATE_ACCOUNT")) {
+			if (isApproved) {
+				mv.addObject("message",
+						"Request has been Processed. Bank Account has been created for the user");
+			} else {
+				mv.addObject("error",
+						"Sorry! The request could not be processed.");
+			}
+			return mv;
+		}
+		else if(requestType.equals("DELETE_ACCOUNT"))
+		{
+			if (isApproved) {
+				mv.addObject("message",
+						"Request has been Processed. The User Account has been deleted");
+			} else {
+				mv.addObject("error",
+						"Sorry! The request could not be processed.");
+			}
+			return mv;
+		}
 		return mv;
 	}
 
