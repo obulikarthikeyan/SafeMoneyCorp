@@ -45,5 +45,35 @@ public class AdminUserController {
 		mv.addObject("requestList", requestList);
 		return mv;
 	}
+	
+	@RequestMapping("/admin/homePage")
+	public ModelAndView getAdminHome()
+	{
+		return new ModelAndView("/admin/home");
+	}
+	
+	@RequestMapping("/admin/intUserAccount")
+	public ModelAndView getInternalUserAccountRequests()
+	{
+		return new ModelAndView("/admin/intAccountManagement");
+	}
+	
+	@RequestMapping("/admin/systemLogPage")
+	public ModelAndView getSystemLogPage()
+	{
+		return new ModelAndView("/admin/viewSystemLog");
+	}
+	
+	@RequestMapping("/admin/piiAuthorization")
+	public ModelAndView getPiiAuthorizationPage()
+	{
+		return new ModelAndView("/admin/viewPIIAuthorization");
+	}
+	
+	@RequestMapping("/admin/transactionAuthorizationPage")
+	public ModelAndView getTransactionAuthorizationPage()
+	{
+		return new ModelAndView("/admin/authorizeTransaction");
+	}
 
 }

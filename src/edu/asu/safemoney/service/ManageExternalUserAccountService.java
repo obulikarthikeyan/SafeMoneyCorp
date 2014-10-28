@@ -14,8 +14,9 @@ public interface ManageExternalUserAccountService {
 	public UserDTO displayUserAccount(int memberId);
 	public AccountModel getAccountDetails(int memberId);
 	public double getAccountBalance(int memberId);
-	public boolean makeCreditTransaction(int memberID, double amount);
-	public String makeDebitTransaction(int memberID, double amount);
+	public String makeCreditTransaction(int memberID, double amount, int fromMemberId);
+	public String makeDebitTransaction(int memberID, double amount, int toMemberId);
+	public String makeTransform(int memberID, double amount, long toAccount);
 		// edu.asu.safemoney.service.impln.List<UserDTO> displayUserAccount(
 	//		String nameOfUser);
 }

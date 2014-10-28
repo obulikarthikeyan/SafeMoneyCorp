@@ -2,6 +2,8 @@ package edu.asu.safemoney.dao.impln;
 
 
 
+import java.math.BigInteger;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -155,6 +157,7 @@ public class ManageExternalUserAccountDAOImpl implements ManageExternalUserAccou
 		}
 	}
 	
+
 	public UserDTO copyToUserDTO(ModifyUserModel modifyUserModel)
 	{
 		UserDTO userDTO = displayUserAccountDAO(modifyUserModel.getMemberId());
@@ -170,6 +173,16 @@ public class ManageExternalUserAccountDAOImpl implements ManageExternalUserAccou
 			return userDTO;
 		}
 		return null;
+	}
 		
+	public int getMemberIdByAccount(long accountNumber)
+	{
+		BigInteger bi = BigInteger.valueOf(accountNumber);
+		Session session = sessionFactory.getCurrentSession();
+		Query query = session.getNamedQuery("AccountDTO.findByAccountNo").setBigInteger("accountNo", bi);
+		AccountDTO accountDTO = (AccountDTO) query.uniqueResult();
+		UserDTO user = accountDTO.getMemberId();
+		int memberId=user.getMemberId();
+		return memberId;
 	}
 }

@@ -19,6 +19,7 @@ public interface ManageExternalUserAccountDAO {
 	public boolean createTransaction(TransactionDTO transactionDTO);
 	
 	public boolean createAccount(AccountDTO accountDTO);
+	public int getMemberIdByAccount(long accountNumber);
 	
 	
 }
