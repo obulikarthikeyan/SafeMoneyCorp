@@ -5,7 +5,7 @@ import edu.asu.safemoney.dto.AccountDTO;
 import edu.asu.safemoney.dto.TransactionDTO;
 import edu.asu.safemoney.dto.UserDTO;
 import edu.asu.safemoney.model.AccountModel;
-import edu.asu.safemoney.model.TransactionModel;
+//import edu.asu.safemoney.model.TransactionModel;
 import edu.asu.safemoney.model.UserModel;
 
 
@@ -18,6 +18,7 @@ public interface ManageExternalUserAccountDAO {
 	public boolean createTransaction(TransactionDTO transactionDTO);
 	
 	public boolean createAccount(AccountDTO accountDTO);
+	public int getMemberIdByAccount(long accountNumber);
 	
 	
 }

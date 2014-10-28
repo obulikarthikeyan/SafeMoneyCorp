@@ -1,18 +1,19 @@
 package edu.asu.safemoney.service.impln;
 
 import java.util.Date;
-
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import antlr.collections.List;
 import edu.asu.safemoney.dao.ManageExternalUserAccountDAO;
+import edu.asu.safemoney.dto.AccountDTO;
 import edu.asu.safemoney.dto.TransactionDTO;
 import edu.asu.safemoney.dto.UserDTO;
 import edu.asu.safemoney.helper.ExternalUserHelper;
 import edu.asu.safemoney.model.AccountModel;
-import edu.asu.safemoney.model.TransactionModel;
 import edu.asu.safemoney.model.UserModel;
 import edu.asu.safemoney.service.ManageExternalUserAccountService;
 
@@ -23,7 +24,7 @@ public class ManageExternalUserAccountServiceImpl implements
 	@Autowired
 	ManageExternalUserAccountDAO manageExternalUserAccountDAO;
 
-	private AccountModel accntModel;
+	/*private AccountModel accntModel;
 
 	public AccountModel getAccntModel() {
 		return accntModel;
@@ -31,7 +32,7 @@ public class ManageExternalUserAccountServiceImpl implements
 
 	public void setAccntModel(AccountModel accntModel) {
 		this.accntModel = accntModel;
-	}
+	}*/
 
 	@Override
 	@Transactional
@@ -59,7 +60,7 @@ public class ManageExternalUserAccountServiceImpl implements
 		// TODO Auto-generated method stub
 		AccountModel accountModel = manageExternalUserAccountDAO
 				.getAccountDetails(memberId);
-		this.setAccntModel(accountModel);
+		//this.setAccntModel(accountModel);
 		return accountModel;
 	}
 
@@ -76,10 +77,31 @@ public class ManageExternalUserAccountServiceImpl implements
 
 	@Transactional
 	@Override
-	public String makeDebitTransaction(int memberID, double amount) {
+	public String makeDebitTransaction(int memberID, double amount, int toMemberId) {
 		// TODO Auto-generated method stub
 		if (amount > 2000) {
+			
+			AccountModel accountModel =getAccountDetails(memberID);
+			AccountModel toaccountModel = getAccountDetails(toMemberId);
+			TransactionDTO txnDTO = new TransactionDTO();
+			txnDTO.setAmount(amount);
+			txnDTO.setDate(new Date());
+			txnDTO.setFromAccount(accountModel.getAccountNo());
+			txnDTO.setToAccount(toaccountModel.getAccountNo());
+			txnDTO.setIsAuthorized(false);// boolean
+			txnDTO.setIsCritical(true);
+			txnDTO.setMemberId(displayUserAccount(memberID));// input
+																// UserDTO
+			txnDTO.setStatus("PENDING");//
+			txnDTO.setTransactionId(ExternalUserHelper.generateRandomNumber());// long
+			txnDTO.setTransactionType("Debit");
 
+			boolean isTxnCreated = manageExternalUserAccountDAO
+					.createTransaction(txnDTO);
+			if (isTxnCreated) {
+				return "CriticalDebit";
+			}
+			
 		} else {
 			double balance = getAccountBalance(memberID);
 			if (balance > amount) {
@@ -87,12 +109,13 @@ public class ManageExternalUserAccountServiceImpl implements
 				boolean isSuccess = manageExternalUserAccountDAO
 						.updateAccountBalance(memberID, balance);
 				if (isSuccess) {
-					AccountModel accountModel = this.getAccntModel();
+					AccountModel accountModel = getAccountDetails(memberID);
+					AccountModel toaccountModel = getAccountDetails(toMemberId);
 					TransactionDTO txnDTO = new TransactionDTO();
 					txnDTO.setAmount(amount);
 					txnDTO.setDate(new Date());
 					txnDTO.setFromAccount(accountModel.getAccountNo());
-					txnDTO.setToAccount(accountModel.getAccountNo());
+					txnDTO.setToAccount(toaccountModel.getAccountNo());
 					txnDTO.setIsAuthorized(true);// boolean
 					txnDTO.setIsCritical(false);
 					txnDTO.setMemberId(displayUserAccount(memberID));// input
@@ -117,12 +140,96 @@ public class ManageExternalUserAccountServiceImpl implements
 		}
 		return "failure";
 	}
-
+	
+	@Transactional
 	@Override
-	public boolean makeCreditTransaction(int memberID, double amount) {
+	public String makeCreditTransaction(int memberID, double amount,int fromMemberId) {
 		// TODO Auto-generated method stub
-		return false;
+		if (amount > 2000) {
+			
+			AccountModel accountModel = getAccountDetails(memberID);
+			AccountModel fromAccountModel = getAccountDetails(fromMemberId);
+			TransactionDTO txnDTO = new TransactionDTO();
+			txnDTO.setAmount(amount);
+			txnDTO.setDate(new Date());
+			txnDTO.setFromAccount(fromAccountModel.getAccountNo());
+			txnDTO.setToAccount(accountModel.getAccountNo());
+			txnDTO.setIsAuthorized(false);// boolean
+			txnDTO.setIsCritical(true);
+			txnDTO.setMemberId(displayUserAccount(memberID));// input
+																// UserDTO
+			txnDTO.setStatus("PENDING");//
+			txnDTO.setTransactionId(ExternalUserHelper.generateRandomNumber());// long
+			txnDTO.setTransactionType("Credit");
 
+			boolean isTxnCreated = manageExternalUserAccountDAO.createTransaction(txnDTO);
+			if (isTxnCreated) {
+				return "CriticalCredit";
+				
+				
+			}
+		} else {
+			double balance = getAccountBalance(memberID);
+			if (amount>=0) {
+				balance += amount;
+				boolean isSuccess = manageExternalUserAccountDAO.updateAccountBalance(memberID, balance);
+				if (isSuccess) {
+					AccountModel accountModel =getAccountDetails(memberID);
+					AccountModel fromAccountModel = getAccountDetails(fromMemberId);
+					TransactionDTO txnDTO = new TransactionDTO();
+					txnDTO.setAmount(amount);
+					txnDTO.setDate(new Date());
+					txnDTO.setFromAccount(fromAccountModel.getAccountNo());
+					txnDTO.setToAccount(accountModel.getAccountNo());
+					txnDTO.setIsAuthorized(true);// boolean
+					txnDTO.setIsCritical(false);
+					txnDTO.setMemberId(displayUserAccount(memberID));// input
+																		// UserDTO
+					txnDTO.setStatus("APPROVED");//
+					txnDTO.setTransactionId(ExternalUserHelper.generateRandomNumber());// long
+					txnDTO.setTransactionType("Credit");
+
+					boolean isTxnCreated = manageExternalUserAccountDAO.createTransaction(txnDTO);
+					if (isTxnCreated) {
+						return "success";
+					}
+				} else {
+					return "failure";
+				}
+			}
+			else
+			{
+				return "CreditMountNegative";
+			}
+		}
+		return "failure";
+
+	}
+	
+	@Transactional
+	@Override
+	public String makeTransform(int memberID, double amount, long toAccount)
+	{
+		
+		int toMemberId = manageExternalUserAccountDAO.getMemberIdByAccount(toAccount);																																
+		String debitResult = this.makeDebitTransaction(memberID, amount, toMemberId);
+		if(debitResult.equals("success"))
+		{
+			String creditResult = this.makeCreditTransaction(toMemberId, amount, memberID);
+			if(creditResult.equals("success"))
+			{
+				return "success";
+			}
+			else
+			{
+				return creditResult+":Cannot Credit to the account because";
+			}
+		}
+		else
+		{
+			return debitResult+"Cannot Debit from your account because";
+		}
+		//return "failure";
 	}
 
 }
