@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 27, 2014 at 05:41 AM
+-- Generation Time: Oct 28, 2014 at 01:10 AM
 -- Server version: 5.5.32
 -- PHP Version: 5.4.19
 
@@ -45,7 +45,8 @@ INSERT INTO `account` (`account_no`, `member_id`, `amount`, `is_active`) VALUES
 (1545151, 996368, 3000, 'true'),
 (6987456, 996364, 5000, 'true'),
 (8765433, 996369, 400, 'true'),
-(56352145, 996363, 2000, 'true');
+(56352145, 996363, 1.2799999999999727, 'true'),
+(5696283854, 996374, 0, 'true');
 
 -- --------------------------------------------------------
 
@@ -89,14 +90,15 @@ CREATE TABLE IF NOT EXISTS `request` (
   `authority_user_type_id` int(11) NOT NULL,
   PRIMARY KEY (`request_id`),
   KEY `request_user` (`member_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=56346 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=56347 ;
 
 --
 -- Dumping data for table `request`
 --
 
 INSERT INTO `request` (`request_id`, `member_id`, `request_type`, `authorizing_member_id`, `status`, `authorizing_authority`, `authority_user_type_id`) VALUES
-(56345, 996374, 'CREATE_ACCOUNT', NULL, 'NEW', 'INT_BANK_ADM', 123);
+(56345, 996374, 'CREATE_ACCOUNT', NULL, 'APPROVED', 'INT_BANK_ADM', 123),
+(56346, 996375, 'CREATE_ACCOUNT', NULL, 'NEW', 'INT_BANK_ADM', 123);
 
 -- --------------------------------------------------------
 
@@ -118,6 +120,17 @@ CREATE TABLE IF NOT EXISTS `transaction` (
   PRIMARY KEY (`transaction_id`),
   KEY `transaction_member` (`member_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `transaction`
+--
+
+INSERT INTO `transaction` (`transaction_id`, `member_id`, `from_account`, `to_account`, `date`, `amount`, `status`, `transaction_type`, `is_critical`, `is_authorized`) VALUES
+(1234564, 996363, 56352145, 56352145, '2014-10-27 01:18:20', 300, 'APPROVED', 'Debit', 0, 1),
+(3571418, 996363, 56352145, 56352145, '2014-10-27 02:41:12', 98, 'APPROVED', 'Debit', 0, 1),
+(5222875, 996363, 56352145, 56352145, '2014-10-27 02:23:36', 100, 'APPROVED', 'Debit', 0, 1),
+(5837203, 996363, 56352145, 56352145, '2014-10-27 14:08:12', 300, 'APPROVED', 'Debit', 0, 1),
+(6121071, 996363, 56352145, 56352145, '2014-10-27 14:08:17', 300, 'APPROVED', 'Debit', 0, 1);
 
 -- --------------------------------------------------------
 
@@ -155,7 +168,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   UNIQUE KEY `email_id` (`email_id`),
   KEY `member_id` (`member_id`),
   KEY `user_type_idx` (`user_type_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=996375 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=996376 ;
 
 --
 -- Dumping data for table `user`
@@ -166,7 +179,8 @@ INSERT INTO `user` (`member_id`, `first_name`, `last_name`, `email_id`, `contact
 (996364, 'John', 'Doe', 'john@smc.corp', 1234509876, 'xxxxxxx', 'yyyyyyy', 'zzzzz', 'NY', 23564, 789456123, 'What is your model name of your first phone?', 'What is the last 5 digits in your driving license?', 'what is name of your favorite teacher in high school?', 'XC01', '56897', 'Jennifer', '2014-09-09', 36, 'true', 366, 'SYSTEM', '2014-10-19', '2015-10-19', 'true'),
 (996368, 'Bank', 'Employee', 'bank.employee@smcorp', 1234509876, 'xxxxxxx', 'yyyyyyy', 'zzzzz', 'NY', 23564, 789456123, 'What is your model name of your first phone?', 'What is the last 5 digits in your driving license?', 'what is name of your favorite teacher in high school?', 'XC01', '56897', 'Jennifer', '2014-09-09', 36, 'true', 125, 'SYSTEM', '2014-10-19', '2015-10-19', 'true'),
 (996369, 'Bank', 'Admin', 'bank.admin@smcorp', 8890008765, 'xxxxxxx', 'yyyyyyyyy', 'zzzzz', 'AZ', 89963, 345678912, 'What is your favorite place?', 'What is your right eye power?', 'What is the name of your family doctor?', 'dallas', '0.0', 'Dr.Adam', '2014-10-17', 26, 'true', 123, 'SYSTEM', '2014-10-19', '2015-10-19', 'true'),
-(996374, 'hhkjh', 'khkjhkjhhj', 'jhjhj@kjk.com', 7898798798, 'hjhjhg', 'hghgjg', 'gghj', 'hg', 78787, 777777777, 'hkklkl', 'hgfhgfgh', 'hgjhg', 'jljkhj', 'fhfh', 'jggjh', '2014-10-26', 878, 'true', 322, 'SYSTEM', '2014-10-26', '2015-10-26', 'true');
+(996374, 'hhkjh', 'khkjhkjhhj', 'jhjhj@kjk.com', 7898798798, 'hjhjhg', 'hghgjg', 'gghj', 'hg', 78787, 777777777, 'hkklkl', 'hgfhgfgh', 'hgjhg', 'jljkhj', 'fhfh', 'jggjh', '2014-10-26', 878, 'true', 322, 'SYSTEM', '2014-10-26', '2015-10-26', 'true'),
+(996375, 'Tom', 'Jerry', 'tom@smcorp.co', 7898798798, 'hjhjhg', 'hghgjg', 'gghj', 'hg', 78787, 777777777, 'hkklkl', 'hgfhgfgh', 'hgjhg', 'jljkhj', 'fhfh', 'jggjh', '2014-10-26', 878, 'true', 322, 'SYSTEM', '2014-10-26', '2015-10-26', 'true');
 
 -- --------------------------------------------------------
 
