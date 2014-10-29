@@ -54,6 +54,7 @@ public class LoginController {
 		}
 		else
 		{
+			//sessionID.getAttribute("exception").toString();
 			logger.error("UserLogin Attempt - InvalidUserName");
 			System.out.println("Home" + System.getProperty("catalina.home"));
 			System.out.println("base: " + System.getProperty("catalina.base"));

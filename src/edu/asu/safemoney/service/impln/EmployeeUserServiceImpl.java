@@ -1,5 +1,6 @@
 package edu.asu.safemoney.service.impln;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import edu.asu.safemoney.service.EmployeeUserService;
@@ -30,5 +31,4 @@ public class EmployeeUserServiceImpl implements EmployeeUserService{
 	public boolean authorizePaymentTransaction(int requsetId){
 		return false;
 	}
-
 }

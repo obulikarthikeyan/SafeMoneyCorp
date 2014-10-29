@@ -367,7 +367,7 @@
 			},
 			contactNo: {
 				required: true,
-				phoneUS: true
+				//phoneUS: true
 			},
 			address1: {
 				required: true,

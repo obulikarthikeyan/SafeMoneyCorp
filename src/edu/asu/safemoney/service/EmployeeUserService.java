@@ -11,4 +11,5 @@ public interface EmployeeUserService {
 	public boolean authorizeCreditTransaction(int requestId);
 	
 	public boolean authorizePaymentTransaction(int requsetId);
+
 }
