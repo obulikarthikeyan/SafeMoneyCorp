@@ -1,5 +1,10 @@
 package edu.asu.safemoney.dao.impln;
 
-public class EmployeeUserDAOImpl {
+import org.springframework.stereotype.Repository;
+
+import edu.asu.safemoney.dao.EmployeeUserDAO;
+
+@Repository
+public class EmployeeUserDAOImpl implements EmployeeUserDAO{
 
 }
