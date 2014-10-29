@@ -1,20 +1,24 @@
 package edu.asu.safemoney.service.impln;
 
 import java.util.Date;
+import java.util.List;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import antlr.collections.List;
+
+//import antlr.collections.List;
 import edu.asu.safemoney.dao.ManageExternalUserAccountDAO;
 import edu.asu.safemoney.dto.AccountDTO;
+import edu.asu.safemoney.dto.PaymentRequestDTO;
+import edu.asu.safemoney.dto.RequestDTO;
 import edu.asu.safemoney.dto.TransactionDTO;
 import edu.asu.safemoney.dto.UserDTO;
 import edu.asu.safemoney.helper.ExternalUserHelper;
 import edu.asu.safemoney.model.AccountModel;
-
 import edu.asu.safemoney.model.ModifyUserModel;
 import edu.asu.safemoney.service.ManageExternalUserAccountService;
 
@@ -83,7 +87,7 @@ public class ManageExternalUserAccountServiceImpl implements
 
 	@Transactional
 	@Override
-	public String makeDebitTransaction(int memberID, double amount, int toMemberId) {
+	public String makeDebitTransaction(int memberID, double amount, int toMemberId, String type) {
 		// TODO Auto-generated method stub
 		if (amount > 2000) {
 			
@@ -100,7 +104,7 @@ public class ManageExternalUserAccountServiceImpl implements
 																// UserDTO
 			txnDTO.setStatus("PENDING");//
 			txnDTO.setTransactionId(ExternalUserHelper.generateRandomNumber());// long
-			txnDTO.setTransactionType("Debit");
+			txnDTO.setTransactionType(type);
 
 			boolean isTxnCreated = manageExternalUserAccountDAO
 					.createTransaction(txnDTO);
@@ -128,7 +132,7 @@ public class ManageExternalUserAccountServiceImpl implements
 																		// UserDTO
 					txnDTO.setStatus("APPROVED");//
 					txnDTO.setTransactionId(ExternalUserHelper.generateRandomNumber());// long
-					txnDTO.setTransactionType("Debit");
+					txnDTO.setTransactionType(type);
 
 					boolean isTxnCreated = manageExternalUserAccountDAO
 							.createTransaction(txnDTO);
@@ -149,7 +153,7 @@ public class ManageExternalUserAccountServiceImpl implements
 	
 	@Transactional
 	@Override
-	public String makeCreditTransaction(int memberID, double amount,int fromMemberId) {
+	public String makeCreditTransaction(int memberID, double amount,int fromMemberId,String type) {
 		// TODO Auto-generated method stub
 		if (amount > 2000) {
 			
@@ -166,7 +170,7 @@ public class ManageExternalUserAccountServiceImpl implements
 																// UserDTO
 			txnDTO.setStatus("PENDING");//
 			txnDTO.setTransactionId(ExternalUserHelper.generateRandomNumber());// long
-			txnDTO.setTransactionType("Credit");
+			txnDTO.setTransactionType(type);
 
 			boolean isTxnCreated = manageExternalUserAccountDAO.createTransaction(txnDTO);
 			if (isTxnCreated) {
@@ -193,7 +197,7 @@ public class ManageExternalUserAccountServiceImpl implements
 																		// UserDTO
 					txnDTO.setStatus("APPROVED");//
 					txnDTO.setTransactionId(ExternalUserHelper.generateRandomNumber());// long
-					txnDTO.setTransactionType("Credit");
+					txnDTO.setTransactionType(type);
 
 					boolean isTxnCreated = manageExternalUserAccountDAO.createTransaction(txnDTO);
 					if (isTxnCreated) {
@@ -218,10 +222,10 @@ public class ManageExternalUserAccountServiceImpl implements
 	{
 		
 		int toMemberId = manageExternalUserAccountDAO.getMemberIdByAccount(toAccount);																																
-		String debitResult = this.makeDebitTransaction(memberID, amount, toMemberId);
+		String debitResult = this.makeDebitTransaction(memberID, amount, toMemberId,"Transfer");
 		if(debitResult.equals("success"))
 		{
-			String creditResult = this.makeCreditTransaction(toMemberId, amount, memberID);
+			String creditResult = this.makeCreditTransaction(toMemberId, amount, memberID, "Transfer");
 			if(creditResult.equals("success"))
 			{
 				return "success";
@@ -236,6 +240,41 @@ public class ManageExternalUserAccountServiceImpl implements
 			return debitResult+"Cannot Debit from your account because";
 		}
 		//return "failure";
+	}
+	
+	@Transactional
+	public List<PaymentRequestDTO> getPaymentRequest(int memberId) {
+		// TODO Auto-generated method stub
+		List<PaymentRequestDTO> requestList = manageExternalUserAccountDAO.getPaymentRequest(memberId);
+		/*for(RequestDTO rDTO : requestList)
+		{
+			System.out.println("Request Name: " + rDTO.getRequestType());
+		}*/
+		return requestList;
+		//return new List<PaymentRequestDTO> aaa;
+		//return requestList;
+	}
+
+	@Override
+	@Transactional
+	public String authorizePayment(long paymentId) {
+		// TODO Auto-generated method stub
+		PaymentRequestDTO paymentDTO =  manageExternalUserAccountDAO.getPaymentRequestByPaymentId(paymentId);
+		UserDTO merchantDTO = paymentDTO.getMerchantMemberId();
+		int merchantMemberId = merchantDTO.getMemberId();
+		int customerId = paymentDTO.getAuthorizerMemberId();
+		double amount = paymentDTO.getAmount();
+		String result = this.makeDebitTransaction(customerId, amount, merchantMemberId,"Debit");
+		if(result.equals("success"))
+		{
+			paymentDTO.setStatus("PENDINGENPLOYEE");
+			if(manageExternalUserAccountDAO.updatePaymentRequest(paymentDTO))
+				return "success";
+			else
+				return result;
+		}
+		//paymentDTO.setStatus(status);
+		return "failed";
 	}
 
 }

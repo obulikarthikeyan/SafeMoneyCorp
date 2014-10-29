@@ -1,6 +1,7 @@
 package edu.asu.safemoney.controller;
 
 import java.util.Enumeration;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
+import edu.asu.safemoney.dto.PaymentRequestDTO;
+import edu.asu.safemoney.dto.RequestDTO;
 import edu.asu.safemoney.dto.UserDTO;
 import edu.asu.safemoney.model.AccountModel;
 import edu.asu.safemoney.model.ModifyUserModel;
@@ -107,9 +110,13 @@ public class ManageExternalUserController {
 		int memberId = (Integer) session.getAttribute("memberId");
 		AccountModel accountModel = manageExternalUserAccountService
 				.getAccountDetails(memberId);
+		ModelAndView aaa = new ModelAndView("external/transactions");
+		aaa.addObject("account",accountModel);
 		
-		return new ModelAndView("external/transactions").addObject("account",
-				accountModel);
+		List<PaymentRequestDTO> requestList = manageExternalUserAccountService.getPaymentRequest(memberId);
+		aaa.addObject("requestList", requestList);
+		//return new ModelAndView("external/transactions").addObject("account",accountModel);
+		return aaa;
 	}
 
 	@RequestMapping(value = "/external/creditDebit", method = RequestMethod.POST)
@@ -120,10 +127,10 @@ public class ManageExternalUserController {
 	// @ModelAttribute("doCreditOrDebit") TransactionModel transaction
 	{
 		int memberId = (Integer) session.getAttribute("memberId");
-
+		List<PaymentRequestDTO> requestList = manageExternalUserAccountService.getPaymentRequest(memberId);
 		if (type == 1) {
 			String result = manageExternalUserAccountService
-					.makeCreditTransaction(memberId, amount,memberId);
+					.makeCreditTransaction(memberId, amount,memberId,"Credit");
 			System.out.println(type);
 			System.out.println(result);
 			AccountModel accountModel = manageExternalUserAccountService.getAccountDetails(memberId);
@@ -131,31 +138,31 @@ public class ManageExternalUserController {
 
 				return new ModelAndView("external/transactions").addObject(
 						"message", "Credit Transaction Successfull.").addObject("account",
-								accountModel);
+								accountModel).addObject("requestList", requestList);
 			} else if (result.equals("failure")) {
 				return new ModelAndView("external/transactions").addObject(
 						"error", "Credit Transaction failed.").addObject("account",
-								accountModel);
+								accountModel).addObject("requestList", requestList);
 			} else if (result.equals("NOFUND")) {
 				return new ModelAndView("external/transactions")
 						.addObject("error",
 								"There is no sufficient fund in your account.").addObject("account",
-										accountModel);
+										accountModel).addObject("requestList", requestList);
 
 			} else if (result.equals("CriticalDebit")){
 				return new ModelAndView("external/transactions")
 				.addObject("message",
 						"This is a critical debit, please wait for authorization").addObject("account",
-								accountModel);
+								accountModel).addObject("requestList", requestList);
 			} else if (result.equals("CriticalCredit")){
 				return new ModelAndView("external/transactions")
 				.addObject("message",
 						"This is a critical Credit, please wait for authorization").addObject("account",
-								accountModel);
+								accountModel).addObject("requestList", requestList);
 			}
 		} else if (type == 2) {
 			String result = manageExternalUserAccountService
-					.makeDebitTransaction(memberId, amount,memberId);
+					.makeDebitTransaction(memberId, amount,memberId,"Debit");
 			System.out.println(type);
 			System.out.println(result);
 			AccountModel accountModel = manageExternalUserAccountService.getAccountDetails(memberId);
@@ -163,27 +170,27 @@ public class ManageExternalUserController {
 
 				return new ModelAndView("external/transactions").addObject(
 						"message", "Debit Transaction Successfull.").addObject("account",
-								accountModel);
+								accountModel).addObject("requestList", requestList);
 			} else if (result.equals("failure")) {
 				return new ModelAndView("external/transactions").addObject(
 						"error", "Debit Transaction failed.").addObject("account",
-								accountModel);
+								accountModel).addObject("requestList", requestList);
 			} else if (result.equals("NOFUND")) {
 				return new ModelAndView("external/transactions")
 						.addObject("error",
 								"There is no sufficient fund in your account.").addObject("account",
-										accountModel);
+										accountModel).addObject("requestList", requestList);
 
 			} else if (result.equals("CriticalDebit")){
 				return new ModelAndView("external/transactions")
 				.addObject("message",
 						"This is a critical debit, please wait for authorization").addObject("account",
-								accountModel);
+								accountModel).addObject("requestList", requestList);
 			} else if (result.equals("CriticalCredit")){
 				return new ModelAndView("external/transactions")
 				.addObject("message",
 						"This is a critical credit, please wait for authorization").addObject("account",
-								accountModel);
+								accountModel).addObject("requestList", requestList);
 			}
 		}
 		return new ModelAndView("external/transactions");
@@ -202,27 +209,74 @@ public class ManageExternalUserController {
 		
 		String result = manageExternalUserAccountService.makeTransform(memberId, amount,toAccount);
 		AccountModel accountModel = manageExternalUserAccountService.getAccountDetails(memberId);
+		List<PaymentRequestDTO> requestList = manageExternalUserAccountService.getPaymentRequest(memberId);
 		if (result.equals("success")) {
 
 			return new ModelAndView("external/transactions").addObject(
 					"message", "Transform Transaction Successfull.").addObject("account",
-							accountModel);
+							accountModel).addObject("requestList", requestList);
 		} else if (result.startsWith("failure")) {
 			return new ModelAndView("external/transactions").addObject(
 					"error", "Transform Transaction failed.").addObject("account",
-							accountModel);
+							accountModel).addObject("requestList", requestList);
 		} else if (result.startsWith("NOFUND")) {
 			return new ModelAndView("external/transactions")
 					.addObject("error",
 							"There is no sufficient fund in your account.").addObject("account",
-									accountModel);
+									accountModel).addObject("requestList", requestList);
 		} else if(result.startsWith("Critical")) {
 			return new ModelAndView("external/transactions")
 			.addObject("message",
 					"This is a critical transaction, please wait for authorization.").addObject("account",
-							accountModel);
+							accountModel).addObject("requestList", requestList);
 		}
 		return new ModelAndView("external/transactions");
 	}
+	
+	/*@RequestMapping(value = "/external/transfors", method = RequestMethod.GET)//????which one to map???
+	public ModelAndView getPaymentRequest(HttpSession session)
+	{
+		int memberId = (Integer) session.getAttribute("memberId");
+		
+		List<PaymentRequestDTO> requestList = manageExternalUserAccountService.getPaymentRequest(memberId);
+		return new ModelAndView("external/transactions").addObject("requestList", requestList);
+	}*/
+	
+	@RequestMapping(value = "/external/authorizePaymentRequest", method = RequestMethod.POST)
+	public ModelAndView authorizePayment(@RequestParam("paymentRequestId") long paymentRequestId,HttpSession session)
+	{
+		
+		String result = manageExternalUserAccountService.authorizePayment(paymentRequestId);
+		int memberId = (Integer) session.getAttribute("memberId");
+		AccountModel accountModel = manageExternalUserAccountService.getAccountDetails(memberId);
+		List<PaymentRequestDTO> requestList = manageExternalUserAccountService.getPaymentRequest(memberId);
+		if(result.equals("success"))
+		{
+			return new ModelAndView("external/transactions").addObject("message",
+				"Payment Authorized Successfully!").addObject("account",
+						accountModel).addObject("requestList", requestList).addObject("message", "You have authorized successfully");
+		}
+		else if(result.equals("NOFUND"))
+		{
+			return new ModelAndView("external/transactions").addObject("message",
+					"Payment Authorized Successfully!").addObject("account",
+							accountModel).addObject("requestList", requestList).addObject("message", "You don't have enough fund in your account");
+		}
+		else
+		{
+			return new ModelAndView("external/transactions").addObject("message",
+					"Payment Authorized Successfully!").addObject("account",
+							accountModel).addObject("requestList", requestList).addObject("message", "Authorize failed because of "+result);
+		
+		}
+	}
+	//requestingDate
+	
+	/*public ModelAndView approveExtUserAccountRequest(
+			@RequestParam("requestId") long requestId,
+			@RequestParam("requestType") String requestType) {
+		boolean isApproved = adminUserService.approveExtUserRequest(requestId);
+		List<RequestDTO> requestList = adminUserService
+				.getExterUserAccountRequests();*/
 
 }

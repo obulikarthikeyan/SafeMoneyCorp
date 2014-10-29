@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
+
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -35,10 +37,10 @@
 								Summary</a></li>
 						<li><a href="#Credit_Debit" data-toggle="tab">Credit/Debit</a>
 						</li>
-						<li><a href="#Transfer" data-toggle="tab">Transfer</a></li>
-						<li><a href="#Payment" data-toggle="tab">Payment</a></li>
+						<li><a href="#Transfer" data-toggle="tab">Transfer</a></li>				
 						<li><a href="#Authorize" data-toggle="tab">Authorize
 								Payment</a></li>
+						<!-- <a href="<%=request.getContextPath() %>/admin/extUserAccount"> -->
 						<li><a href="#Initiate" data-toggle="tab">Initiate
 								Payment</a></li>
 
@@ -106,59 +108,171 @@
 						</div>
 
 
-						<div class="tab-pane fade" id="Payment">
-							<br>
-							<ul class="nav nav-pills">
-								<li class="active"><a href="#Authorize" data-toggle="tab">Authorize</a>
-								</li>
-								<li><a href="#Initiate" data-toggle="tab">Initiate</a></li>
 
-							</ul>
-							<h4>Messages Tab</h4>
-
-						</div>
-						<div class="tab-pane fade" id="settings-pills">
-							<h4>Settings Tab</h4>
-							<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-								sed do eiusmod tempor incididunt ut labore et dolore magna
-								aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-								ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis
-								aute irure dolor in reprehenderit in voluptate velit esse cillum
-								dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-								cupidatat non proident, sunt in culpa qui officia deserunt
-								mollit anim id est laborum.</p>
-						</div>
 
 
 						<div class="tab-pane fade" id="Authorize">
-							<br> <label>Requested By </label>
+							<!--  div id="page-wrapper">-->
+								<div class="row">
+									<div class="col-lg-12">
+										<h1 class="page-header">Payment Requests</h1>
+									</div>
+									<!-- /.col-lg-12 -->
+								</div> 
 
-							<p class="form-control-static">Merchant Name</p>
-							<br> <label>Requested Amount </label>
+								<div class="col-lg-16">
 
-							<p class="form-control-static">$ Amount</p>
-							<br> <label>Enter PKI Token: </label> <input
-								class="form-control" placeholder="Account No."> <br>
-							<br>
-							<p>
-								<button type="button" class="btn btn-success">Authorize</button>
-								<button type="button" class="btn btn-default">Decline</button>
-								<!--button type="button" class="btn btn-default">Default</button>
-																	<button type="button" class="btn btn-primary">Success</button>
-																	<button type="button" class="btn btn-info">Info</button>
-																	<button type="button" class="btn btn-warning">Warning</button>
-																	<button type="button" class="btn btn-danger">Danger</button>
-																	<button type="button" class="btn btn-link">Link</button-->
-							</p>
-							<!--form>
-											First name: 
-											<input type="text" name="firstname" />
-											<br />
-											Last name: 
-											<input type="text" name="lastname" />
-											</form-->
+									<div class="panel panel-default">
+										<div class="panel-heading">
+											<strong>REQUESTS FOR ADMIN</strong>
+										</div>
 
+										<div class="panel-body">
+											<%
+												if (request.getAttribute("message") != null) {
+											%>
+											<p class="label label-success" style="font-size: 13px">${message }</p>
+											<br>
+											<%
+												}
+											%>
+											<%
+												if (request.getAttribute("error") != null) {
+											%>
+											<p class="label label-warning" style="font-size: 13px">${error }</p>
+											<br>
+											<%
+												}
+											%>
+											<div class="table-responsive">
+												<table class="table" style="width: 120%">
+													<thead>
+														<tr>
+															<th>Payment Request ID</th>
+															<th>Requesting Member ID</th>
+															<th>Requesting Merchant</th>
+															<th>Requesting Amount</th>
+															<th>Requesting Date</th>
+															<th>Requesting Status</th>
+															<th>Action</th>
+														</tr>
+													</thead>
+													<tbody>
+														<c:if test="${not empty requestList}">
+															<c:forEach var="request" items="${requestList}"
+																varStatus="status">
+																<tr>
+
+																	<td>${request.paymentId }</td>
+																	<td>${request.merchantAccountId }</td>
+																	<td>${request.merchantLastName } ${request.merchantFirstName }</td>
+																	<td>${request.amount }</td>
+																	<td>${request.date }</td>
+																	<td><strong>${request.status }</strong></td>
+
+																	<c:if test="${request.status == 'PENDINGCUSTOME' }">
+																		<td><button id="viewButton${request.paymentId}"
+																				class="btn btn-success" data-toggle="modal"
+																				data-target="#authotizePayment">Authorize</button></td>
+																		<script type="text/javascript">
+																			$(
+																					'#viewButton${request.paymentId}')
+																					.click(
+																							function() {
+																								var requestingMerchantLastName = '${request.merchantLastName}';
+																								var requestingMerchantFirstName = '${request.merchantFirstName}';
+																								var requestingAmount = '${request.amount}';
+																								var requestingDate = '${request.date}';
+																								var paymentRequestId = '${request.paymentId}';
+																						
+
+																								$(
+																										'#requestingMerchantLastName')
+																										.text(
+																												requestingMerchantLastName);
+																								$(
+																										'#requestingMerchantFirstName')
+																										.text(
+																												requestingMerchantFirstName);
+																								$(
+																										'#requestingAmount')
+																										.text(
+																												requestingAmount);
+																								$(
+																										'#requestingDate')
+																										.text(
+																												requestingDate);
+																								$(
+																										'#paymentRequestId')
+																										.val(
+																												paymentRequestId);
+																							});
+																		</script>
+																	</c:if>
+																</tr>
+															</c:forEach>
+														</c:if>
+													</tbody>
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+							<!-- /div> -->
 						</div>
+
+
+						<div class="modal fade" id="authotizePayment" tabindex="-1" role="dialog"
+							aria-labelledby="myModalLabel" aria-hidden="true">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal"
+											aria-hidden="true">&times;</button>
+										<h4 class="modal-title" id="myModalLabel">Request Details</h4>
+									</div>
+
+									<form id="authorizePaymentRequest" role="form" method="POST"
+										action="authorizePaymentRequest">
+										<input type="hidden" id="paymentRequestId" name="paymentRequestId" /> 
+										<div class="modal-body">
+											<table class="table" style="width: 40%">
+												<tbody>
+													<tr>
+														<td></td>
+														<td></td>
+													</tr>
+													<tr>
+														<td><label>Merchant First Name</label></td>
+														<td id="requestingMerchantFirstName"></td>
+													</tr>
+													<tr>
+														<td><label>Merchant Last Name</label></td>
+														<td id="requestingMerchantLastName"></td>
+													</tr>
+													<tr>
+														<td><label>Request Amount</label></td>
+														<td id="requestingAmount"></td>
+													</tr>
+													<tr>
+														<td><label>Request Date</label></td>
+														<td id="requestingDate"></td>
+													</tr>
+													
+												</tbody>
+											</table>
+										</div>
+										<div class="modal-footer">
+											<button type="submit" class="btn btn-primary">Authorize</button>
+											<button type="button" class="btn btn-default"
+												data-dismiss="modal">Close</button>
+
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+
 
 						<div class="tab-pane fade" id="Initiate">
 
