@@ -1,13 +1,18 @@
 package edu.asu.safemoney.service.impln;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import javassist.expr.NewArray;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+
 
 
 
@@ -31,8 +36,6 @@ public class ManageExternalUserAccountServiceImpl implements
 	@Autowired
 	ManageExternalUserAccountDAO manageExternalUserAccountDAO;
 	
-	@Autowired
-	AdminUserServiceImpl adminUserServiceImpl;
 	
 	@Autowired
 	RequestDAO requestDAO;
@@ -58,19 +61,37 @@ public class ManageExternalUserAccountServiceImpl implements
 		}
 		return false;
 	}
-
+	
+	
+	
 	@Override
 	@Transactional
 	public boolean deleteUser(int memberId) {		
 		
+			UserDTO userDTO= displayUserAccount(memberId);
+			List<RequestDTO> requestList= userDTO.getRequestDTOList();
 			RequestDTO requestDTO = new RequestDTO();
 			requestDTO.setAuthorityUserTypeId(123);
-			requestDTO.setMemberID(memberId);
+			requestDTO.setMemberId(userDTO);
 			requestDTO.setRequestType("DELETE_ACCOUNT");
 			requestDTO.setStatus("NEW");
+			requestDTO.setRequestDate(new Date());
+			requestDTO.setProcessedDate(null);
 			requestDTO.setAuthorizingMemberId(null);
 			requestDTO.setAuthorizingAuthority("INT_BANK_ADM");
-			boolean isDeleted= requestDAO.generateRequest(requestDTO);
+			
+			if(requestList!=null){
+			requestList.add(requestDTO);
+			}
+			
+			else{
+				requestList= new ArrayList<RequestDTO>();
+				requestList.add(requestDTO);
+			}
+			
+			userDTO.setRequestDTOList(requestList);
+			
+			boolean isDeleted= requestDAO.createRequest(userDTO);
 			if(isDeleted){
 				return true;
 			}

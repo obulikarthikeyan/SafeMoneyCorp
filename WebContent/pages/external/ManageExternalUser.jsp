@@ -111,7 +111,7 @@
 											data-toggle="modal" data-target="#myModal" style="width: 50%">
 											Update Account</button></td>
 									<td>		
-									<button  class="btn btn-lg btn-danger btn-block" data-toggle="modalDelete" data-target="#myModalDelete" style="width: 50%">
+									<button  class="btn btn-lg btn-danger btn-block" data-toggle="modal" data-target="#myModalDelete" style="width: 50%">
 											Delete Account</button></td>
 
 								</tr>
@@ -124,13 +124,13 @@
 					</div>
 					
 					<div class="modal fade" id="myModalDelete" tabindex="-1" role="dialog"
-						aria-labelledby="myModalLabel" aria-hidden="true">
+						aria-labelledby="myModalDelLabel" aria-hidden="true">
 						<div class="modal-dialog">
 							<div class="modal-content">
 								<div class="modal-header">
 									<button type="button" class="close" data-dismiss="modal"
 										aria-hidden="true">&times;</button>
-									<h4 class="modal-title" id="myModalLabel">Delete Account</h4>
+									<h4 class="modal-title" id="myModalDelLabel">Delete Account</h4>
 								</div>
 								
 								
@@ -139,7 +139,7 @@
 									<div class="modal-body">
 					
 									<div>
-									Do you really want to Delete the account
+									Do you really want to Delete the account???
 									</div>
 						
 									<div class="modal-footer">

@@ -89,12 +89,12 @@ public class ManageExternalUserController {
 
 	// happens when you click the delete account button in the delete page.
 	// how can you pass just the User name ***
-	@RequestMapping(value = "/deleteExternalUserDetials", method = RequestMethod.POST)
+	@RequestMapping(value = "/external/deleteExternalUserDetials", method = RequestMethod.POST)
 	public ModelAndView doDeleteAccount(HttpSession session) {
 		int memberID= (Integer)session.getAttribute("memberId");
 		boolean delete= manageExternalUserAccountService.deleteUser(memberID);
 		UserDTO userDTO= manageExternalUserAccountService.displayUserAccount(memberID);
-		ModelAndView mv= new ModelAndView("external/ManageExternalUser").addObject("UserDTO", userDTO);
+		ModelAndView mv= new ModelAndView("external/ManageExternalUser").addObject("userDTO", userDTO);
 		// Should redirect to "updateExternalUserAccount"
 		if(delete){
 			return mv.addObject("message", "Delete Account request sent");
