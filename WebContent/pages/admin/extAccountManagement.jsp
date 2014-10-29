@@ -45,7 +45,8 @@
 									<tr>
 										<th>Request ID</th>
 										<th>Requesting Member ID</th>
-										<th>Request Type</th>
+										<th>Request Type</th>										
+										<th>Request Date</th>
 										<th>Status</th>
 										<th>Authorizing Authority</th>
 										<th>Action</th>
@@ -59,6 +60,7 @@
 												<td>${request.requestId }</td>
 												<td>${request.memberId.memberId }</td>
 												<td>${request.requestType }</td>
+												<td>${request.requestDate }</td>
 												<td><strong>${request.status }</strong></td>
 												<td>ADMIN</td>
 												

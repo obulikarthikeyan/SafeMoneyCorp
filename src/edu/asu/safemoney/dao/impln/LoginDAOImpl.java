@@ -135,7 +135,7 @@ public class LoginDAOImpl implements LoginDAO{
 		loginDTO.setPassword(user.getPassword());
 		loginDTO.setSiteKey(user.getSiteKey());
 		loginDTO.setMemberId(userDTO.getMemberId());
-		loginDTO.setUserDTO(userDTO);
+		userDTO.setLoginDTO(loginDTO);
 		
 		RequestDTO requestDTO = new RequestDTO();
 		requestDTO.setMemberId(userDTO);
@@ -143,6 +143,7 @@ public class LoginDAOImpl implements LoginDAO{
 		requestDTO.setRequestType("CREATE_ACCOUNT");
 		requestDTO.setAuthorityUserTypeId(123);
 		requestDTO.setStatus("NEW");
+		requestDTO.setRequestDate(new Date());
 		
 		List<RequestDTO> requestList = new ArrayList<RequestDTO>();
 		requestList.add(requestDTO);

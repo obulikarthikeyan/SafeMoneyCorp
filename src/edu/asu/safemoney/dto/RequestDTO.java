@@ -70,8 +70,6 @@ public class RequestDTO implements Serializable {
     @Column(name = "request_date")
     @Temporal(TemporalType.DATE)
     private Date requestDate;
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "processed_date")
     @Temporal(TemporalType.DATE)
     private Date processedDate;

@@ -1,5 +1,6 @@
 package edu.asu.safemoney.service.impln;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,6 +84,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 				if(isAccountGenerated)
 				{
 					requestDTO.setStatus("APPROVED");
+					requestDTO.setProcessedDate(new Date());
 					boolean isRequestUpdated = requestDAO.updateRequest(requestDTO);
 					if(isRequestUpdated)
 					{
