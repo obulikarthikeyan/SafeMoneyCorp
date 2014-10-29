@@ -4,6 +4,6 @@ import java.util.List;
 
 import edu.asu.safemoney.dto.RequestDTO;
 
-public class EmployeeUserService {
+public interface EmployeeUserService {
 
 }
