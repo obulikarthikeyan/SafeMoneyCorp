@@ -151,11 +151,11 @@
 							<li><a href="#"><i class="fa fa-tasks fa-fw"></i> Manage
 									Requests<span class="fa arrow"></span></a>
 								<ul class="nav nav-second-level">
-									<li><a href="#">View Requests</a></li>
+									<li><a href="#">View Bank Requests</a></li>
 									<li><a href="#">Authorize Requests</a></li>
 								</ul> <!-- /.nav-second-level --></li>
 							<li><a href="#"><i class="fa fa-gear fa-fw"></i>
-									Transactional Review</a></li>
+									Transactional Requests / Review</a></li>
 
 						</sec:authorize>
 						<sec:authorize access="hasRole('EXT_MERCHANT')">

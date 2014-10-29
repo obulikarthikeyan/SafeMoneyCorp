@@ -47,13 +47,13 @@ public class LoginController {
 		}
 		if(isUserNameAvailable)
 		{
-			sessionID.setAttribute("userName", userName);
 			int memberId = loginService.getMemberId(userName);
 			sessionID.setAttribute("memberId", memberId);
 			return new ModelAndView("/shared/authentication").addObject("siteKey", siteKey);
 		}
 		else
 		{
+			sessionID.getAttribute("exception").toString();
 			logger.error("UserLogin Attempt - InvalidUserName");
 			System.out.println("Home" + System.getProperty("catalina.home"));
 			System.out.println("base: " + System.getProperty("catalina.base"));
