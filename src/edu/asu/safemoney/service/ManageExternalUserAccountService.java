@@ -10,7 +10,7 @@ public interface ManageExternalUserAccountService {
 
 	public boolean updateUser(ModifyUserModel modifyUserModel);
 	// Can pass User Name in deleteUser ***
-	public void deleteUser(String userName);
+	public boolean deleteUser(int memberId);
 	public UserDTO displayUserAccount(int memberId);
 	public AccountModel getAccountDetails(int memberId);
 	public double getAccountBalance(int memberId);

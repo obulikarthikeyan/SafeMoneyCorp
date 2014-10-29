@@ -64,6 +64,7 @@ public class RequestDTO implements Serializable {
     @JoinColumn(name = "member_id", referencedColumnName = "member_id")
     @ManyToOne(optional = false)
     private UserDTO memberId;
+    
 
     public RequestDTO() {
     }
@@ -133,6 +134,8 @@ public class RequestDTO implements Serializable {
     public void setMemberId(UserDTO memberId) {
         this.memberId = memberId;
     }
+    
+    
 
     @Override
     public int hashCode() {

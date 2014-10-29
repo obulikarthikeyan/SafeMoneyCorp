@@ -43,10 +43,6 @@ public class ManageExternalUserController {
 	@RequestMapping(value = "/external/displayExternalUserDetails", method = RequestMethod.GET)
 	// get userName from session and use @RequestParam
 	public ModelAndView populateExternalUserAccount(HttpSession session) {
-		Enumeration<String> enumstring = session.getAttributeNames();
-		while (enumstring.hasMoreElements())
-			System.out.println("session attributes: "
-					+ enumstring.nextElement());
 		int memberId = (Integer) session.getAttribute("memberId");
 		UserDTO userDTO = manageExternalUserAccountService
 				.displayUserAccount(memberId);
@@ -88,18 +84,25 @@ public class ManageExternalUserController {
 		{
 			
 			return mv.addObject("error", "Update Failed!");
-		}
-		
-		// can check for fail condition also ***
+		}		
 	}
 
 	// happens when you click the delete account button in the delete page.
 	// how can you pass just the User name ***
 	@RequestMapping(value = "/deleteExternalUserDetials", method = RequestMethod.POST)
-	public String doDeleteAccount(String UserName) {
-		manageExternalUserAccountService.deleteUser(UserName);
+	public ModelAndView doDeleteAccount(HttpSession session) {
+		int memberID= (Integer)session.getAttribute("memberId");
+		boolean delete= manageExternalUserAccountService.deleteUser(memberID);
+		UserDTO userDTO= manageExternalUserAccountService.displayUserAccount(memberID);
+		ModelAndView mv= new ModelAndView("external/ManageExternalUser").addObject("UserDTO", userDTO);
 		// Should redirect to "updateExternalUserAccount"
-		return "shared/deleteSuccessPage";
+		if(delete){
+			return mv.addObject("message", "Delete Account request sent");
+			
+		}
+		else{
+			return mv.addObject("error", "Delete Request not sent");
+		}
 	}
 
 	@RequestMapping(value = "/external/transactions", method = RequestMethod.GET)

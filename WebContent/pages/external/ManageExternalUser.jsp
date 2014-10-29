@@ -110,8 +110,8 @@
 									<td><button class="btn btn-primary btn-lg"
 											data-toggle="modal" data-target="#myModal" style="width: 50%">
 											Update Account</button></td>
-									<td><button type="button"
-											class="btn btn-lg btn-danger btn-block" style="width: 50%">
+									<td>		
+									<button  class="btn btn-lg btn-danger btn-block" data-toggle="modalDelete" data-target="#myModalDelete" style="width: 50%">
 											Delete Account</button></td>
 
 								</tr>
@@ -122,7 +122,38 @@
 
 						<!-- /.table-responsive -->
 					</div>
-
+					
+					<div class="modal fade" id="myModalDelete" tabindex="-1" role="dialog"
+						aria-labelledby="myModalLabel" aria-hidden="true">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal"
+										aria-hidden="true">&times;</button>
+									<h4 class="modal-title" id="myModalLabel">Delete Account</h4>
+								</div>
+								
+								
+								<form id="deleteUser" role="form" method="POST"
+									action="deleteExternalUserDetials">
+									<div class="modal-body">
+					
+									<div>
+									Do you really want to Delete the account
+									</div>
+						
+									<div class="modal-footer">
+											<button type="button" class="btn btn-default"
+												data-dismiss="modal">NO</button>
+											<button type="submit" class="btn btn-primary">YES</button>
+									</div>
+									</div>
+							 	</form>
+							 </div>
+						</div>
+					</div>
+								
+									
 					<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
 						aria-labelledby="myModalLabel" aria-hidden="true">
 						<div class="modal-dialog">
@@ -130,9 +161,8 @@
 								<div class="modal-header">
 									<button type="button" class="close" data-dismiss="modal"
 										aria-hidden="true">&times;</button>
-									<h4 class="modal-title" id="myModalLabel">Modal title</h4>
+									<h4 class="modal-title" id="myModalLabel">Update Account</h4>
 								</div>
-								
 								
 								<form id="updateUser" role="form" method="POST"
 									action="updateExternalUserDetails">

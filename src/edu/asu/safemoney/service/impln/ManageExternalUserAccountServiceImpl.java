@@ -1,20 +1,26 @@
 package edu.asu.safemoney.service.impln;
 
 import java.util.Date;
+import java.util.List;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import antlr.collections.List;
+
+
+
+
 import edu.asu.safemoney.dao.ManageExternalUserAccountDAO;
+import edu.asu.safemoney.dao.RequestDAO;
 import edu.asu.safemoney.dto.AccountDTO;
+import edu.asu.safemoney.dto.RequestDTO;
 import edu.asu.safemoney.dto.TransactionDTO;
 import edu.asu.safemoney.dto.UserDTO;
 import edu.asu.safemoney.helper.ExternalUserHelper;
 import edu.asu.safemoney.model.AccountModel;
-
 import edu.asu.safemoney.model.ModifyUserModel;
 import edu.asu.safemoney.service.ManageExternalUserAccountService;
 
@@ -24,6 +30,13 @@ public class ManageExternalUserAccountServiceImpl implements
 
 	@Autowired
 	ManageExternalUserAccountDAO manageExternalUserAccountDAO;
+	
+	@Autowired
+	AdminUserServiceImpl adminUserServiceImpl;
+	
+	@Autowired
+	RequestDAO requestDAO;
+	
 
 	/*private AccountModel accntModel;
 
@@ -48,9 +61,20 @@ public class ManageExternalUserAccountServiceImpl implements
 
 	@Override
 	@Transactional
-	public void deleteUser(String nameOfUser) {
-		// TODO Auto-generated method stub
-
+	public boolean deleteUser(int memberId) {		
+		
+			RequestDTO requestDTO = new RequestDTO();
+			requestDTO.setAuthorityUserTypeId(123);
+			requestDTO.setMemberID(memberId);
+			requestDTO.setRequestType("DELETE_ACCOUNT");
+			requestDTO.setStatus("NEW");
+			requestDTO.setAuthorizingMemberId(null);
+			requestDTO.setAuthorizingAuthority("INT_BANK_ADM");
+			boolean isDeleted= requestDAO.generateRequest(requestDTO);
+			if(isDeleted){
+				return true;
+			}
+			return false;
 	}
 
 	@Override
