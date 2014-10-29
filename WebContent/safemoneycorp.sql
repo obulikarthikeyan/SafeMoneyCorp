@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 29, 2014 at 06:16 AM
+-- Generation Time: Oct 29, 2014 at 07:56 AM
 -- Server version: 5.5.32
 -- PHP Version: 5.4.19
 
@@ -28,6 +28,7 @@ USE `safemoneycorp`;
 -- Table structure for table `account`
 --
 
+DROP TABLE IF EXISTS `account`;
 CREATE TABLE IF NOT EXISTS `account` (
   `account_no` bigint(10) NOT NULL,
   `member_id` int(11) NOT NULL,
@@ -45,7 +46,8 @@ INSERT INTO `account` (`account_no`, `member_id`, `amount`, `is_active`) VALUES
 (1545151, 996368, 5000, 'true'),
 (6987456, 996364, 5000, 'true'),
 (8765433, 996369, 400, 'true'),
-(56352145, 996363, 550.2799999999997, 'true');
+(56352145, 996363, 550.2799999999997, 'true'),
+(10401417978, 996386, 200, 'true');
 
 -- --------------------------------------------------------
 
@@ -53,6 +55,7 @@ INSERT INTO `account` (`account_no`, `member_id`, `amount`, `is_active`) VALUES
 -- Table structure for table `login`
 --
 
+DROP TABLE IF EXISTS `login`;
 CREATE TABLE IF NOT EXISTS `login` (
   `member_id` int(11) NOT NULL,
   `user_name` varchar(15) NOT NULL,
@@ -71,7 +74,8 @@ INSERT INTO `login` (`member_id`, `user_name`, `password`, `site_key`) VALUES
 (996363, 'cust', 'cust', 'eclipse'),
 (996364, 'mer', 'mer', 'helio'),
 (996368, 'emp', 'emp', 'helio'),
-(996369, 'admin', 'admin', 'helio');
+(996369, 'admin', 'admin', 'helio'),
+(996386, 'jbjhjhj', 'hhjjhhjjhj', 'ghjghjghg');
 
 -- --------------------------------------------------------
 
@@ -79,6 +83,7 @@ INSERT INTO `login` (`member_id`, `user_name`, `password`, `site_key`) VALUES
 -- Table structure for table `payment_request`
 --
 
+DROP TABLE IF EXISTS `payment_request`;
 CREATE TABLE IF NOT EXISTS `payment_request` (
   `payment_id` bigint(12) NOT NULL,
   `merchant_account_id` bigint(10) NOT NULL,
@@ -100,6 +105,7 @@ CREATE TABLE IF NOT EXISTS `payment_request` (
 -- Table structure for table `request`
 --
 
+DROP TABLE IF EXISTS `request`;
 CREATE TABLE IF NOT EXISTS `request` (
   `request_id` bigint(10) NOT NULL AUTO_INCREMENT,
   `member_id` int(11) NOT NULL,
@@ -112,7 +118,14 @@ CREATE TABLE IF NOT EXISTS `request` (
   `processed_date` date DEFAULT NULL,
   PRIMARY KEY (`request_id`),
   KEY `request_user` (`member_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=56349 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=56357 ;
+
+--
+-- Dumping data for table `request`
+--
+
+INSERT INTO `request` (`request_id`, `member_id`, `request_type`, `authorizing_member_id`, `status`, `authorizing_authority`, `authority_user_type_id`, `request_date`, `processed_date`) VALUES
+(56356, 996386, 'CREATE_ACCOUNT', NULL, 'APPROVED', 'ADMIN', 123, '2014-10-28', '2014-10-28');
 
 -- --------------------------------------------------------
 
@@ -120,6 +133,7 @@ CREATE TABLE IF NOT EXISTS `request` (
 -- Table structure for table `transaction`
 --
 
+DROP TABLE IF EXISTS `transaction`;
 CREATE TABLE IF NOT EXISTS `transaction` (
   `transaction_id` bigint(10) NOT NULL,
   `member_id` int(11) NOT NULL,
@@ -142,6 +156,7 @@ CREATE TABLE IF NOT EXISTS `transaction` (
 INSERT INTO `transaction` (`transaction_id`, `member_id`, `from_account`, `to_account`, `date`, `amount`, `status`, `transaction_type`, `is_critical`, `is_authorized`) VALUES
 (1234564, 996363, 56352145, 56352145, '2014-10-27 01:18:20', 300, 'APPROVED', 'Debit', 0, 1),
 (3305011, 996363, 56352145, 56352145, '2014-10-27 21:10:17', 3000, 'Pending', 'Credit', 1, 0),
+(3372261, 996386, 10401417978, 10401417978, '2014-10-28 23:53:58', 200, 'APPROVED', 'Credit', 0, 1),
 (3571418, 996363, 56352145, 56352145, '2014-10-27 02:41:12', 98, 'APPROVED', 'Debit', 0, 1),
 (3875286, 996363, 56352145, 56352145, '2014-10-27 20:50:31', 100, 'APPROVED', 'Debit', 0, 1),
 (4116140, 996368, 56352145, 1545151, '2014-10-27 21:14:07', 1000, 'APPROVED', 'Credit', 0, 1),
@@ -178,6 +193,7 @@ INSERT INTO `transaction` (`transaction_id`, `member_id`, `from_account`, `to_ac
 -- Table structure for table `user`
 --
 
+DROP TABLE IF EXISTS `user`;
 CREATE TABLE IF NOT EXISTS `user` (
   `member_id` int(11) NOT NULL AUTO_INCREMENT,
   `first_name` varchar(25) DEFAULT NULL,
@@ -208,7 +224,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   UNIQUE KEY `email_id` (`email_id`),
   KEY `member_id` (`member_id`),
   KEY `user_type_idx` (`user_type_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=996379 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=996387 ;
 
 --
 -- Dumping data for table `user`
@@ -218,7 +234,8 @@ INSERT INTO `user` (`member_id`, `first_name`, `last_name`, `email_id`, `contact
 (996363, 'Alice', 'Parker', 'alice@smc.corp', 8890008765, 'xxxxxxx', 'yyyyyyyyy', 'zzzzz', 'AZ', 89963, 345678912, 'What is your favorite place?', 'What is your right eye power?', 'What is the name of your family doctor?', 'dallas', '0.0', 'Dr.Adam', '2014-10-17', 26, 'true', 322, 'SYSTEM', '2014-10-19', '2015-10-19', 'true'),
 (996364, 'John', 'Doe', 'john@smc.corp', 1234509876, 'xxxxxxx', 'yyyyyyy', 'zzzzz', 'NY', 23564, 789456123, 'What is your model name of your first phone?', 'What is the last 5 digits in your driving license?', 'what is name of your favorite teacher in high school?', 'XC01', '56897', 'Jennifer', '2014-09-09', 36, 'true', 366, 'SYSTEM', '2014-10-19', '2015-10-19', 'true'),
 (996368, 'Bank', 'Employee', 'bank.employee@smcorp', 1234509876, 'xxxxxxx', 'yyyyyyy', 'zzzzz', 'NY', 23564, 789456123, 'What is your model name of your first phone?', 'What is the last 5 digits in your driving license?', 'what is name of your favorite teacher in high school?', 'XC01', '56897', 'Jennifer', '2014-09-09', 36, 'true', 125, 'SYSTEM', '2014-10-19', '2015-10-19', 'true'),
-(996369, 'Bank', 'Admin', 'bank.admin@smcorp', 8890008765, 'xxxxxxx', 'yyyyyyyyy', 'zzzzz', 'AZ', 89963, 345678912, 'What is your favorite place?', 'What is your right eye power?', 'What is the name of your family doctor?', 'dallas', '0.0', 'Dr.Adam', '2014-10-17', 26, 'true', 123, 'SYSTEM', '2014-10-19', '2015-10-19', 'true');
+(996369, 'Bank', 'Admin', 'bank.admin@smcorp', 8890008765, 'xxxxxxx', 'yyyyyyyyy', 'zzzzz', 'AZ', 89963, 345678912, 'What is your favorite place?', 'What is your right eye power?', 'What is the name of your family doctor?', 'dallas', '0.0', 'Dr.Adam', '2014-10-17', 26, 'true', 123, 'SYSTEM', '2014-10-19', '2015-10-19', 'true'),
+(996386, 'kjhkjhj', 'hjhjhjh', 'kjjhjk@kjjh.com', 9878678676, 'bjbjhbvh', 'jjgjhjhhjhj', 'hbhjbhj', 'bj', 98788, 987878676, 'hjhjh', 'jhghjghj', 'hghjghh', 'jgghjg', 'ghjghjghjggh', 'jhghjghgj', '2014-10-28', 98, 'true', 322, 'SYSTEM', '2014-10-28', '2015-10-28', 'true');
 
 -- --------------------------------------------------------
 
@@ -226,6 +243,7 @@ INSERT INTO `user` (`member_id`, `first_name`, `last_name`, `email_id`, `contact
 -- Table structure for table `user_type`
 --
 
+DROP TABLE IF EXISTS `user_type`;
 CREATE TABLE IF NOT EXISTS `user_type` (
   `user_type_id` int(11) NOT NULL,
   `user_type` varchar(15) NOT NULL,
