@@ -341,7 +341,7 @@
 	}, "Please use characters [a-zA-Z], [0-9], [,][.][_][;][-][?]");
 	
 	$.validator.addMethod('numbersOnly', function( val, element ) {
-	    var regexp = new RegExp("^[0-9]+$");
+	    var regexp = new RegExp("[1-9][0-9]*+$");
 
 	    if (!regexp.test(val)) {
 	       return false;

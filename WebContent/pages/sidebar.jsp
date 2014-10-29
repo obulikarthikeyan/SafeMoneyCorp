@@ -184,7 +184,7 @@
 						<sec:authorize access="hasRole('INT_BANK_EMP')">
 							<li><a href="#"><i class="fa fa-tasks fa-fw"></i> Manage External User Accounts<span class="fa arrow"></span></a>
 								<ul class="nav nav-second-level">
-									<li><a href="#">Send View Request</a></li>
+									<li><a href="<%=request.getContextPath()%>/internal/sendViewRequests">Send View Request</a></li>
 									<li><a href="#">View Accounts</a></li>
 								</ul> <!-- /.nav-second-level --></li>
 							<li><a href="#"><i class="fa fa-tasks fa-fw"></i> Manage External User Transactions<span class="fa arrow"></span></a>
