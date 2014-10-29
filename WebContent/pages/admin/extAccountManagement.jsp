@@ -73,6 +73,7 @@
 													var emailId = '${request.memberId.emailId}';
 													var isCustomer = '${request.memberId.isCustomer}';
 													var requestId = '${request.requestId}';
+													var requestType = '${request.requestType}';
 													var type = 'Customer';
 													if(isCustomer == 'false')
 														type = 'Merchant';
@@ -83,7 +84,7 @@
 												   	 $('#emailId').text(emailId);
 												   	 $('#type').text(type);
 												   	 $('#requestId').val(requestId);
-												   	 $('#status').val(status);
+												   	 $('#requestType').val(requestType);
 													});
 												</script>
 												</c:if>
@@ -110,6 +111,7 @@
 								<form id="updateUser" role="form" method="POST"
 									action="approveExtUserAccount">
 									<input type="hidden" id="requestId" name="requestId"/>
+									<input type="hidden" id="requestType" name="requestType"/>
 									<div class="modal-body">
 									<table class="table" style="width:40%">
 										<tbody>

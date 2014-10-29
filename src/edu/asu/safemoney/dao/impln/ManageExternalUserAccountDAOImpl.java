@@ -2,6 +2,8 @@ package edu.asu.safemoney.dao.impln;
 
 
 
+import java.math.BigInteger;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -14,6 +16,7 @@ import edu.asu.safemoney.dto.AccountDTO;
 import edu.asu.safemoney.dto.TransactionDTO;
 import edu.asu.safemoney.dto.UserDTO;
 import edu.asu.safemoney.model.AccountModel;
+import edu.asu.safemoney.model.ModifyUserModel;
 import edu.asu.safemoney.model.TransactionModel;
 import edu.asu.safemoney.model.UserModel;
 
@@ -27,11 +30,24 @@ public class ManageExternalUserAccountDAOImpl implements ManageExternalUserAccou
 	@Autowired
 	private LoginDAOImpl loginDAOImpl;
 	
-	public void updateUser(UserModel user){
+	public boolean updateUser(ModifyUserModel modifyUserModel){
 		
-		UserDTO userDTO= loginDAOImpl.copyToUserDTO(user);
-		Session session= sessionFactory.getCurrentSession();
-		session.saveOrUpdate(userDTO);
+		UserDTO userDTO= copyToUserDTO(modifyUserModel);
+		if(userDTO != null)
+		{
+			try
+			{
+				Session session= sessionFactory.getCurrentSession();
+				session.saveOrUpdate(userDTO);
+				return true;
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+				return false;
+			}
+		}
+		return false;
 	}
 	
 	public UserDTO displayUserAccountDAO(int memberId){
@@ -139,5 +155,54 @@ public class ManageExternalUserAccountDAOImpl implements ManageExternalUserAccou
 		{
 			return false;
 		}
+	}
+	
+
+	public UserDTO copyToUserDTO(ModifyUserModel modifyUserModel)
+	{
+		UserDTO userDTO = displayUserAccountDAO(modifyUserModel.getMemberId());
+		if(userDTO != null)
+		{
+			userDTO.setContactNo(modifyUserModel.getContactNo());
+			userDTO.setEmailId(modifyUserModel.getEmailId());
+			userDTO.setAddress1(modifyUserModel.getAddress1());
+			userDTO.setAddress2(modifyUserModel.getAddress2());
+			userDTO.setCity(modifyUserModel.getCity());
+			userDTO.setState(modifyUserModel.getState());
+			userDTO.setZip(modifyUserModel.getZip());
+			return userDTO;
+		}
+		return null;
+	}
+		
+	public int getMemberIdByAccount(long accountNumber)
+	{
+		BigInteger bi = BigInteger.valueOf(accountNumber);
+		Session session = sessionFactory.getCurrentSession();
+		Query query = session.getNamedQuery("AccountDTO.findByAccountNo").setBigInteger("accountNo", bi);
+		AccountDTO accountDTO = (AccountDTO) query.uniqueResult();
+		UserDTO user = accountDTO.getMemberId();
+		int memberId=user.getMemberId();
+		return memberId;
+	}
+	
+	@Override
+	public boolean deleteExtUserAccount(int memberId) {
+		// TODO Auto-generated method stub
+		try {
+			Session session = sessionFactory.getCurrentSession();
+			Query query = session.getNamedQuery("UserDTO.findByMemberId")
+					.setInteger("memberId", memberId);
+			UserDTO userDTO = (UserDTO) query.uniqueResult();
+			if (userDTO != null) {
+				session.delete(userDTO);
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+
+		return false;
 	}
 }

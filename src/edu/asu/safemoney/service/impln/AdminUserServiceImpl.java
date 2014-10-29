@@ -58,6 +58,17 @@ public class AdminUserServiceImpl implements AdminUserService {
 		}
 		return false;
 	}
+	
+	@Transactional
+	public boolean deleteExtUserAccount(int memberId)
+	{
+		boolean isUserDeleted = extUserAccountDAO.deleteExtUserAccount(memberId);
+		if(isUserDeleted)
+		{
+			return true;
+		}
+		return false;
+	}
 
 	@Transactional
 	@Override
@@ -77,6 +88,14 @@ public class AdminUserServiceImpl implements AdminUserService {
 					{
 						return true;
 					}
+				}
+			}
+			else if(requestDTO.getRequestType().equals("DELETE_ACCOUNT"))
+			{
+				boolean isDeleted = deleteExtUserAccount(requestDTO.getMemberId().getMemberId());
+				if(isDeleted)
+				{
+					return true;
 				}
 			}
 			

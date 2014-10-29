@@ -340,6 +340,15 @@
 	    return true;
 	}, "Please use characters [a-zA-Z], [0-9], [,][.][_][;][-][?]");
 	
+	$.validator.addMethod('numbersOnly', function( val, element ) {
+	    var regexp = new RegExp("^[0-9]+$");
+
+	    if (!regexp.test(val)) {
+	       return false;
+	    }
+	    return true;
+	}, "Please type numbers only");
+	
 	$("#signUpForm").validate({
 		rules: {
 			emailId: {
@@ -396,6 +405,13 @@
 				minlength: 2,
 				maxlength: 3
 			},
+			
+			ssn:{
+				required: true,
+				numbersOnly: true,
+				maxlength:10
+				
+			}, 
 			userName: {
 				required: true,
 				userNameField: true,
@@ -450,7 +466,7 @@
 			emailId: "Please Enter a valid Email ID",
 			firstName: "Please Enter your First Name (must be less than 25 characters)",
 			lastName: "Please Enter your Last Name (must be less than 25 characters)",
-			contactNo: "Please Enter your contact number",
+			contactNo: "Please Enter valid contact number",
 			address1: "Please Enter your address (must be less than 50 characters)",
 			address2: "Please Enter less than 50 characters",
 			city: "Please Enter your city (must be less than 12 characters)",

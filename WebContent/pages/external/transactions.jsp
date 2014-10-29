@@ -86,13 +86,15 @@
 
 						</div>
 						<div class="tab-pane fade" id="Transfer">
-							<br> <br> <label>To Account: </label> <input
-								class="form-control" placeholder="Account No."> <br>
-							<br> <label>Enter Amount: </label> <input
-								class="form-control" placeholder="Amount"> <br>
+						<form id="Transform" role="form" method="POST"
+								action="transfer">
+							<br> <br> <label>To Account: </label> 
+							<input id="toAccountNumber" name="toAccountNumber" class="form-control" placeholder="Account No."> <br>
+							<br> <label>Enter Amount: </label> 
+							<input id="transformAmount" name="transformAmount" class="form-control" placeholder="Amount"> <br>
 							<p>
 
-								<button type="button" class="btn btn-success">Submit</button>
+								<button type="submit" class="btn btn-success">Submit</button>
 								<!--button type="button" class="btn btn-default">Default</button>
 																	<button type="button" class="btn btn-primary">Success</button>
 																	<button type="button" class="btn btn-info">Info</button>
@@ -100,6 +102,7 @@
 																	<button type="button" class="btn btn-danger">Danger</button>
 																	<button type="button" class="btn btn-link">Link</button-->
 							</p>
+						</form>
 						</div>
 
 

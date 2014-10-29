@@ -11,5 +11,7 @@ public interface AdminUserService {
 	public boolean generateBankAccount(int memberId);
 	
 	public boolean approveExtUserRequest(long requestId);
+	
+	public boolean deleteExtUserAccount(int memberId);
 
 }
