@@ -1,5 +1,6 @@
 package edu.asu.safemoney.service.impln;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +59,17 @@ public class AdminUserServiceImpl implements AdminUserService {
 		}
 		return false;
 	}
+	
+	@Transactional
+	public boolean deleteExtUserAccount(int memberId)
+	{
+		boolean isUserDeleted = extUserAccountDAO.deleteExtUserAccount(memberId);
+		if(isUserDeleted)
+		{
+			return true;
+		}
+		return false;
+	}
 
 	@Transactional
 	@Override
@@ -72,11 +84,20 @@ public class AdminUserServiceImpl implements AdminUserService {
 				if(isAccountGenerated)
 				{
 					requestDTO.setStatus("APPROVED");
+					requestDTO.setProcessedDate(new Date());
 					boolean isRequestUpdated = requestDAO.updateRequest(requestDTO);
 					if(isRequestUpdated)
 					{
 						return true;
 					}
+				}
+			}
+			else if(requestDTO.getRequestType().equals("DELETE_ACCOUNT"))
+			{
+				boolean isDeleted = deleteExtUserAccount(requestDTO.getMemberId().getMemberId());
+				if(isDeleted)
+				{
+					return true;
 				}
 			}
 			

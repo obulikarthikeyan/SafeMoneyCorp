@@ -313,7 +313,7 @@
 	}, "Please use characters [a-zA-Z], [0-9], [,][.][_][;][-]");
 	
 	$.validator.addMethod('userNameField', function( val, element ) {
-	    var regexp = new RegExp("^[a-zA-Z0-9,._]+$");
+	    var regexp = new RegExp("^[a-zA-Z0-9._]+$");
 
 	    if (!regexp.test(val)) {
 	       return false;

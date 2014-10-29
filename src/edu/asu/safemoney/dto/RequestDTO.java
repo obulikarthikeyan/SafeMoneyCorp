@@ -1,3 +1,4 @@
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -6,10 +7,10 @@
 package edu.asu.safemoney.dto;
 
 import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,6 +19,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -36,7 +39,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "RequestDTO.findByAuthorizingMemberId", query = "SELECT r FROM RequestDTO r WHERE r.authorizingMemberId = :authorizingMemberId"),
     @NamedQuery(name = "RequestDTO.findByStatus", query = "SELECT r FROM RequestDTO r WHERE r.status = :status"),
     @NamedQuery(name = "RequestDTO.findByAuthorizingAuthority", query = "SELECT r FROM RequestDTO r WHERE r.authorizingAuthority = :authorizingAuthority"),
-    @NamedQuery(name = "RequestDTO.findByAuthorityUserTypeId", query = "SELECT r FROM RequestDTO r WHERE r.authorityUserTypeId = :authorityUserTypeId")})
+    @NamedQuery(name = "RequestDTO.findByAuthorityUserTypeId", query = "SELECT r FROM RequestDTO r WHERE r.authorityUserTypeId = :authorityUserTypeId"),
+    @NamedQuery(name = "RequestDTO.findByRequestDate", query = "SELECT r FROM RequestDTO r WHERE r.requestDate = :requestDate"),
+    @NamedQuery(name = "RequestDTO.findByProcessedDate", query = "SELECT r FROM RequestDTO r WHERE r.processedDate = :processedDate")})
 public class RequestDTO implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -61,10 +66,17 @@ public class RequestDTO implements Serializable {
     @NotNull
     @Column(name = "authority_user_type_id")
     private int authorityUserTypeId;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "request_date")
+    @Temporal(TemporalType.DATE)
+    private Date requestDate;
+    @Column(name = "processed_date")
+    @Temporal(TemporalType.DATE)
+    private Date processedDate;
     @JoinColumn(name = "member_id", referencedColumnName = "member_id")
     @ManyToOne(optional = false)
     private UserDTO memberId;
-    
 
     public RequestDTO() {
     }
@@ -73,10 +85,12 @@ public class RequestDTO implements Serializable {
         this.requestId = requestId;
     }
 
-    public RequestDTO(Long requestId, String authorizingAuthority, int authorityUserTypeId) {
+    public RequestDTO(Long requestId, String authorizingAuthority, int authorityUserTypeId, Date requestDate, Date processedDate) {
         this.requestId = requestId;
         this.authorizingAuthority = authorizingAuthority;
         this.authorityUserTypeId = authorityUserTypeId;
+        this.requestDate = requestDate;
+        this.processedDate = processedDate;
     }
 
     public Long getRequestId() {
@@ -127,6 +141,22 @@ public class RequestDTO implements Serializable {
         this.authorityUserTypeId = authorityUserTypeId;
     }
 
+    public Date getRequestDate() {
+        return requestDate;
+    }
+
+    public void setRequestDate(Date requestDate) {
+        this.requestDate = requestDate;
+    }
+
+    public Date getProcessedDate() {
+        return processedDate;
+    }
+
+    public void setProcessedDate(Date processedDate) {
+        this.processedDate = processedDate;
+    }
+
     public UserDTO getMemberId() {
         return memberId;
     }
@@ -134,8 +164,6 @@ public class RequestDTO implements Serializable {
     public void setMemberId(UserDTO memberId) {
         this.memberId = memberId;
     }
-    
-    
 
     @Override
     public int hashCode() {

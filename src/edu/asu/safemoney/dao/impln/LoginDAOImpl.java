@@ -85,7 +85,18 @@ public class LoginDAOImpl implements LoginDAO{
 		try
 		{
 			Session session = sessionFactory.getCurrentSession();
+			session.persist(userDTO);
+			
+			LoginDTO loginDTO = new LoginDTO();
+			loginDTO.setUserName(user.getUserName());
+			loginDTO.setPassword(user.getPassword());
+			loginDTO.setSiteKey(user.getSiteKey());
+			loginDTO.setUserDTO(userDTO);
+			loginDTO.setMemberId(userDTO.getMemberId());
+			userDTO.setLoginDTO(loginDTO);
+			
 			session.save(userDTO);
+			
 			return true;
 			
 		}
@@ -130,19 +141,13 @@ public class LoginDAOImpl implements LoginDAO{
 		
 		userDTO.setUserTypeId(userTypeDTO);
 		
-		LoginDTO loginDTO = new LoginDTO();
-		loginDTO.setUserName(user.getUserName());
-		loginDTO.setPassword(user.getPassword());
-		loginDTO.setSiteKey(user.getSiteKey());
-		loginDTO.setMemberId(userDTO.getMemberId());
-		loginDTO.setUserDTO(userDTO);
-		
 		RequestDTO requestDTO = new RequestDTO();
 		requestDTO.setMemberId(userDTO);
 		requestDTO.setAuthorizingAuthority("ADMIN");
 		requestDTO.setRequestType("CREATE_ACCOUNT");
 		requestDTO.setAuthorityUserTypeId(123);
 		requestDTO.setStatus("NEW");
+		requestDTO.setRequestDate(new Date());
 		
 		List<RequestDTO> requestList = new ArrayList<RequestDTO>();
 		requestList.add(requestDTO);

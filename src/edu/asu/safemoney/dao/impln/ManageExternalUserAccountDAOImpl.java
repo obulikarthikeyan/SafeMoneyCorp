@@ -1,6 +1,5 @@
+
 package edu.asu.safemoney.dao.impln;
-
-
 
 import java.math.BigInteger;
 import java.util.List;
@@ -187,6 +186,24 @@ public class ManageExternalUserAccountDAOImpl implements ManageExternalUserAccou
 		return memberId;
 	}
 
-		
 	
+	@Override
+	public boolean deleteExtUserAccount(int memberId) {
+		// TODO Auto-generated method stub
+		try {
+			Session session = sessionFactory.getCurrentSession();
+			Query query = session.getNamedQuery("UserDTO.findByMemberId")
+					.setInteger("memberId", memberId);
+			UserDTO userDTO = (UserDTO) query.uniqueResult();
+			if (userDTO != null) {
+				session.delete(userDTO);
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+
+		return false;
+	}
 }

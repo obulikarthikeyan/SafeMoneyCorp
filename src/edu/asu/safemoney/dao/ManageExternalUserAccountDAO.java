@@ -1,4 +1,3 @@
-
 package edu.asu.safemoney.dao;
 
 import edu.asu.safemoney.dto.AccountDTO;
@@ -19,6 +18,7 @@ public interface ManageExternalUserAccountDAO {
 	public boolean createTransaction(TransactionDTO transactionDTO);
 	public boolean createAccount(AccountDTO accountDTO);
 	public int getMemberIdByAccount(long accountNumber);
+	public boolean deleteExtUserAccount(int memberId);
 	
 	
 }

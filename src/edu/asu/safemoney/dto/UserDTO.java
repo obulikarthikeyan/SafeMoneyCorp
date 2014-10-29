@@ -176,6 +176,8 @@ public class UserDTO implements Serializable {
     private List<RequestDTO> requestDTOList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "memberId")
     private List<AccountDTO> accountDTOList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "merchantMemberId")
+    private List<PaymentRequestDTO> paymentRequestDTOList;
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "userDTO")
     private LoginDTO loginDTO;
     @JoinColumn(name = "user_type_id", referencedColumnName = "user_type_id")
@@ -428,6 +430,15 @@ public class UserDTO implements Serializable {
 
     public void setAccountDTOList(List<AccountDTO> accountDTOList) {
         this.accountDTOList = accountDTOList;
+    }
+
+    @XmlTransient
+    public List<PaymentRequestDTO> getPaymentRequestDTOList() {
+        return paymentRequestDTOList;
+    }
+
+    public void setPaymentRequestDTOList(List<PaymentRequestDTO> paymentRequestDTOList) {
+        this.paymentRequestDTOList = paymentRequestDTOList;
     }
 
     public LoginDTO getLoginDTO() {
