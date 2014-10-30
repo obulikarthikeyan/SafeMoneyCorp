@@ -2,16 +2,17 @@
 package edu.asu.safemoney.dao.impln;
 
 import java.math.BigInteger;
+import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.mapping.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import edu.asu.safemoney.dao.ManageExternalUserAccountDAO;
 import edu.asu.safemoney.dto.AccountDTO;
+import edu.asu.safemoney.dto.RequestDTO;
 import edu.asu.safemoney.dto.TransactionDTO;
 import edu.asu.safemoney.dto.UserDTO;
 import edu.asu.safemoney.model.AccountModel;
@@ -184,6 +185,7 @@ public class ManageExternalUserAccountDAOImpl implements ManageExternalUserAccou
 		int memberId=user.getMemberId();
 		return memberId;
 	}
+
 	
 	@Override
 	public boolean deleteExtUserAccount(int memberId) {

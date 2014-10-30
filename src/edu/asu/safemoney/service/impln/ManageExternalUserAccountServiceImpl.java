@@ -1,20 +1,31 @@
 package edu.asu.safemoney.service.impln;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import javassist.expr.NewArray;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import antlr.collections.List;
+
+
+
+
+
+
 import edu.asu.safemoney.dao.ManageExternalUserAccountDAO;
+import edu.asu.safemoney.dao.RequestDAO;
 import edu.asu.safemoney.dto.AccountDTO;
+import edu.asu.safemoney.dto.RequestDTO;
 import edu.asu.safemoney.dto.TransactionDTO;
 import edu.asu.safemoney.dto.UserDTO;
 import edu.asu.safemoney.helper.ExternalUserHelper;
 import edu.asu.safemoney.model.AccountModel;
-
 import edu.asu.safemoney.model.ModifyUserModel;
 import edu.asu.safemoney.service.ManageExternalUserAccountService;
 
@@ -24,6 +35,11 @@ public class ManageExternalUserAccountServiceImpl implements
 
 	@Autowired
 	ManageExternalUserAccountDAO manageExternalUserAccountDAO;
+	
+	
+	@Autowired
+	RequestDAO requestDAO;
+	
 
 	/*private AccountModel accntModel;
 
@@ -45,12 +61,41 @@ public class ManageExternalUserAccountServiceImpl implements
 		}
 		return false;
 	}
-
+	
+	
+	
 	@Override
 	@Transactional
-	public void deleteUser(String nameOfUser) {
-		// TODO Auto-generated method stub
-
+	public boolean deleteUser(int memberId) {		
+		
+			UserDTO userDTO= displayUserAccount(memberId);
+			List<RequestDTO> requestList= userDTO.getRequestDTOList();
+			RequestDTO requestDTO = new RequestDTO();
+			requestDTO.setAuthorityUserTypeId(123);
+			requestDTO.setMemberId(userDTO);
+			requestDTO.setRequestType("DELETE_ACCOUNT");
+			requestDTO.setStatus("NEW");
+			requestDTO.setRequestDate(new Date());
+			requestDTO.setProcessedDate(null);
+			requestDTO.setAuthorizingMemberId(null);
+			requestDTO.setAuthorizingAuthority("INT_BANK_ADM");
+			
+			if(requestList!=null){
+			requestList.add(requestDTO);
+			}
+			
+			else{
+				requestList= new ArrayList<RequestDTO>();
+				requestList.add(requestDTO);
+			}
+			
+			userDTO.setRequestDTOList(requestList);
+			
+			boolean isDeleted= requestDAO.createRequest(userDTO);
+			if(isDeleted){
+				return true;
+			}
+			return false;
 	}
 
 	@Override

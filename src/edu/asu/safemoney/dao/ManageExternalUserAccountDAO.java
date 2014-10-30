@@ -16,7 +16,6 @@ public interface ManageExternalUserAccountDAO {
 	public AccountModel getAccountDetails(int memberId);
 	public boolean updateAccountBalance(int memberId, double amount);
 	public boolean createTransaction(TransactionDTO transactionDTO);
-	
 	public boolean createAccount(AccountDTO accountDTO);
 	public int getMemberIdByAccount(long accountNumber);
 	public boolean deleteExtUserAccount(int memberId);
