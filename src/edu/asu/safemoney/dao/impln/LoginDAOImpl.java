@@ -85,7 +85,18 @@ public class LoginDAOImpl implements LoginDAO{
 		try
 		{
 			Session session = sessionFactory.getCurrentSession();
+			session.persist(userDTO);
+			
+			LoginDTO loginDTO = new LoginDTO();
+			loginDTO.setUserName(user.getUserName());
+			loginDTO.setPassword(user.getPassword());
+			loginDTO.setSiteKey(user.getSiteKey());
+			loginDTO.setUserDTO(userDTO);
+			loginDTO.setMemberId(userDTO.getMemberId());
+			userDTO.setLoginDTO(loginDTO);
+			
 			session.save(userDTO);
+			
 			return true;
 			
 		}
@@ -129,13 +140,6 @@ public class LoginDAOImpl implements LoginDAO{
 		UserTypeDTO userTypeDTO = (UserTypeDTO) query.uniqueResult();
 		
 		userDTO.setUserTypeId(userTypeDTO);
-		
-		LoginDTO loginDTO = new LoginDTO();
-		loginDTO.setUserName(user.getUserName());
-		loginDTO.setPassword(user.getPassword());
-		loginDTO.setSiteKey(user.getSiteKey());
-		loginDTO.setMemberId(userDTO.getMemberId());
-		userDTO.setLoginDTO(loginDTO);
 		
 		RequestDTO requestDTO = new RequestDTO();
 		requestDTO.setMemberId(userDTO);
