@@ -45,45 +45,45 @@ public class PaymentRequestDTO implements Serializable {
     @Id
     @Basic(optional = false)
     @NotNull
-    @Column(name = "payment_id")
+    @Column(name = "payment_id", nullable = false)
     private Long paymentId;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "merchant_account_id")
+    @Column(name = "merchant_account_id", nullable = false)
     private long merchantAccountId;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "date")
+    @Column(name = "date", nullable = false)
     @Temporal(TemporalType.DATE)
     private Date date;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "amount")
+    @Column(name = "amount", nullable = false)
     private double amount;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 25)
-    @Column(name = "merchant_first_name")
+    @Column(name = "merchant_first_name", nullable = false, length = 25)
     private String merchantFirstName;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 25)
-    @Column(name = "merchant_last_name")
+    @Column(name = "merchant_last_name", nullable = false, length = 25)
     private String merchantLastName;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "authorizer_member_id")
+    @Column(name = "authorizer_member_id", nullable = false)
     private int authorizerMemberId;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "authorizer_account_id")
+    @Column(name = "authorizer_account_id", nullable = false)
     private long authorizerAccountId;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 15)
-    @Column(name = "status")
+    @Column(name = "status", nullable = false, length = 15)
     private String status;
-    @JoinColumn(name = "merchant_member_id", referencedColumnName = "member_id")
+    @JoinColumn(name = "merchant_member_id", referencedColumnName = "member_id", nullable = false)
     @ManyToOne(optional = false)
     private UserDTO merchantMemberId;
 

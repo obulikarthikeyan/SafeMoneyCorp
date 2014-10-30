@@ -46,34 +46,34 @@ public class RequestDTO implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "request_id")
+    @Column(name = "request_id", nullable = false)
     private Long requestId;
     @Size(max = 45)
-    @Column(name = "request_type")
+    @Column(name = "request_type", length = 45)
     private String requestType;
     @Column(name = "authorizing_member_id")
     private Integer authorizingMemberId;
     @Size(max = 45)
-    @Column(name = "status")
+    @Column(name = "status", length = 45)
     private String status;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 20)
-    @Column(name = "authorizing_authority")
+    @Column(name = "authorizing_authority", nullable = false, length = 20)
     private String authorizingAuthority;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "authority_user_type_id")
+    @Column(name = "authority_user_type_id", nullable = false)
     private int authorityUserTypeId;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "request_date")
+    @Column(name = "request_date", nullable = false)
     @Temporal(TemporalType.DATE)
     private Date requestDate;
     @Column(name = "processed_date")
     @Temporal(TemporalType.DATE)
     private Date processedDate;
-    @JoinColumn(name = "member_id", referencedColumnName = "member_id")
+    @JoinColumn(name = "member_id", referencedColumnName = "member_id", nullable = false)
     @ManyToOne(optional = false)
     private UserDTO memberId;
 
@@ -84,12 +84,11 @@ public class RequestDTO implements Serializable {
         this.requestId = requestId;
     }
 
-    public RequestDTO(Long requestId, String authorizingAuthority, int authorityUserTypeId, Date requestDate, Date processedDate) {
+    public RequestDTO(Long requestId, String authorizingAuthority, int authorityUserTypeId, Date requestDate) {
         this.requestId = requestId;
         this.authorizingAuthority = authorizingAuthority;
         this.authorityUserTypeId = authorityUserTypeId;
         this.requestDate = requestDate;
-        this.processedDate = processedDate;
     }
 
     public Long getRequestId() {

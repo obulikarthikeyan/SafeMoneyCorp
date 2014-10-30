@@ -224,5 +224,11 @@ public class ManageExternalUserController {
 		}
 		return new ModelAndView("external/transactions");
 	}
+	
+	@RequestMapping(value="/external/review", method = RequestMethod.GET)
+	public ModelAndView reviewTransaction()
+	{
+		return new ModelAndView("external/transactionReview");
+	}
 
 }

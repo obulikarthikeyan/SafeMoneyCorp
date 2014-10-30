@@ -45,7 +45,7 @@ public class TransactionDTO implements Serializable {
     @Id
     @Basic(optional = false)
     @NotNull
-    @Column(name = "transaction_id")
+    @Column(name = "transaction_id", nullable = false)
     private Long transactionId;
     @Column(name = "from_account")
     private long fromAccount;
@@ -55,19 +55,19 @@ public class TransactionDTO implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
-    @Column(name = "amount")
+    @Column(name = "amount", precision = 22)
     private Double amount;
     @Size(max = 45)
-    @Column(name = "status")
+    @Column(name = "status", length = 45)
     private String status;
     @Size(max = 45)
-    @Column(name = "transaction_type")
+    @Column(name = "transaction_type", length = 45)
     private String transactionType;
     @Column(name = "is_critical")
     private Boolean isCritical;
     @Column(name = "is_authorized")
     private Boolean isAuthorized;
-    @JoinColumn(name = "member_id", referencedColumnName = "member_id")
+    @JoinColumn(name = "member_id", referencedColumnName = "member_id", nullable = false)
     @ManyToOne(optional = false)
     private UserDTO memberId;
 
