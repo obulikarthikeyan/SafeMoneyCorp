@@ -27,7 +27,7 @@
 						<form id ="sendRequestForm" name="sendRequestForm" target="_self" method="post" action="requestTransactionAccess" style="margin:0px" class="form-inline">
 							<ul class="list-unstyled">
 								<li><h4><label>Enter Member ID</label></h4></li>
-								<li><input id="userName" name="userName"  type="text" class="form-control" placeholder="Member ID" maxlength="11"/></li>
+								<li><input id="memberId" name="memberId"  type="text" class="form-control" placeholder="Member ID" maxlength="11"/></li>
 								<li><br></li>
 								<li><input name="submitRequest" type="submit" value="Submit" class = "btn btn-primary" autofocus="autofocus"/></li>
 								</ul>		
