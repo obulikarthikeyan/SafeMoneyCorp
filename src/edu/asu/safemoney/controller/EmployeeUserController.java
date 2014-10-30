@@ -17,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 import edu.asu.safemoney.dto.RequestDTO;
 import edu.asu.safemoney.model.*;
 import edu.asu.safemoney.service.EmployeeUserService;
+import edu.asu.safemoney.service.ManageExternalUserAccountService;
 
 @Controller
 @SessionAttributes
@@ -24,6 +25,11 @@ public class EmployeeUserController {
 	
 	@Autowired
 	private EmployeeUserService employeeUserService;
+	
+	@Autowired
+	ManageExternalUserAccountService manageExternalUserAccountService;
+	
+	boolean isRequestSent = false;
 	
 	public static final Logger logger = Logger.getLogger(LoginController.class);
 	
@@ -34,24 +40,39 @@ public class EmployeeUserController {
 	}
 	
 	@RequestMapping(value="/internal/requestTransactionAccess", method=RequestMethod.POST)
-	public ModelAndView sendViewRequests(@RequestParam("memberId") int memberId, HttpServletRequest request, HttpSession sessionID)
+	public ModelAndView sendViewRequests(@RequestParam("memberId") int memberId, HttpServletRequest request, HttpSession session)
 	{
 		boolean isUserNameAvailable = false;
-		isUserNameAvailable = true;
-
-
-		
-		if(isUserNameAvailable)
+		if (memberId<0)
 		{
-			
-			UserModel userModel = new UserModel();
+			logger.error("The member Id cannot be negative");
+			isUserNameAvailable=false;
 		}
 		else
 		{
+			isUserNameAvailable=true;
+		}
 
+		if(isUserNameAvailable)
+		{		
+			int currentEmployeeId = (Integer)session.getAttribute("memberId");
+			int internalUserId = memberId;
+			
+			isRequestSent = employeeUserService.sendExtUserViewRequests(internalUserId, currentEmployeeId);			
+		}
+		else
+		{
+			return new ModelAndView("/internal/EmpRequestCustView").addObject("error","Invalid Member Id");
 		}
 		
-		return new ModelAndView("");
+		if(isRequestSent)
+		{
+			return new ModelAndView("/internal/EmpRequestCustView").addObject("message","Request Sent to User");
+		}
+		else
+		{
+			return new ModelAndView("/internal/EmpRequestCustView").addObject("error","Request Failed");
+		}
 	}
 
 }

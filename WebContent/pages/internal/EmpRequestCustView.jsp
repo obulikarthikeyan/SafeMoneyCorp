@@ -24,15 +24,97 @@
 			<div class="panel panel-default">
 				<!-- /.panel-heading -->
 				<div class="panel-body">
-					<div class="form-group">
-						<form id ="sendRequestForm" name="sendRequestForm" target="_self" method="post" action="requestTransactionAccess" style="margin:0px" class="form-inline">
-							<ul class="list-unstyled">
-								<li><h4><label>Enter Member ID</label></h4></li>
-								<li><input id="memberId" name="memberId"  type="text" class="form-control" placeholder="Member ID" maxlength="11"/></li>
-								<li><br></li>
-								<li><input name="submitRequest" type="submit" value="Submit" class = "btn btn-primary" autofocus="autofocus"/></li>
-								</ul>		
-						</form>
+					<div class="row">
+						<div class="form-group" >
+							<form id ="sendRequestForm" name="sendRequestForm" target="_self" method="post" action="requestTransactionAccess" style="margin:5%" class="form-inline">
+								<ul class="list-unstyled">
+									<li><br></li>
+									<li>					
+									<%
+											if (request.getAttribute("message") != null) {
+										%>
+										<p class="label label-success" style="font-size:13px">${message }</p>
+										<br>
+										<%
+											}
+										%>
+										<%
+											if (request.getAttribute("error") != null) {
+										%>
+										<p class="label label-warning" style="font-size:13px">${error }</p>
+										<br>
+										<%
+											}
+									%>
+									</li>								
+									<li><h4><label>Enter Member ID</label></h4></li>
+																	
+									<li><div class="form-group" style="color:red"><input id="memberId" name="memberId"  type="text" class="form-control" placeholder="Member ID" maxlength="11" /></div></li>
+									<li><br></li>
+									<li><input name="submitRequest" type="submit" value="Submit" class = "btn btn-primary" autofocus="autofocus"/></li>
+									</ul>		
+							</form>
+						</div>
+					</div>
+							<div class="table-responsive row" style="margin:5%">
+							<table class="table" style="width: 120%">
+								<thead>
+									<tr>
+										<th>Request ID</th>
+										<th>Requesting Member ID</th>
+										<th>Request Type</th>										
+										<th>Request Date</th>
+										<th>Status</th>
+										<th>Authorizing Authority</th>
+										<th>Action</th>
+									</tr>
+								</thead>
+								<tbody>
+									<c:if test="${not empty requestList}">
+										<c:forEach var="request" items="${requestList}" varStatus="status">
+											<tr>
+												
+												<td>${request.requestId }</td>
+												<td>${request.memberId.memberId }</td>
+												<td>${request.requestType }</td>
+												<td>${request.requestDate }</td>
+												<td><strong>${request.status }</strong></td>
+												<td>ADMIN</td>
+												
+												<c:if test="${request.status == 'NEW' }">
+													<td><button id="viewButton${request.requestId}" class="btn btn-success" 
+											data-toggle="modal" data-target="#viewUser">View</button></td>
+												<script type="text/javascript">
+													$('#viewButton${request.requestId}').click(function(){
+													var firstName = '${request.memberId.firstName}';
+													var lastName = '${request.memberId.lastName}';
+													var contactNo = '${request.memberId.contactNo}';
+													var emailId = '${request.memberId.emailId}';
+													var isCustomer = '${request.memberId.isCustomer}';
+													var requestId = '${request.requestId}';
+													var requestType = '${request.requestType}';
+													var type = 'Customer';
+													if(isCustomer == 'false')
+														type = 'Merchant';
+														
+												   	 $('#firstName').text(firstName);
+												   	 $('#lastName').text(lastName);
+												   	 $('#contactNo').text(contactNo);
+												   	 $('#emailId').text(emailId);
+												   	 $('#type').text(type);
+												   	 $('#requestId').val(requestId);
+												   	 $('#requestType1').text(requestType);
+												   	 $('#requestType').val(requestType);
+													});
+												</script>
+												</c:if>
+											</tr>
+										</c:forEach>
+									</c:if>
+								</tbody>
+							</table>
+						</div>
+					
 					</div>
 				</div>
 				<!-- /#page-wrapper -->
@@ -52,7 +134,7 @@
 		
 		$("#sendRequestForm").validate({
 			rules: {
-				userName: {
+				memberId: {
 					required: true,
 					numbersOnly: true,
 					maxlength : 11
