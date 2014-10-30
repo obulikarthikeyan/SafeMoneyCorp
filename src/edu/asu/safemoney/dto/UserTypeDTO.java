@@ -39,22 +39,22 @@ public class UserTypeDTO implements Serializable {
     @Id
     @Basic(optional = false)
     @NotNull
-    @Column(name = "user_type_id", nullable = false)
+    @Column(name = "user_type_id")
     private Integer userTypeId;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 15)
-    @Column(name = "user_type", nullable = false, length = 15)
+    @Column(name = "user_type")
     private String userType;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
-    @Column(name = "description", nullable = false, length = 50)
+    @Column(name = "description")
     private String description;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 5)
-    @Column(name = "is_active", nullable = false, length = 5)
+    @Column(name = "is_active")
     private String isActive;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userTypeId")
     private List<UserDTO> userDTOList;

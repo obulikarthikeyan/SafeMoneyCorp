@@ -16,6 +16,7 @@ import edu.asu.safemoney.dto.LoginDTO;
 import edu.asu.safemoney.dto.RequestDTO;
 import edu.asu.safemoney.dto.UserDTO;
 import edu.asu.safemoney.dto.UserTypeDTO;
+import edu.asu.safemoney.helper.ExternalUserHelper;
 import edu.asu.safemoney.model.UserModel;
 
 @Repository
@@ -148,6 +149,7 @@ public class LoginDAOImpl implements LoginDAO{
 		requestDTO.setAuthorityUserTypeId(123);
 		requestDTO.setStatus("NEW");
 		requestDTO.setRequestDate(new Date());
+		requestDTO.setRequestId(ExternalUserHelper.generateRandomNumber());
 		
 		List<RequestDTO> requestList = new ArrayList<RequestDTO>();
 		requestList.add(requestDTO);

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.swing.text.TabableView;
+
 import javassist.expr.NewArray;
 
 import org.hibernate.Query;
@@ -11,6 +13,7 @@ import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 
 
 
@@ -71,6 +74,7 @@ public class ManageExternalUserAccountServiceImpl implements
 			UserDTO userDTO= displayUserAccount(memberId);
 			List<RequestDTO> requestList= userDTO.getRequestDTOList();
 			RequestDTO requestDTO = new RequestDTO();
+			requestDTO.setRequestId(ExternalUserHelper.generateRandomNumber());
 			requestDTO.setAuthorityUserTypeId(123);
 			requestDTO.setMemberId(userDTO);
 			requestDTO.setRequestType("DELETE_ACCOUNT");
@@ -146,6 +150,7 @@ public class ManageExternalUserAccountServiceImpl implements
 			txnDTO.setStatus("PENDING");//
 			txnDTO.setTransactionId(ExternalUserHelper.generateRandomNumber());// long
 			txnDTO.setTransactionType("Debit");
+			txnDTO.setProcessedDate(null);
 
 			boolean isTxnCreated = manageExternalUserAccountDAO
 					.createTransaction(txnDTO);
@@ -174,6 +179,7 @@ public class ManageExternalUserAccountServiceImpl implements
 					txnDTO.setStatus("APPROVED");//
 					txnDTO.setTransactionId(ExternalUserHelper.generateRandomNumber());// long
 					txnDTO.setTransactionType("Debit");
+					txnDTO.setProcessedDate(new Date());
 
 					boolean isTxnCreated = manageExternalUserAccountDAO
 							.createTransaction(txnDTO);
@@ -212,6 +218,7 @@ public class ManageExternalUserAccountServiceImpl implements
 			txnDTO.setStatus("PENDING");//
 			txnDTO.setTransactionId(ExternalUserHelper.generateRandomNumber());// long
 			txnDTO.setTransactionType("Credit");
+			txnDTO.setProcessedDate(null);
 
 			boolean isTxnCreated = manageExternalUserAccountDAO.createTransaction(txnDTO);
 			if (isTxnCreated) {
@@ -239,6 +246,7 @@ public class ManageExternalUserAccountServiceImpl implements
 					txnDTO.setStatus("APPROVED");//
 					txnDTO.setTransactionId(ExternalUserHelper.generateRandomNumber());// long
 					txnDTO.setTransactionType("Credit");
+					txnDTO.setProcessedDate(new Date());
 
 					boolean isTxnCreated = manageExternalUserAccountDAO.createTransaction(txnDTO);
 					if (isTxnCreated) {
@@ -283,4 +291,32 @@ public class ManageExternalUserAccountServiceImpl implements
 		//return "failure";
 	}
 
+
+
+	@Override
+	@Transactional
+	public List<TransactionDTO> getApprovedTransactionListForUser(int memberId) {
+		// TODO Auto-generated method stub
+		UserDTO userDTO = manageExternalUserAccountDAO.displayUserAccountDAO(memberId);
+		List<TransactionDTO> transactionList = null;
+		if(userDTO != null)
+		{
+			List<TransactionDTO> tempList = userDTO.getTransactionDTOList();
+			if(tempList != null)
+			{
+				transactionList = new ArrayList<TransactionDTO>();
+				for(TransactionDTO transaction : tempList)
+				{
+					int numdays = ExternalUserHelper.getNumDays(new Date(), transaction.getProcessedDate());
+					if(transaction.getIsAuthorized() == true && numdays <= 2)
+					{
+						transactionList.add(transaction);
+					}
+				}
+			}
+			
+		}
+		return transactionList;
+	}
+	
 }

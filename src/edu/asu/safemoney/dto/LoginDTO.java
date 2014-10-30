@@ -18,7 +18,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -28,8 +27,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author ObuliKarthikeyan
  */
 @Entity
-@Table(name = "login", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"user_name"})})
+@Table(name = "login")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "LoginDTO.findAll", query = "SELECT l FROM LoginDTO l"),
@@ -46,22 +44,22 @@ public class LoginDTO implements Serializable {
     @Id
     @Basic(optional = false)
     @NotNull
-    @Column(name = "member_id", nullable = false)
+    @Column(name = "member_id")
     private Integer memberId;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 15)
-    @Column(name = "user_name", nullable = false, length = 15)
+    @Column(name = "user_name")
     private String userName;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 15)
-    @Column(name = "password", nullable = false, length = 15)
+    @Column(name = "password")
     private String password;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 20)
-    @Column(name = "site_key", nullable = false, length = 20)
+    @Column(name = "site_key")
     private String siteKey;
     @Column(name = "isAccountNonLocked")
     private Boolean isAccountNonLocked;
@@ -72,7 +70,7 @@ public class LoginDTO implements Serializable {
     @Column(name = "lastLoginDate")
     @Temporal(TemporalType.DATE)
     private Date lastLoginDate;
-    @JoinColumn(name = "member_id", referencedColumnName = "member_id", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "member_id", referencedColumnName = "member_id", insertable = false, updatable = false)
     @OneToOne(optional = false)
     private UserDTO userDTO;
 

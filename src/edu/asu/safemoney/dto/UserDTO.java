@@ -24,7 +24,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -35,8 +34,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author ObuliKarthikeyan
  */
 @Entity
-@Table(name = "user", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"email_id"})})
+@Table(name = "user")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "UserDTO.findAll", query = "SELECT u FROM UserDTO u"),
@@ -69,80 +67,80 @@ public class UserDTO implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "member_id", nullable = false)
+    @Column(name = "member_id")
     private Integer memberId;
     @Size(max = 25)
-    @Column(name = "first_name", length = 25)
+    @Column(name = "first_name")
     private String firstName;
     @Size(max = 25)
-    @Column(name = "last_name", length = 25)
+    @Column(name = "last_name")
     private String lastName;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 30)
-    @Column(name = "email_id", nullable = false, length = 30)
+    @Column(name = "email_id")
     private String emailId;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "contact_no", nullable = false)
+    @Column(name = "contact_no")
     private long contactNo;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
-    @Column(name = "address_1", nullable = false, length = 50)
+    @Column(name = "address_1")
     private String address1;
     @Size(max = 50)
-    @Column(name = "address_2", length = 50)
+    @Column(name = "address_2")
     private String address2;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 15)
-    @Column(name = "city", nullable = false, length = 15)
+    @Column(name = "city")
     private String city;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 2)
-    @Column(name = "state", nullable = false, length = 2)
+    @Column(name = "state")
     private String state;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "zip", nullable = false)
+    @Column(name = "zip")
     private long zip;
     @Column(name = "ssn")
     private long ssn;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 200)
-    @Column(name = "sec_question_1", nullable = false, length = 200)
+    @Column(name = "sec_question_1")
     private String secQuestion1;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 200)
-    @Column(name = "sec_question_2", nullable = false, length = 200)
+    @Column(name = "sec_question_2")
     private String secQuestion2;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 200)
-    @Column(name = "sec_question_3", nullable = false, length = 200)
+    @Column(name = "sec_question_3")
     private String secQuestion3;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 25)
-    @Column(name = "sec_answer_1", nullable = false, length = 25)
+    @Column(name = "sec_answer_1")
     private String secAnswer1;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 25)
-    @Column(name = "sec_answer_2", nullable = false, length = 25)
+    @Column(name = "sec_answer_2")
     private String secAnswer2;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 25)
-    @Column(name = "sec_answer_3", nullable = false, length = 25)
+    @Column(name = "sec_answer_3")
     private String secAnswer3;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "date_of_birth", nullable = false)
+    @Column(name = "date_of_birth")
     @Temporal(TemporalType.DATE)
     private Date dateOfBirth;
     @Column(name = "age")
@@ -150,27 +148,27 @@ public class UserDTO implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 5)
-    @Column(name = "isCustomer", nullable = false, length = 5)
+    @Column(name = "isCustomer")
     private String isCustomer;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 10)
-    @Column(name = "created_by", nullable = false, length = 10)
+    @Column(name = "created_by")
     private String createdBy;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "created_date", nullable = false)
+    @Column(name = "created_date")
     @Temporal(TemporalType.DATE)
     private Date createdDate;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "expiry_date", nullable = false)
+    @Column(name = "expiry_date")
     @Temporal(TemporalType.DATE)
     private Date expiryDate;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 5)
-    @Column(name = "is_active", nullable = false, length = 5)
+    @Column(name = "is_active")
     private String isActive;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "memberId")
     private List<TransactionDTO> transactionDTOList;
@@ -184,7 +182,7 @@ public class UserDTO implements Serializable {
     private List<PaymentRequestDTO> paymentRequestDTOList;
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "userDTO")
     private LoginDTO loginDTO;
-    @JoinColumn(name = "user_type_id", referencedColumnName = "user_type_id", nullable = false)
+    @JoinColumn(name = "user_type_id", referencedColumnName = "user_type_id")
     @ManyToOne(optional = false)
     private UserTypeDTO userTypeId;
 

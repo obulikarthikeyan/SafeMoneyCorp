@@ -1,10 +1,9 @@
 package edu.asu.safemoney.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
-import antlr.collections.List;
+import java.util.List;
 import edu.asu.safemoney.dto.UserDTO;
 import edu.asu.safemoney.model.*;
+import edu.asu.safemoney.dto.TransactionDTO;;
 
 public interface ManageExternalUserAccountService {
 
@@ -19,4 +18,6 @@ public interface ManageExternalUserAccountService {
 	public String makeTransform(int memberID, double amount, long toAccount);
 		// edu.asu.safemoney.service.impln.List<UserDTO> displayUserAccount(
 	//		String nameOfUser);
+	
+	public List<TransactionDTO> getApprovedTransactionListForUser(int memberId);
 }

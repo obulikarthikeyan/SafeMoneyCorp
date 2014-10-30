@@ -1,4 +1,3 @@
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -11,8 +10,6 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -45,36 +42,36 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class RequestDTO implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "request_id", nullable = false)
+    @NotNull
+    @Column(name = "request_id")
     private Long requestId;
     @Size(max = 45)
-    @Column(name = "request_type", length = 45)
+    @Column(name = "request_type")
     private String requestType;
     @Column(name = "authorizing_member_id")
     private Integer authorizingMemberId;
     @Size(max = 45)
-    @Column(name = "status", length = 45)
+    @Column(name = "status")
     private String status;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 20)
-    @Column(name = "authorizing_authority", nullable = false, length = 20)
+    @Column(name = "authorizing_authority")
     private String authorizingAuthority;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "authority_user_type_id", nullable = false)
+    @Column(name = "authority_user_type_id")
     private int authorityUserTypeId;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "request_date", nullable = false)
+    @Column(name = "request_date")
     @Temporal(TemporalType.DATE)
     private Date requestDate;
     @Column(name = "processed_date")
     @Temporal(TemporalType.DATE)
     private Date processedDate;
-    @JoinColumn(name = "member_id", referencedColumnName = "member_id", nullable = false)
+    @JoinColumn(name = "member_id", referencedColumnName = "member_id")
     @ManyToOne(optional = false)
     private UserDTO memberId;
 

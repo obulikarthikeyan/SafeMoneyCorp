@@ -36,15 +36,15 @@ public class AccountDTO implements Serializable {
     @Id
     @Basic(optional = false)
     @NotNull
-    @Column(name = "account_no", nullable = false)
+    @Column(name = "account_no")
     private Long accountNo;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
-    @Column(name = "amount", precision = 22)
+    @Column(name = "amount")
     private Double amount;
     @Size(max = 5)
-    @Column(name = "is_active", length = 5)
+    @Column(name = "is_active")
     private String isActive;
-    @JoinColumn(name = "member_id", referencedColumnName = "member_id", nullable = false)
+    @JoinColumn(name = "member_id", referencedColumnName = "member_id")
     @ManyToOne(optional = false)
     private UserDTO memberId;
 

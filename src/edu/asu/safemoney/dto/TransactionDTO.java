@@ -39,13 +39,14 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "TransactionDTO.findByStatus", query = "SELECT t FROM TransactionDTO t WHERE t.status = :status"),
     @NamedQuery(name = "TransactionDTO.findByTransactionType", query = "SELECT t FROM TransactionDTO t WHERE t.transactionType = :transactionType"),
     @NamedQuery(name = "TransactionDTO.findByIsCritical", query = "SELECT t FROM TransactionDTO t WHERE t.isCritical = :isCritical"),
-    @NamedQuery(name = "TransactionDTO.findByIsAuthorized", query = "SELECT t FROM TransactionDTO t WHERE t.isAuthorized = :isAuthorized")})
+    @NamedQuery(name = "TransactionDTO.findByIsAuthorized", query = "SELECT t FROM TransactionDTO t WHERE t.isAuthorized = :isAuthorized"),
+    @NamedQuery(name = "TransactionDTO.findByProcessedDate", query = "SELECT t FROM TransactionDTO t WHERE t.processedDate = :processedDate")})
 public class TransactionDTO implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @NotNull
-    @Column(name = "transaction_id", nullable = false)
+    @Column(name = "transaction_id")
     private Long transactionId;
     @Column(name = "from_account")
     private long fromAccount;
@@ -55,19 +56,22 @@ public class TransactionDTO implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
-    @Column(name = "amount", precision = 22)
+    @Column(name = "amount")
     private Double amount;
     @Size(max = 45)
-    @Column(name = "status", length = 45)
+    @Column(name = "status")
     private String status;
     @Size(max = 45)
-    @Column(name = "transaction_type", length = 45)
+    @Column(name = "transaction_type")
     private String transactionType;
     @Column(name = "is_critical")
     private Boolean isCritical;
     @Column(name = "is_authorized")
     private Boolean isAuthorized;
-    @JoinColumn(name = "member_id", referencedColumnName = "member_id", nullable = false)
+    @Column(name = "processed_date")
+    @Temporal(TemporalType.DATE)
+    private Date processedDate;
+    @JoinColumn(name = "member_id", referencedColumnName = "member_id")
     @ManyToOne(optional = false)
     private UserDTO memberId;
 
@@ -148,6 +152,14 @@ public class TransactionDTO implements Serializable {
 
     public void setIsAuthorized(Boolean isAuthorized) {
         this.isAuthorized = isAuthorized;
+    }
+
+    public Date getProcessedDate() {
+        return processedDate;
+    }
+
+    public void setProcessedDate(Date processedDate) {
+        this.processedDate = processedDate;
     }
 
     public UserDTO getMemberId() {

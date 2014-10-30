@@ -1,6 +1,7 @@
 package edu.asu.safemoney.controller;
 
 import java.util.Enumeration;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
+import edu.asu.safemoney.dto.TransactionDTO;
 import edu.asu.safemoney.dto.UserDTO;
 import edu.asu.safemoney.model.AccountModel;
 import edu.asu.safemoney.model.ModifyUserModel;
@@ -228,9 +230,19 @@ public class ManageExternalUserController {
 	}
 	
 	@RequestMapping(value="/external/review", method = RequestMethod.GET)
-	public ModelAndView reviewTransaction()
+	public ModelAndView reviewTransaction(HttpSession session)
 	{
-		return new ModelAndView("external/transactionReview");
+		int memberId = (Integer) session.getAttribute("memberId");
+		List<TransactionDTO> approvedTransactionList = manageExternalUserAccountService.getApprovedTransactionListForUser(memberId);
+		if(approvedTransactionList != null)
+		{
+			return new ModelAndView("external/transactionReview").addObject("transactionList", approvedTransactionList);
+		}
+		else
+		{
+			return new ModelAndView("external/transactionReview").addObject("error", "true");
+		}
+		
 	}
 
 }

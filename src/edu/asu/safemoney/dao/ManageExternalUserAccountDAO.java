@@ -21,4 +21,5 @@ public interface ManageExternalUserAccountDAO {
 	public boolean deleteExtUserAccount(int memberId);
 	
 	
+	
 }

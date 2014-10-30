@@ -48,53 +48,53 @@ public class TransactionReviewDTO implements Serializable {
     @Id
     @Basic(optional = false)
     @NotNull
-    @Column(name = "transaction_review_id", nullable = false)
+    @Column(name = "transaction_review_id")
     private Long transactionReviewId;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "transaction_id", nullable = false)
+    @Column(name = "transaction_id")
     private long transactionId;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "from_account", nullable = false)
+    @Column(name = "from_account")
     private long fromAccount;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "to_account", nullable = false)
+    @Column(name = "to_account")
     private long toAccount;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "amount", nullable = false)
+    @Column(name = "amount")
     private double amount;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 45)
-    @Column(name = "transaction_type", nullable = false, length = 45)
+    @Column(name = "transaction_type")
     private String transactionType;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "status", nullable = false)
+    @Column(name = "status")
     private int status;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "authorizing_authority_id", nullable = false)
+    @Column(name = "authorizing_authority_id")
     private int authorizingAuthorityId;
     @Column(name = "authorizing_member_id")
     private Integer authorizingMemberId;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 15)
-    @Column(name = "authorizing_authority_type", nullable = false, length = 15)
+    @Column(name = "authorizing_authority_type")
     private String authorizingAuthorityType;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "request_date", nullable = false)
+    @Column(name = "request_date")
     @Temporal(TemporalType.DATE)
     private Date requestDate;
     @Column(name = "processed_date")
     @Temporal(TemporalType.DATE)
     private Date processedDate;
-    @JoinColumn(name = "cust_member_id", referencedColumnName = "member_id", nullable = false)
+    @JoinColumn(name = "cust_member_id", referencedColumnName = "member_id")
     @ManyToOne(optional = false)
     private UserDTO custMemberId;
 
