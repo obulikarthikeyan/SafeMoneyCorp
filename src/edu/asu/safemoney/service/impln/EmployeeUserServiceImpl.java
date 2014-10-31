@@ -8,10 +8,12 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import edu.asu.safemoney.service.AdminUserService;
 import edu.asu.safemoney.service.EmployeeUserService;
 import edu.asu.safemoney.service.ManageExternalUserAccountService;
 
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.ModelAndView;
 
 import edu.asu.safemoney.dao.*;
 import edu.asu.safemoney.dto.RequestDTO;
@@ -29,7 +31,11 @@ public class EmployeeUserServiceImpl implements EmployeeUserService{
 	private RequestDAO requestDAO;
 	
 	@Autowired
-	ManageExternalUserAccountDAO manageExternalUserAccountDAO;
+	private ManageExternalUserAccountDAO manageExternalUserAccountDAO;
+	
+	
+	@Autowired
+	private AdminUserService adminUserService;
 	
 	@Transactional
 	@Override
@@ -48,6 +54,11 @@ public class EmployeeUserServiceImpl implements EmployeeUserService{
 			return false;
 		}
 		
+		if(custUserDTO.getUserTypeId().getUserTypeId()!=322 && custUserDTO.getUserTypeId().getUserTypeId()!=366)
+		{
+			return false;
+		}
+		
 		List<RequestDTO> requestList= empUserDTO.getRequestDTOList();
 		
 		RequestDTO requestDTO = new RequestDTO();
@@ -62,7 +73,6 @@ public class EmployeeUserServiceImpl implements EmployeeUserService{
 		requestDTO.setAuthorityUserTypeId(authorityUserTypeId.getUserTypeId());		
 		requestDTO.setAuthorizingAuthority(authorityUserTypeId.getUserType());
 		requestDTO.setRequestId(ExternalUserHelper.generateRandomNumber());
-		
 		if(requestList!=null)
 		{
 			for (RequestDTO req : requestList)
@@ -82,6 +92,14 @@ public class EmployeeUserServiceImpl implements EmployeeUserService{
 			requestList.add(requestDTO);
 		}
 		return true;
+	}
+	
+	@Transactional
+	@Override
+	public boolean getViewRequestList(int requestId)
+	{
+		return false;
+
 	}
 	
 	@Transactional

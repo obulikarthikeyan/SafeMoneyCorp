@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 import edu.asu.safemoney.dto.RequestDTO;
+import edu.asu.safemoney.dto.UserDTO;
 import edu.asu.safemoney.model.*;
 import edu.asu.safemoney.service.EmployeeUserService;
 import edu.asu.safemoney.service.ManageExternalUserAccountService;
+import edu.asu.safemoney.service.impln.ManageExternalUserAccountServiceImpl;
 
 @Controller
 @SessionAttributes
@@ -29,13 +31,32 @@ public class EmployeeUserController {
 	@Autowired
 	ManageExternalUserAccountService manageExternalUserAccountService;
 	
+//	@Autowired
+//	private ManageExternalUserAccountServiceImpl manageExternalUserAccountServiceImpl;
+	
 	boolean isRequestSent = false;
 	
 	public static final Logger logger = Logger.getLogger(LoginController.class);
 	
 	@RequestMapping("/internal/sendViewRequests")
-	public ModelAndView getInternalUserAccountRequests()
+	public ModelAndView getInternalUserAccountRequests(HttpSession session)
 	{	
+		
+		
+		UserDTO empUserDTO = new UserDTO((Integer)session.getAttribute("memberId"));
+		List<RequestDTO> requestList= empUserDTO.getRequestDTOList();
+		
+//		ModelAndView mv = new ModelAndView("/internal/EmpRequestCustView");
+//		mv.addObject("requestList", requestList);
+//		
+//		for(RequestDTO req : requestList)
+//		{
+//			if(req.getRequestType()=="VIEW_ACCOUNT")
+//			{
+//				mv.addObject("message","Request has been Processed. Bank Account has been created for the user");
+//			}
+//		}
+		
 		return new ModelAndView("/internal/EmpRequestCustView");
 	}
 	
