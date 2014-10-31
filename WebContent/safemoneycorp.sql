@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 29, 2014 at 07:56 AM
+-- Generation Time: Oct 31, 2014 at 05:02 AM
 -- Server version: 5.5.32
 -- PHP Version: 5.4.19
 
@@ -28,7 +28,6 @@ USE `safemoneycorp`;
 -- Table structure for table `account`
 --
 
-DROP TABLE IF EXISTS `account`;
 CREATE TABLE IF NOT EXISTS `account` (
   `account_no` bigint(10) NOT NULL,
   `member_id` int(11) NOT NULL,
@@ -46,7 +45,7 @@ INSERT INTO `account` (`account_no`, `member_id`, `amount`, `is_active`) VALUES
 (1545151, 996368, 5000, 'true'),
 (6987456, 996364, 5000, 'true'),
 (8765433, 996369, 400, 'true'),
-(56352145, 996363, 550.2799999999997, 'true'),
+(56352145, 996363, 500.27999999999975, 'true'),
 (10401417978, 996386, 200, 'true');
 
 -- --------------------------------------------------------
@@ -55,12 +54,15 @@ INSERT INTO `account` (`account_no`, `member_id`, `amount`, `is_active`) VALUES
 -- Table structure for table `login`
 --
 
-DROP TABLE IF EXISTS `login`;
 CREATE TABLE IF NOT EXISTS `login` (
   `member_id` int(11) NOT NULL,
   `user_name` varchar(15) NOT NULL,
   `password` varchar(15) NOT NULL,
   `site_key` varchar(20) NOT NULL,
+  `isAccountNonLocked` tinyint(1) DEFAULT NULL,
+  `isEnabled` int(11) DEFAULT NULL,
+  `failedAttemptCount` int(11) DEFAULT NULL,
+  `lastLoginDate` date DEFAULT NULL,
   PRIMARY KEY (`member_id`),
   UNIQUE KEY `user_name` (`user_name`),
   KEY `memberid` (`member_id`)
@@ -70,12 +72,12 @@ CREATE TABLE IF NOT EXISTS `login` (
 -- Dumping data for table `login`
 --
 
-INSERT INTO `login` (`member_id`, `user_name`, `password`, `site_key`) VALUES
-(996363, 'cust', 'cust', 'eclipse'),
-(996364, 'mer', 'mer', 'helio'),
-(996368, 'emp', 'emp', 'helio'),
-(996369, 'admin', 'admin', 'helio'),
-(996386, 'jbjhjhj', 'hhjjhhjjhj', 'ghjghjghg');
+INSERT INTO `login` (`member_id`, `user_name`, `password`, `site_key`, `isAccountNonLocked`, `isEnabled`, `failedAttemptCount`, `lastLoginDate`) VALUES
+(996363, 'cust', 'cust', 'eclipse', NULL, NULL, NULL, NULL),
+(996364, 'mer', 'mer', 'helio', NULL, NULL, NULL, NULL),
+(996368, 'emp', 'emp', 'helio', NULL, NULL, NULL, NULL),
+(996369, 'admin', 'admin', 'helio', NULL, NULL, NULL, NULL),
+(996386, 'jbjhjhj', 'hhjjhhjjhj', 'ghjghjghg', NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -83,7 +85,6 @@ INSERT INTO `login` (`member_id`, `user_name`, `password`, `site_key`) VALUES
 -- Table structure for table `payment_request`
 --
 
-DROP TABLE IF EXISTS `payment_request`;
 CREATE TABLE IF NOT EXISTS `payment_request` (
   `payment_id` bigint(12) NOT NULL,
   `merchant_account_id` bigint(10) NOT NULL,
@@ -105,9 +106,8 @@ CREATE TABLE IF NOT EXISTS `payment_request` (
 -- Table structure for table `request`
 --
 
-DROP TABLE IF EXISTS `request`;
 CREATE TABLE IF NOT EXISTS `request` (
-  `request_id` bigint(10) NOT NULL AUTO_INCREMENT,
+  `request_id` bigint(10) NOT NULL,
   `member_id` int(11) NOT NULL,
   `request_type` varchar(45) DEFAULT NULL,
   `authorizing_member_id` int(11) DEFAULT NULL,
@@ -118,7 +118,7 @@ CREATE TABLE IF NOT EXISTS `request` (
   `processed_date` date DEFAULT NULL,
   PRIMARY KEY (`request_id`),
   KEY `request_user` (`member_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=56357 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `request`
@@ -133,7 +133,6 @@ INSERT INTO `request` (`request_id`, `member_id`, `request_type`, `authorizing_m
 -- Table structure for table `transaction`
 --
 
-DROP TABLE IF EXISTS `transaction`;
 CREATE TABLE IF NOT EXISTS `transaction` (
   `transaction_id` bigint(10) NOT NULL,
   `member_id` int(11) NOT NULL,
@@ -145,6 +144,7 @@ CREATE TABLE IF NOT EXISTS `transaction` (
   `transaction_type` varchar(45) DEFAULT NULL,
   `is_critical` tinyint(1) DEFAULT NULL,
   `is_authorized` tinyint(1) DEFAULT NULL,
+  `processed_date` date DEFAULT NULL,
   PRIMARY KEY (`transaction_id`),
   KEY `transaction_member` (`member_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -153,39 +153,32 @@ CREATE TABLE IF NOT EXISTS `transaction` (
 -- Dumping data for table `transaction`
 --
 
-INSERT INTO `transaction` (`transaction_id`, `member_id`, `from_account`, `to_account`, `date`, `amount`, `status`, `transaction_type`, `is_critical`, `is_authorized`) VALUES
-(1234564, 996363, 56352145, 56352145, '2014-10-27 01:18:20', 300, 'APPROVED', 'Debit', 0, 1),
-(3305011, 996363, 56352145, 56352145, '2014-10-27 21:10:17', 3000, 'Pending', 'Credit', 1, 0),
-(3372261, 996386, 10401417978, 10401417978, '2014-10-28 23:53:58', 200, 'APPROVED', 'Credit', 0, 1),
-(3571418, 996363, 56352145, 56352145, '2014-10-27 02:41:12', 98, 'APPROVED', 'Debit', 0, 1),
-(3875286, 996363, 56352145, 56352145, '2014-10-27 20:50:31', 100, 'APPROVED', 'Debit', 0, 1),
-(4116140, 996368, 56352145, 1545151, '2014-10-27 21:14:07', 1000, 'APPROVED', 'Credit', 0, 1),
-(4207114, 996363, 56352145, 56352145, '2014-10-27 20:50:03', 100, 'APPROVED', 'Credit', 0, 1),
-(4490948, 996363, 56352145, 56352145, '2014-10-27 20:55:40', 10000, 'Pending', 'Credit', 1, 0),
-(4817206, 996363, 56352145, 56352145, '2014-10-27 20:43:29', 1000, 'APPROVED', 'Credit', 0, 1),
-(4825394, 996363, 56352145, 56352145, '2014-10-27 20:50:45', 100, 'APPROVED', 'Credit', 0, 1),
-(4830852, 996363, 56352145, 56352145, '2014-10-27 20:53:12', 1000, 'APPROVED', 'Credit', 0, 1),
-(4898306, 996363, 56352145, 56352145, '2014-10-27 20:53:01', 1000, 'APPROVED', 'Debit', 0, 1),
-(4911640, 996363, 56352145, 56352145, '2014-10-27 20:42:07', 100, 'APPROVED', 'Debit', 0, 1),
-(5078599, 996363, 56352145, 1545151, '2014-10-27 21:14:06', 1000, 'APPROVED', 'Debit', 0, 1),
-(5083286, 996363, 56352145, 56352145, '2014-10-27 21:10:08', 1000, 'APPROVED', 'Credit', 0, 1),
-(5117827, 996363, 56352145, 56352145, '2014-10-27 20:45:57', 100, 'APPROVED', 'Debit', 0, 1),
-(5130745, 996363, 56352145, 56352145, '2014-10-27 20:45:42', 1000, 'APPROVED', 'Credit', 0, 1),
-(5222875, 996363, 56352145, 56352145, '2014-10-27 02:23:36', 100, 'APPROVED', 'Debit', 0, 1),
-(5226408, 996368, 56352145, 1545151, '2014-10-27 21:18:19', 1000, 'APPROVED', 'Credit', 0, 1),
-(5357242, 996363, 56352145, 56352145, '2014-10-27 20:55:32', 10000, 'Pending', 'Credit', 1, 0),
-(5380784, 996363, 56352145, 56352145, '2014-10-27 20:50:57', 1000, 'APPROVED', 'Debit', 0, 1),
-(5566677, 996363, 56352145, 56352145, '2014-10-27 20:40:06', 100, 'APPROVED', 'Credit', 0, 1),
-(5589927, 996363, 56352145, 56352145, '2014-10-27 20:41:54', 1, 'APPROVED', 'Debit', 0, 1),
-(5651034, 996363, 56352145, 56352145, '2014-10-27 20:42:52', 2500, 'Pending', 'Debit', 1, 0),
-(5651307, 996363, 56352145, 56352145, '2014-10-27 20:41:08', 100, 'APPROVED', 'Credit', 0, 1),
-(5772612, 996363, 56352145, 56352145, '2014-10-27 20:42:19', 150, 'APPROVED', 'Credit', 0, 1),
-(5837203, 996363, 56352145, 56352145, '2014-10-27 14:08:12', 300, 'APPROVED', 'Debit', 0, 1),
-(5869221, 996363, 56352145, 1545151, '2014-10-27 21:18:18', 1000, 'APPROVED', 'Debit', 0, 1),
-(5959976, 996363, 56352145, 56352145, '2014-10-27 20:46:06', 100, 'APPROVED', 'Credit', 0, 1),
-(6121071, 996363, 56352145, 56352145, '2014-10-27 14:08:17', 300, 'APPROVED', 'Debit', 0, 1),
-(6164320, 996363, 56352145, 56352145, '2014-10-27 20:49:54', 100, 'APPROVED', 'Credit', 0, 1),
-(6329804, 996363, 56352145, 56352145, '2014-10-27 21:09:59', 100, 'APPROVED', 'Credit', 0, 1);
+INSERT INTO `transaction` (`transaction_id`, `member_id`, `from_account`, `to_account`, `date`, `amount`, `status`, `transaction_type`, `is_critical`, `is_authorized`, `processed_date`) VALUES
+(5035376, 996363, 56352145, 56352145, '2014-10-30 13:26:33', 50, 'APPROVED', 'Debit', 0, 1, '2014-10-30');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `transaction_review`
+--
+
+CREATE TABLE IF NOT EXISTS `transaction_review` (
+  `transaction_review_id` bigint(12) NOT NULL,
+  `cust_member_id` int(11) NOT NULL,
+  `transaction_id` bigint(12) NOT NULL,
+  `from_account` bigint(12) NOT NULL,
+  `to_account` bigint(12) NOT NULL,
+  `amount` double NOT NULL,
+  `transaction_type` varchar(45) NOT NULL,
+  `status` int(11) NOT NULL,
+  `authorizing_authority_id` int(11) NOT NULL,
+  `authorizing_member_id` int(11) DEFAULT NULL,
+  `authorizing_authority_type` varchar(15) NOT NULL,
+  `request_date` date NOT NULL,
+  `processed_date` date DEFAULT NULL,
+  PRIMARY KEY (`transaction_review_id`),
+  KEY `member_id_review` (`cust_member_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -193,7 +186,6 @@ INSERT INTO `transaction` (`transaction_id`, `member_id`, `from_account`, `to_ac
 -- Table structure for table `user`
 --
 
-DROP TABLE IF EXISTS `user`;
 CREATE TABLE IF NOT EXISTS `user` (
   `member_id` int(11) NOT NULL AUTO_INCREMENT,
   `first_name` varchar(25) DEFAULT NULL,
@@ -243,7 +235,6 @@ INSERT INTO `user` (`member_id`, `first_name`, `last_name`, `email_id`, `contact
 -- Table structure for table `user_type`
 --
 
-DROP TABLE IF EXISTS `user_type`;
 CREATE TABLE IF NOT EXISTS `user_type` (
   `user_type_id` int(11) NOT NULL,
   `user_type` varchar(15) NOT NULL,
@@ -295,6 +286,12 @@ ALTER TABLE `request`
 --
 ALTER TABLE `transaction`
   ADD CONSTRAINT `transactionMemberId` FOREIGN KEY (`member_id`) REFERENCES `user` (`member_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `transaction_review`
+--
+ALTER TABLE `transaction_review`
+  ADD CONSTRAINT `transaction_review_ibfk_1` FOREIGN KEY (`cust_member_id`) REFERENCES `user` (`member_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `user`
