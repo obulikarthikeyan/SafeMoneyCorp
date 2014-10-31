@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+
+
 //import antlr.collections.List;
 import edu.asu.safemoney.dao.ManageExternalUserAccountDAO;
 import edu.asu.safemoney.dto.AccountDTO;
@@ -89,7 +91,7 @@ public class ManageExternalUserAccountServiceImpl implements
 	@Override
 	public String makeDebitTransaction(int memberID, double amount, int toMemberId, String type) {
 		// TODO Auto-generated method stub
-		if (amount > 2000) {
+		if ((amount > 2000)&&!(type.equals("payment"))) {
 			
 			AccountModel accountModel =getAccountDetails(memberID);
 			AccountModel toaccountModel = getAccountDetails(toMemberId);
@@ -155,7 +157,7 @@ public class ManageExternalUserAccountServiceImpl implements
 	@Override
 	public String makeCreditTransaction(int memberID, double amount,int fromMemberId,String type) {
 		// TODO Auto-generated method stub
-		if (amount > 2000) {
+		if ((amount > 2000)&&!(type.equals("payment"))) {
 			
 			AccountModel accountModel = getAccountDetails(memberID);
 			AccountModel fromAccountModel = getAccountDetails(fromMemberId);
@@ -222,10 +224,10 @@ public class ManageExternalUserAccountServiceImpl implements
 	{
 		
 		int toMemberId = manageExternalUserAccountDAO.getMemberIdByAccount(toAccount);																																
-		String debitResult = this.makeDebitTransaction(memberID, amount, toMemberId,"Transfer");
+		String debitResult = this.makeDebitTransaction(memberID, amount, toMemberId,"transfer");
 		if(debitResult.equals("success"))
 		{
-			String creditResult = this.makeCreditTransaction(toMemberId, amount, memberID, "Transfer");
+			String creditResult = this.makeCreditTransaction(toMemberId, amount, memberID, "transfer");
 			if(creditResult.equals("success"))
 			{
 				return "success";
@@ -264,17 +266,61 @@ public class ManageExternalUserAccountServiceImpl implements
 		int merchantMemberId = merchantDTO.getMemberId();
 		int customerId = paymentDTO.getAuthorizerMemberId();
 		double amount = paymentDTO.getAmount();
-		String result = this.makeDebitTransaction(customerId, amount, merchantMemberId,"Debit");
+		String result = this.makeDebitTransaction(customerId, amount, merchantMemberId,"payment");
 		if(result.equals("success"))
 		{
-			paymentDTO.setStatus("PENDINGENPLOYEE");
+			paymentDTO.setStatus("AUTHORIZED");
 			if(manageExternalUserAccountDAO.updatePaymentRequest(paymentDTO))
 				return "success";
 			else
 				return result;
 		}
 		//paymentDTO.setStatus(status);
-		return "failed";
+		return result;
+	}
+
+	@Override
+	@Transactional
+	public String initiatePayment(int memberId, long toAccount, String status, double amount) {
+		// TODO Auto-generated method stub
+		int toMerchantId = manageExternalUserAccountDAO.getMemberIdByAccount(toAccount);
+		
+		String debitResult = makeDebitTransaction(memberId,amount,toMerchantId,"payment");
+		if (debitResult.equals("success")) 
+		{
+			AccountModel customerAccount = getAccountDetails(memberId);
+			AccountModel merchantAccount = getAccountDetails(memberId);
+
+			PaymentRequestDTO paymentRequestDTO = new PaymentRequestDTO();
+			paymentRequestDTO.setAmount(amount);
+			paymentRequestDTO.setAuthorizerAccountId(customerAccount.getAccountNo());
+			paymentRequestDTO.setAuthorizerMemberId(memberId);
+			paymentRequestDTO.setDate(new Date());
+			paymentRequestDTO.setMerchantAccountId(toAccount);
+			paymentRequestDTO.setMerchantFirstName(merchantAccount.getFirstName());
+			paymentRequestDTO.setMerchantLastName(merchantAccount.getLastName());
+			paymentRequestDTO.setMerchantMemberId(displayUserAccount(toMerchantId));
+			paymentRequestDTO.setPaymentId(ExternalUserHelper.generateRandomNumber());
+			paymentRequestDTO.setStatus(status);
+			if(manageExternalUserAccountDAO.addPaymentRequest(paymentRequestDTO))
+				return "success";
+			else
+				return "failed";
+		}
+		else
+			return debitResult;
+	}
+
+	@Transactional
+	public String submitPayment(long paymentId) {
+		// TODO Auto-generated method stub
+		PaymentRequestDTO paymentDTO =  manageExternalUserAccountDAO.getPaymentRequestByPaymentId(paymentId);
+		paymentDTO.setStatus("PENDING_BANK");
+		if (manageExternalUserAccountDAO.updatePaymentRequest(paymentDTO))
+			return "success";
+		else
+			return "failed";
+
 	}
 
 }

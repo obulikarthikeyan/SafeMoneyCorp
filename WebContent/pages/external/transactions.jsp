@@ -40,8 +40,10 @@
 						<li><a href="#Transfer" data-toggle="tab">Transfer</a></li>				
 						<li><a href="#Authorize" data-toggle="tab">Authorize
 								Payment</a></li>
-						<!-- <a href="<%=request.getContextPath() %>/admin/extUserAccount"> -->
+			
 						<li><a href="#Initiate" data-toggle="tab">Initiate
+								Payment</a></li>
+						<li><a href="#Submit" data-toggle="tab">Submit Payment
 								Payment</a></li>
 
 					</ul>
@@ -88,8 +90,7 @@
 
 						</div>
 						<div class="tab-pane fade" id="Transfer">
-						<form id="Transform" role="form" method="POST"
-								action="transfer">
+						<form id="Transform" role="form" method="POST" action="transfer">
 							<br> <br> <label>To Account: </label> 
 							<input id="toAccountNumber" name="toAccountNumber" class="form-control" placeholder="Account No."> <br>
 							<br> <label>Enter Amount: </label> 
@@ -162,7 +163,7 @@
 															<c:forEach var="request" items="${requestList}"
 																varStatus="status">
 																<tr>
-
+																	<c:if test="${request.status == 'PENDING_AUTH' }">
 																	<td>${request.paymentId }</td>
 																	<td>${request.merchantAccountId }</td>
 																	<td>${request.merchantLastName } ${request.merchantFirstName }</td>
@@ -170,7 +171,7 @@
 																	<td>${request.date }</td>
 																	<td><strong>${request.status }</strong></td>
 
-																	<c:if test="${request.status == 'PENDINGCUSTOME' }">
+																	
 																		<td><button id="viewButton${request.paymentId}"
 																				class="btn btn-success" data-toggle="modal"
 																				data-target="#authotizePayment">Authorize</button></td>
@@ -275,30 +276,183 @@
 
 
 						<div class="tab-pane fade" id="Initiate">
+							<form id="initiatePayment" role="form" method="POST" action="initiatePayment">
+								<br> <label>Merchant Account Number: </label> 
+								<input id="toMerchantAccountNumber" name="toMerchantAccountNumber" class="form-control" placeholder="Account No."> <br>
+								<label>Amount: </label> 
+								<input id="amount" name="amount" class="form-control" placeholder="Amount"> <br> 
+								<label>Description:
+								</label>
 
-							<br> <label>Customer Account Number: </label> <input
-								class="form-control" placeholder="Account No."> <br>
-							<label>Amount: </label> <input class="form-control"
-								placeholder="Amount"> <br> <label>Description:
-							</label>
-
-							<textarea class="form-control" rows="3"></textarea>
-							<br>
-							<p>
-								<button type="button" class="btn btn-success">Initiate
-									Payment Request</button>
-								<button type="button" class="btn btn-default">Cancel</button>
-								<!--button type="button" class="btn btn-default">Default</button>
+								<textarea class="form-control" rows="3"></textarea>
+								<br>
+								<p>
+									<button type="submit" class="btn btn-success">Initiate
+										Payment Request</button>
+									<button type="button" class="btn btn-default">Cancel</button>
+									<!--button type="button" class="btn btn-default">Default</button>
 																	<button type="button" class="btn btn-primary">Success</button>
 																	<button type="button" class="btn btn-info">Info</button>
 																	<button type="button" class="btn btn-warning">Warning</button>
 																	<button type="button" class="btn btn-danger">Danger</button>
 																	<button type="button" class="btn btn-link">Link</button-->
-							</p>
+								</p>
+							</form>
 						</div>
 
+						<div class="tab-pane fade" id="Submit">
+							<!--  div id="page-wrapper">-->
+							<div class="row">
+								<div class="col-lg-12">
+									<h1 class="page-header">Authorized Payment Requests</h1>
+								</div>
+								<!-- /.col-lg-12 -->
+							</div>
+
+							<div class="col-lg-16">
+
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<strong>Authorized Payment Requests</strong>
+									</div>
+
+									<div class="panel-body">
+										<%
+											if (request.getAttribute("message") != null) {
+										%>
+										<p class="label label-success" style="font-size: 13px">${message }</p>
+										<br>
+										<%
+											}
+										%>
+										<%
+											if (request.getAttribute("error") != null) {
+										%>
+										<p class="label label-warning" style="font-size: 13px">${error }</p>
+										<br>
+										<%
+											}
+										%>
+										<div class="table-responsive">
+											<table class="table" style="width: 120%">
+												<thead>
+													<tr>
+														<th>Payment Request ID</th>
+														<th>Authorizer ID</th>
+														<th>Authorizer Account Number</th>
+														<th>Authorized Amount</th>
+														<th>Quthorized Date</th>
+														<th>Requesting Status</th>
+														<th>Action</th>
+													</tr>
+												</thead>
+												<tbody>
+													<c:if test="${not empty requestList}">
+														<c:forEach var="request" items="${requestList}"
+															varStatus="status">
+															<tr>
+																<c:if test="${request.status == 'AUTHORIZED' }">
+																	<td>${request.paymentId }</td>
+																	<td>${request.authorizerMemberId }</td>
+																	<td>${request.authorizerAccountId }
+											
+																	<td>${request.amount }</td>
+																	<td>${request.date }</td>
+																	<td><strong>${request.status }</strong></td>
 
 
+																	<td><button id="viewButton${request.paymentId}"
+																			class="btn btn-success" data-toggle="modal"
+																			data-target="#submitAuthorizedPayment">Submit</button></td>
+																	<script type="text/javascript">
+																		$(
+																				'#viewButton${request.paymentId}')
+																				.click(
+																						function() {
+																							var authorizerAccountId = '${request.authorizerAccountId}';
+																							var authorizedAmount = '${request.amount}';
+																							var authorizedDate = '${request.date}';
+																							var paymentRequestId = '${request.paymentId}';
+
+																							$(
+																									'#authorizerAccountId')
+																									.text(
+																											authorizerAccountId);
+																							$(
+																									'#authorizedAmount')
+																									.text(
+																											authorizedAmount);
+																							
+																							$(
+																									'#authorizedDate')
+																									.text(
+																											authorizedDate);
+																							$(
+																									'#paymentRequestId2')
+																									.val(
+																											paymentRequestId);
+																						});
+																	</script>
+																</c:if>
+															</tr>
+														</c:forEach>
+													</c:if>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- /div> -->
+						</div>
+						
+						<div class="modal fade" id="submitAuthorizedPayment" tabindex="-1" role="dialog"
+							aria-labelledby="myModalLabel" aria-hidden="true">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal"
+											aria-hidden="true">&times;</button>
+										<h4 class="modal-title" id="myModalLabel">Request Details</h4>
+									</div>
+
+									<form id="submitAuthorizedPaymentRequest" role="form" method="POST"
+										action="submitAuthorizedPaymentRequest">
+										<input type="hidden" id="paymentRequestId2" name="paymentRequestId2" /> 
+										<div class="modal-body">
+											<table class="table" style="width: 40%">
+												<tbody>
+													<tr>
+														<td></td>
+														<td></td>
+													</tr>
+													<tr>
+														<td><label>Authorizer Account Number</label></td>
+														<td id=authorizerAccountId></td>
+													</tr>
+													<tr>
+														<td><label>Authorized Amount</label></td>
+														<td id="authorizedAmount"></td>
+													</tr>
+													<tr>
+														<td><label>Authorized Date</label></td>
+														<td id="authorizedDate"></td>
+													</tr>
+													
+												</tbody>
+											</table>
+										</div>
+										<div class="modal-footer">
+											<button type="submit" class="btn btn-primary">Authorize</button>
+											<button type="button" class="btn btn-default"
+												data-dismiss="modal">Close</button>
+
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+						
 						<div class="tab-pane fade in active in active" id="Summary">
 							<br>
 							<br>

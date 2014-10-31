@@ -266,7 +266,7 @@ public class ManageExternalUserController {
 		{
 			return new ModelAndView("external/transactions").addObject("message",
 					"Payment Authorized Successfully!").addObject("account",
-							accountModel).addObject("requestList", requestList).addObject("message", "Authorize failed because of "+result);
+							accountModel).addObject("requestList", requestList).addObject("message", "Authorize failed because of"+result);
 		
 		}
 	}
@@ -278,5 +278,63 @@ public class ManageExternalUserController {
 		boolean isApproved = adminUserService.approveExtUserRequest(requestId);
 		List<RequestDTO> requestList = adminUserService
 				.getExterUserAccountRequests();*/
+	@RequestMapping(value = "/external/initiatePayment", method = RequestMethod.POST)
+	public ModelAndView initiatePayment(
+			@RequestParam("toMerchantAccountNumber") long toMerchantAccount,
+			@RequestParam("amount") double amount,
+			HttpSession session)
+	{
+		
+		
+		int memberId = (Integer) session.getAttribute("memberId");
+		String result = manageExternalUserAccountService.initiatePayment(memberId, toMerchantAccount, "AUTHORIZED", amount);
+		
+		AccountModel accountModel = manageExternalUserAccountService.getAccountDetails(memberId);
+		List<PaymentRequestDTO> requestList = manageExternalUserAccountService.getPaymentRequest(memberId);
+		
+		if(result.equals("success"))
+		{
+			return new ModelAndView("external/transactions").addObject("message",
+				"Payment Authorized Successfully!").addObject("account",
+						accountModel).addObject("requestList", requestList).addObject("message", "You have initiated a payment successfully");
+		}
+		else if(result.equals("NOFUND"))
+		{
+			return new ModelAndView("external/transactions").addObject("message",
+					"Payment Authorized Successfully!").addObject("account",
+							accountModel).addObject("requestList", requestList).addObject("message", "You don't have enough fund in your account");
+		}
+		else
+		{
+			return new ModelAndView("external/transactions").addObject("message",
+					"Payment Authorized Successfully!").addObject("account",
+							accountModel).addObject("requestList", requestList).addObject("message", "Authorize failed because of"+result);
+		
+		}
+	}
+	
+	//submitAuthorizedPaymentRequest
+	@RequestMapping(value = "/external/submitAuthorizedPaymentRequest", method = RequestMethod.POST)
+	public ModelAndView submitAuthorizedPayment(@RequestParam("paymentRequestId2") long paymentRequestId,HttpSession session)
+	{
+		
+		String result = manageExternalUserAccountService.submitPayment(paymentRequestId);
+		int memberId = (Integer) session.getAttribute("memberId");
+		AccountModel accountModel = manageExternalUserAccountService.getAccountDetails(memberId);
+		List<PaymentRequestDTO> requestList = manageExternalUserAccountService.getPaymentRequest(memberId);
+		if(result.equals("success"))
+		{
+			return new ModelAndView("external/transactions").addObject("message",
+				"Payment Authorized Successfully!").addObject("account",
+						accountModel).addObject("requestList", requestList).addObject("message", "You have sibmitted payment successfully");
+		}
+		else
+		{
+			return new ModelAndView("external/transactions").addObject("message",
+					"Payment Authorized Successfully!").addObject("account",
+							accountModel).addObject("requestList", requestList).addObject("message", "Authorize failed because");
+		
+		}
+	}
 
 }

@@ -275,4 +275,18 @@ public class ManageExternalUserAccountDAOImpl implements ManageExternalUserAccou
 			return false;
 		}
 	}
+
+	@Override
+	public boolean addPaymentRequest(PaymentRequestDTO paymentRequestDTO) {
+		// TODO Auto-generated method stub
+		try
+		{
+			Session session = sessionFactory.getCurrentSession();
+			session.save(paymentRequestDTO);
+			return true;
+		} catch(Exception e)
+		{
+			return false;
+		}
+	}
 }

@@ -27,7 +27,9 @@ public interface ManageExternalUserAccountService {
 	public String makeDebitTransaction(int memberID, double amount, int toMemberId, String type);
 	public String makeTransform(int memberID, double amount, long toAccount);
 	public List<PaymentRequestDTO> getPaymentRequest(int memberId);
-	public String authorizePayment (long paymentId ); 
+	public String authorizePayment (long paymentId );
+	public String submitPayment(long paymentId);
+	public String initiatePayment (int memberId, long toAccount, String status, double amount);
 		// edu.asu.safemoney.service.impln.List<UserDTO> displayUserAccount(
 	//		String nameOfUser);
 }
