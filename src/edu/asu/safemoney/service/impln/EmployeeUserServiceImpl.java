@@ -37,6 +37,15 @@ public class EmployeeUserServiceImpl implements EmployeeUserService{
 	@Autowired
 	private AdminUserService adminUserService;
 	
+	
+	@Transactional
+	@Override
+	public List<RequestDTO> getRequestList(int memberId){
+		
+		List<RequestDTO> requestList = employeeUserDAO.displayEmployeeUserAccountDAO(memberId);
+		return requestList;
+	}
+	
 	@Transactional
 	@Override
 	public boolean sendExtUserViewRequests(int customerId, int employeeId){

@@ -38,32 +38,41 @@ public class EmployeeUserController {
 	
 	public static final Logger logger = Logger.getLogger(LoginController.class);
 	
-	@RequestMapping("/internal/sendViewRequests")
+	@RequestMapping(value="/internal/sendViewRequests")
 	public ModelAndView getInternalUserAccountRequests(HttpSession session)
 	{	
 		
+		int currentEmployeeId = (Integer)session.getAttribute("memberId");
+		//UserDTO currentEmployeeDTO = manageExternalUserAccountService.displayUserAccount(currentEmployeeId);
+		List<RequestDTO> requestList= employeeUserService.getRequestList(currentEmployeeId);
+		if(requestList!=null)
+		{
+			if(!requestList.isEmpty())
+			{
+				return new ModelAndView("/internal/EmpRequestCustView").addObject("requestList",requestList);
+			}
+			else
+			{
+				return new ModelAndView("/internal/EmpRequestCustView").addObject("requestList",requestList);
+			}
+				
+		}
+		else
+		{
+			return new ModelAndView("/internal/EmpRequestCustView");
+		}
 		
-		UserDTO empUserDTO = new UserDTO((Integer)session.getAttribute("memberId"));
-		List<RequestDTO> requestList= empUserDTO.getRequestDTOList();
-		
-//		ModelAndView mv = new ModelAndView("/internal/EmpRequestCustView");
-//		mv.addObject("requestList", requestList);
-//		
-//		for(RequestDTO req : requestList)
-//		{
-//			if(req.getRequestType()=="VIEW_ACCOUNT")
-//			{
-//				mv.addObject("message","Request has been Processed. Bank Account has been created for the user");
-//			}
-//		}
-		
-		return new ModelAndView("/internal/EmpRequestCustView");
 	}
 	
 	@RequestMapping(value="/internal/requestTransactionAccess", method=RequestMethod.POST)
 	public ModelAndView sendViewRequests(@RequestParam("memberId") int memberId, HttpServletRequest request, HttpSession session)
 	{
 		boolean isUserNameAvailable = false;
+		int currentEmployeeId = (Integer)session.getAttribute("memberId");
+		int internalUserId = memberId;
+
+		//UserDTO currentEmployeeDTO = manageExternalUserAccountService.displayUserAccount(currentEmployeeId);	
+		List<RequestDTO> requestList = null; 
 		if (memberId<0)
 		{
 			logger.error("The member Id cannot be negative");
@@ -73,26 +82,26 @@ public class EmployeeUserController {
 		{
 			isUserNameAvailable=true;
 		}
-
+		
 		if(isUserNameAvailable)
 		{		
-			int currentEmployeeId = (Integer)session.getAttribute("memberId");
-			int internalUserId = memberId;
 			
-			isRequestSent = employeeUserService.sendExtUserViewRequests(internalUserId, currentEmployeeId);			
+			isRequestSent = employeeUserService.sendExtUserViewRequests(internalUserId, currentEmployeeId);
+			requestList = employeeUserService.getRequestList(currentEmployeeId);
 		}
 		else
 		{
-			return new ModelAndView("/internal/EmpRequestCustView").addObject("error","Invalid Member Id");
+			
+			return new ModelAndView("/internal/EmpRequestCustView").addObject("error","Invalid Member Id").addObject("requestList",requestList);
 		}
 		
 		if(isRequestSent)
 		{
-			return new ModelAndView("/internal/EmpRequestCustView").addObject("message","Request Sent to User");
+			return new ModelAndView("/internal/EmpRequestCustView").addObject("message","Request Sent to User").addObject("requestList",requestList);
 		}
 		else
 		{
-			return new ModelAndView("/internal/EmpRequestCustView").addObject("error","Request Failed");
+			return new ModelAndView("/internal/EmpRequestCustView").addObject("error","Request Failed").addObject("requestList",requestList);
 		}
 	}
 
