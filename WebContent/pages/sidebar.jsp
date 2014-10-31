@@ -154,7 +154,7 @@
 									<li><a href="#">View Bank Requests</a></li>
 									<li><a href="#">Authorize Requests</a></li>
 								</ul> <!-- /.nav-second-level --></li>
-							<li><a href="#"><i class="fa fa-gear fa-fw"></i>
+							<li><a href="<%=request.getContextPath()%>/external/review"><i class="fa fa-gear fa-fw"></i>
 									Transactional Requests / Review</a></li>
 
 						</sec:authorize>
@@ -230,5 +230,4 @@
 	<script src="<%=request.getContextPath()%>/js/sb-admin-2.js"></script>
 
 </body>
-
 </html>

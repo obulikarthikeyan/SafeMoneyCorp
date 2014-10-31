@@ -19,6 +19,7 @@ import edu.asu.safemoney.dao.*;
 import edu.asu.safemoney.dto.RequestDTO;
 import edu.asu.safemoney.dto.UserDTO;
 import edu.asu.safemoney.dto.UserTypeDTO;
+import edu.asu.safemoney.helper.ExternalUserHelper;
 
 @Service
 public class EmployeeUserServiceImpl implements EmployeeUserService{
@@ -71,8 +72,7 @@ public class EmployeeUserServiceImpl implements EmployeeUserService{
 		requestDTO.setAuthorizingMemberId(customerId);		
 		requestDTO.setAuthorityUserTypeId(authorityUserTypeId.getUserTypeId());		
 		requestDTO.setAuthorizingAuthority(authorityUserTypeId.getUserType());
-
-		
+		requestDTO.setRequestId(ExternalUserHelper.generateRandomNumber());
 		if(requestList!=null)
 		{
 			for (RequestDTO req : requestList)
