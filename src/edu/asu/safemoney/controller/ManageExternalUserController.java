@@ -277,13 +277,13 @@ public class ManageExternalUserController {
 		{
 			return new ModelAndView("external/transactions").addObject("message",
 					"Payment Authorized Successfully!").addObject("account",
-							accountModel).addObject("requestList", requestList).addObject("message", "You don't have enough fund in your account");
+							accountModel).addObject("requestList", requestList).addObject("error", "You don't have enough fund in your account");
 		}
 		else
 		{
 			return new ModelAndView("external/transactions").addObject("message",
 					"Payment Authorized Successfully!").addObject("account",
-							accountModel).addObject("requestList", requestList).addObject("message", "Authorize failed because of"+result);
+							accountModel).addObject("requestList", requestList).addObject("error", "Authorize failed because of"+result);
 		
 		}
 	}
