@@ -10,6 +10,8 @@ public interface EmployeeUserService {
 	
 	public boolean authorizeCreditTransaction(int requestId);
 	
-	public boolean authorizePaymentTransaction(int requsetId);
+	public boolean authorizePaymentTransaction(int requestId);
+	
+	public boolean getViewRequestList(int requestId);
 
 }
