@@ -142,6 +142,8 @@ public class ManageExternalUserAccountServiceImpl implements
 			txnDTO.setStatus("PENDING");//
 			txnDTO.setTransactionId(ExternalUserHelper.generateRandomNumber());// long
 			txnDTO.setTransactionType(type);
+			txnDTO.setProcessedDate(null);
+			//txn
 
 			boolean isTxnCreated = manageExternalUserAccountDAO
 					.createTransaction(txnDTO);
@@ -170,6 +172,7 @@ public class ManageExternalUserAccountServiceImpl implements
 					txnDTO.setStatus("APPROVED");//
 					txnDTO.setTransactionId(ExternalUserHelper.generateRandomNumber());// long
 					txnDTO.setTransactionType(type);
+					txnDTO.setProcessedDate(new Date());
 
 					boolean isTxnCreated = manageExternalUserAccountDAO
 							.createTransaction(txnDTO);
@@ -192,7 +195,7 @@ public class ManageExternalUserAccountServiceImpl implements
 	@Override
 	public String makeCreditTransaction(int memberID, double amount,int fromMemberId,String type) {
 		// TODO Auto-generated method stub
-		if ((amount > 2000)&&!(type.equals("payment"))) {
+		if (true) {
 			
 			AccountModel accountModel = getAccountDetails(memberID);
 			AccountModel fromAccountModel = getAccountDetails(fromMemberId);
@@ -208,47 +211,16 @@ public class ManageExternalUserAccountServiceImpl implements
 			txnDTO.setStatus("PENDING");//
 			txnDTO.setTransactionId(ExternalUserHelper.generateRandomNumber());// long
 			txnDTO.setTransactionType(type);
-
+			txnDTO.setProcessedDate(null);
+			
+			
 			boolean isTxnCreated = manageExternalUserAccountDAO.createTransaction(txnDTO);
 			if (isTxnCreated) {
-				return "CriticalCredit";
+				return "Pending Approve by Bank";
 				
 				
 			}
-		} else {
-			double balance = getAccountBalance(memberID);
-			if (amount>=0) {
-				balance += amount;
-				boolean isSuccess = manageExternalUserAccountDAO.updateAccountBalance(memberID, balance);
-				if (isSuccess) {
-					AccountModel accountModel =getAccountDetails(memberID);
-					AccountModel fromAccountModel = getAccountDetails(fromMemberId);
-					TransactionDTO txnDTO = new TransactionDTO();
-					txnDTO.setAmount(amount);
-					txnDTO.setDate(new Date());
-					txnDTO.setFromAccount(fromAccountModel.getAccountNo());
-					txnDTO.setToAccount(accountModel.getAccountNo());
-					txnDTO.setIsAuthorized(true);// boolean
-					txnDTO.setIsCritical(false);
-					txnDTO.setMemberId(displayUserAccount(memberID));// input
-																		// UserDTO
-					txnDTO.setStatus("APPROVED");//
-					txnDTO.setTransactionId(ExternalUserHelper.generateRandomNumber());// long
-					txnDTO.setTransactionType(type);
-
-					boolean isTxnCreated = manageExternalUserAccountDAO.createTransaction(txnDTO);
-					if (isTxnCreated) {
-						return "success";
-					}
-				} else {
-					return "failure";
-				}
-			}
-			else
-			{
-				return "CreditMountNegative";
-			}
-		}
+		} 
 		return "failure";
 
 	}
