@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import edu.asu.safemoney.dao.RequestDAO;
 import edu.asu.safemoney.dto.RequestDTO;
+import edu.asu.safemoney.dto.UserDTO;
 
 @Repository
 public class RequestDAOImpl implements RequestDAO {
@@ -77,6 +78,19 @@ public class RequestDAOImpl implements RequestDAO {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public boolean createRequest(UserDTO userDTO) {
+		try{
+		Session session= sessionFactory.getCurrentSession();
+		session.save(userDTO);
+		return true;
+		}
+		catch(Exception e){
+			return false;	
+		}
+		
 	}
 	
 }

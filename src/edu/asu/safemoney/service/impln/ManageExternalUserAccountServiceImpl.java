@@ -1,5 +1,6 @@
 package edu.asu.safemoney.service.impln;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -12,8 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 
+
+
 //import antlr.collections.List;
 import edu.asu.safemoney.dao.ManageExternalUserAccountDAO;
+import edu.asu.safemoney.dao.RequestDAO;
 import edu.asu.safemoney.dto.AccountDTO;
 import edu.asu.safemoney.dto.PaymentRequestDTO;
 import edu.asu.safemoney.dto.RequestDTO;
@@ -30,6 +34,9 @@ public class ManageExternalUserAccountServiceImpl implements
 
 	@Autowired
 	ManageExternalUserAccountDAO manageExternalUserAccountDAO;
+	
+	@Autowired
+	RequestDAO requestDAO;
 
 	/*private AccountModel accntModel;
 
@@ -54,9 +61,37 @@ public class ManageExternalUserAccountServiceImpl implements
 
 	@Override
 	@Transactional
-	public void deleteUser(String nameOfUser) {
-		// TODO Auto-generated method stub
-
+	public boolean deleteUser(int memberId) {		
+		
+			UserDTO userDTO= displayUserAccount(memberId);
+			List<RequestDTO> requestList= userDTO.getRequestDTOList();
+			RequestDTO requestDTO = new RequestDTO();
+			requestDTO.setRequestId(ExternalUserHelper.generateRandomNumber());
+			requestDTO.setAuthorityUserTypeId(123);
+			requestDTO.setMemberId(userDTO);
+			requestDTO.setRequestType("DELETE_ACCOUNT");
+			requestDTO.setStatus("NEW");
+			requestDTO.setRequestDate(new Date());
+			requestDTO.setProcessedDate(null);
+			requestDTO.setAuthorizingMemberId(null);
+			requestDTO.setAuthorizingAuthority("INT_BANK_ADM");
+			
+			if(requestList!=null){
+			requestList.add(requestDTO);
+			}
+			
+			else{
+				requestList= new ArrayList<RequestDTO>();
+				requestList.add(requestDTO);
+			}
+			
+			userDTO.setRequestDTOList(requestList);
+			
+			boolean isDeleted= requestDAO.createRequest(userDTO);
+			if(isDeleted){
+				return true;
+			}
+			return false;
 	}
 
 	@Override
@@ -321,6 +356,32 @@ public class ManageExternalUserAccountServiceImpl implements
 		else
 			return "failed";
 
+	}
+	
+	@Override
+	@Transactional
+	public List<TransactionDTO> getApprovedTransactionListForUser(int memberId) {
+		// TODO Auto-generated method stub
+		UserDTO userDTO = manageExternalUserAccountDAO.displayUserAccountDAO(memberId);
+		List<TransactionDTO> transactionList = null;
+		if(userDTO != null)
+		{
+			List<TransactionDTO> tempList = userDTO.getTransactionDTOList();
+			if(tempList != null)
+			{
+				transactionList = new ArrayList<TransactionDTO>();
+				for(TransactionDTO transaction : tempList)
+				{
+					int numdays = ExternalUserHelper.getNumDays(new Date(), transaction.getProcessedDate());
+					if(transaction.getIsAuthorized() == true && numdays <= 2)
+					{
+						transactionList.add(transaction);
+					}
+				}
+			}
+			
+		}
+		return transactionList;
 	}
 
 }

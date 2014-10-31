@@ -8,9 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 
 
+
 //import antlr.collections.List;
 import edu.asu.safemoney.dto.PaymentRequestDTO;
 import edu.asu.safemoney.dto.RequestDTO;
+import edu.asu.safemoney.dto.TransactionDTO;
 import edu.asu.safemoney.dto.UserDTO;
 import edu.asu.safemoney.model.*;
 
@@ -19,7 +21,7 @@ public interface ManageExternalUserAccountService {
 
 	public boolean updateUser(ModifyUserModel modifyUserModel);
 	// Can pass User Name in deleteUser ***
-	public void deleteUser(String userName);
+	public boolean deleteUser(int memberId);
 	public UserDTO displayUserAccount(int memberId);
 	public AccountModel getAccountDetails(int memberId);
 	public double getAccountBalance(int memberId);
@@ -30,6 +32,7 @@ public interface ManageExternalUserAccountService {
 	public String authorizePayment (long paymentId );
 	public String submitPayment(long paymentId);
 	public String initiatePayment (int memberId, long toAccount, String status, double amount);
+	public List<TransactionDTO> getApprovedTransactionListForUser(int memberId);
 		// edu.asu.safemoney.service.impln.List<UserDTO> displayUserAccount(
 	//		String nameOfUser);
 }

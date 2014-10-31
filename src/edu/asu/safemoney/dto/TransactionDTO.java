@@ -39,7 +39,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "TransactionDTO.findByStatus", query = "SELECT t FROM TransactionDTO t WHERE t.status = :status"),
     @NamedQuery(name = "TransactionDTO.findByTransactionType", query = "SELECT t FROM TransactionDTO t WHERE t.transactionType = :transactionType"),
     @NamedQuery(name = "TransactionDTO.findByIsCritical", query = "SELECT t FROM TransactionDTO t WHERE t.isCritical = :isCritical"),
-    @NamedQuery(name = "TransactionDTO.findByIsAuthorized", query = "SELECT t FROM TransactionDTO t WHERE t.isAuthorized = :isAuthorized")})
+    @NamedQuery(name = "TransactionDTO.findByIsAuthorized", query = "SELECT t FROM TransactionDTO t WHERE t.isAuthorized = :isAuthorized"),
+    @NamedQuery(name = "TransactionDTO.findByProcessedDate", query = "SELECT t FROM TransactionDTO t WHERE t.processedDate = :processedDate")})
 public class TransactionDTO implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -67,6 +68,9 @@ public class TransactionDTO implements Serializable {
     private Boolean isCritical;
     @Column(name = "is_authorized")
     private Boolean isAuthorized;
+    @Column(name = "processed_date")
+    @Temporal(TemporalType.DATE)
+    private Date processedDate;
     @JoinColumn(name = "member_id", referencedColumnName = "member_id")
     @ManyToOne(optional = false)
     private UserDTO memberId;
@@ -148,6 +152,14 @@ public class TransactionDTO implements Serializable {
 
     public void setIsAuthorized(Boolean isAuthorized) {
         this.isAuthorized = isAuthorized;
+    }
+
+    public Date getProcessedDate() {
+        return processedDate;
+    }
+
+    public void setProcessedDate(Date processedDate) {
+        this.processedDate = processedDate;
     }
 
     public UserDTO getMemberId() {

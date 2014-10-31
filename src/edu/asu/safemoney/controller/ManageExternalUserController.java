@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 import edu.asu.safemoney.dto.PaymentRequestDTO;
-import edu.asu.safemoney.dto.RequestDTO;
+import edu.asu.safemoney.dto.TransactionDTO;
 import edu.asu.safemoney.dto.UserDTO;
 import edu.asu.safemoney.model.AccountModel;
 import edu.asu.safemoney.model.ModifyUserModel;
@@ -46,10 +46,6 @@ public class ManageExternalUserController {
 	@RequestMapping(value = "/external/displayExternalUserDetails", method = RequestMethod.GET)
 	// get userName from session and use @RequestParam
 	public ModelAndView populateExternalUserAccount(HttpSession session) {
-		Enumeration<String> enumstring = session.getAttributeNames();
-		while (enumstring.hasMoreElements())
-			System.out.println("session attributes: "
-					+ enumstring.nextElement());
 		int memberId = (Integer) session.getAttribute("memberId");
 		UserDTO userDTO = manageExternalUserAccountService
 				.displayUserAccount(memberId);
@@ -93,18 +89,24 @@ public class ManageExternalUserController {
 			return mv.addObject("error", "Update Failed!");
 		}
 		
-		// can check for fail condition also ***
 	}
 
-	// happens when you click the delete account button in the delete page.
-	// how can you pass just the User name ***
-	@RequestMapping(value = "/deleteExternalUserDetials", method = RequestMethod.POST)
-	public String doDeleteAccount(String UserName) {
-		manageExternalUserAccountService.deleteUser(UserName);
+	@RequestMapping(value = "/external/deleteExternalUserDetials", method = RequestMethod.POST)
+	public ModelAndView doDeleteAccount(HttpSession session) {
+		int memberID= (Integer)session.getAttribute("memberId");
+		boolean delete= manageExternalUserAccountService.deleteUser(memberID);
+		UserDTO userDTO= manageExternalUserAccountService.displayUserAccount(memberID);
+		ModelAndView mv= new ModelAndView("external/ManageExternalUser").addObject("userDTO", userDTO);
 		// Should redirect to "updateExternalUserAccount"
-		return "shared/deleteSuccessPage";
+		if(delete){
+			return mv.addObject("message", "Delete Account request sent");
+			
+		}
+		else{
+			return mv.addObject("error", "Delete Request not sent");
+		}
 	}
-
+	
 	@RequestMapping(value = "/external/transactions", method = RequestMethod.GET)
 	public ModelAndView doTransaction(HttpSession session) {
 		int memberId = (Integer) session.getAttribute("memberId");
@@ -193,11 +195,10 @@ public class ManageExternalUserController {
 								accountModel).addObject("requestList", requestList);
 			}
 		}
-		return new ModelAndView("external/transactions");
-
+		 return null;
+		
 	}
-	
-	
+
 	
 	@RequestMapping(value = "/external/transfer", method = RequestMethod.POST)
 	public ModelAndView doTransform(
@@ -231,6 +232,22 @@ public class ManageExternalUserController {
 							accountModel).addObject("requestList", requestList);
 		}
 		return new ModelAndView("external/transactions");
+	}
+	
+	@RequestMapping(value="/external/review", method = RequestMethod.GET)
+	public ModelAndView reviewTransaction(HttpSession session)
+	{
+		int memberId = (Integer) session.getAttribute("memberId");
+		List<TransactionDTO> approvedTransactionList = manageExternalUserAccountService.getApprovedTransactionListForUser(memberId);
+		if(approvedTransactionList != null)
+		{
+			return new ModelAndView("external/transactionReview").addObject("transactionList", approvedTransactionList);
+		}
+		else
+		{
+			return new ModelAndView("external/transactionReview").addObject("error", "true");
+		}
+		
 	}
 	
 	/*@RequestMapping(value = "/external/transfors", method = RequestMethod.GET)//????which one to map???
@@ -338,3 +355,4 @@ public class ManageExternalUserController {
 	}
 
 }
+

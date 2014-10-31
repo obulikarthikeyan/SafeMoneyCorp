@@ -17,7 +17,7 @@
 			<!-- /.col-lg-12 -->
 		</div>
 
-		<div class="col-lg-10">
+		<div class="col-lg-12">
 
 			<div class="panel panel-default">
 				<div class="panel-heading"><strong>REQUESTS FOR ADMIN</strong></div>
@@ -45,7 +45,8 @@
 									<tr>
 										<th>Request ID</th>
 										<th>Requesting Member ID</th>
-										<th>Request Type</th>
+										<th>Request Type</th>										
+										<th>Request Date</th>
 										<th>Status</th>
 										<th>Authorizing Authority</th>
 										<th>Action</th>
@@ -59,6 +60,7 @@
 												<td>${request.requestId }</td>
 												<td>${request.memberId.memberId }</td>
 												<td>${request.requestType }</td>
+												<td>${request.requestDate }</td>
 												<td><strong>${request.status }</strong></td>
 												<td>ADMIN</td>
 												
@@ -84,6 +86,7 @@
 												   	 $('#emailId').text(emailId);
 												   	 $('#type').text(type);
 												   	 $('#requestId').val(requestId);
+												   	 $('#requestType1').text(requestType);
 												   	 $('#requestType').val(requestType);
 													});
 												</script>
@@ -113,11 +116,11 @@
 									<input type="hidden" id="requestId" name="requestId"/>
 									<input type="hidden" id="requestType" name="requestType"/>
 									<div class="modal-body">
-									<table class="table" style="width:40%">
+									<table class="table" style="width:50%">
 										<tbody>
 											<tr>
-												<td></td>
-												<td></td>
+												<td><label>Request Type</label></td>
+												<td id="requestType1"></td>
 											</tr>
 											<tr>
 												<td><label>First Name</label></td>
