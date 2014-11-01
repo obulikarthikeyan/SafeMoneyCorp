@@ -81,7 +81,16 @@ public class ManageExternalUserAccountServiceImpl implements
 			requestDTO.setAuthorizingAuthority("INT_BANK_ADM");
 			
 			if(requestList!=null){
-			requestList.add(requestDTO);
+				
+				for(RequestDTO req : requestList)
+				{
+					System.out.println("req type: " + req.getRequestType());
+					if(req.getRequestType().equals("DELETE_ACCOUNT"))
+					{
+						return false;
+					}
+				}
+				requestList.add(requestDTO);
 			}
 			
 			else{
