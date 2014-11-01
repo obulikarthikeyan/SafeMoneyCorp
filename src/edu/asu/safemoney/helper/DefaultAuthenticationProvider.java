@@ -31,7 +31,7 @@ public class DefaultAuthenticationProvider extends DaoAuthenticationProvider  {
 			System.out.println("Hello");
 			//if reach here, means login success, else an exception will be thrown
 			//reset the user_attempts
-			loginDAO.resetFailureAttempts(authentication.getName());
+			//loginDAO.resetFailureAttempts(authentication.getName());
 	 
 			return tempAuthentication;
 	 

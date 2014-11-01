@@ -225,7 +225,6 @@ public class LoginDAOImpl implements LoginDAO{
 	
 	public int getFailureAttemptCount(String userName)
 	{
-		System.out.println("Hi");
 		Session session = sessionFactory.openSession();
 		Query query = session.getNamedQuery("LoginDTO.findByUserName").setString("userName", userName);
 		LoginDTO loginDTO = (LoginDTO) query.uniqueResult();
