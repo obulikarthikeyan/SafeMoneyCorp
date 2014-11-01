@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 31, 2014 at 05:02 AM
+-- Generation Time: Nov 01, 2014 at 05:02 AM
 -- Server version: 5.5.32
 -- PHP Version: 5.4.19
 
@@ -59,9 +59,9 @@ CREATE TABLE IF NOT EXISTS `login` (
   `user_name` varchar(15) NOT NULL,
   `password` varchar(15) NOT NULL,
   `site_key` varchar(20) NOT NULL,
-  `isAccountNonLocked` tinyint(1) DEFAULT NULL,
-  `isEnabled` int(11) DEFAULT NULL,
-  `failedAttemptCount` int(11) DEFAULT NULL,
+  `isAccountNonLocked` tinyint(1) NOT NULL,
+  `isEnabled` tinyint(1) NOT NULL,
+  `failedAttemptCount` int(11) NOT NULL,
   `lastLoginDate` date DEFAULT NULL,
   PRIMARY KEY (`member_id`),
   UNIQUE KEY `user_name` (`user_name`),
@@ -73,11 +73,11 @@ CREATE TABLE IF NOT EXISTS `login` (
 --
 
 INSERT INTO `login` (`member_id`, `user_name`, `password`, `site_key`, `isAccountNonLocked`, `isEnabled`, `failedAttemptCount`, `lastLoginDate`) VALUES
-(996363, 'cust', 'cust', 'eclipse', NULL, NULL, NULL, NULL),
-(996364, 'mer', 'mer', 'helio', NULL, NULL, NULL, NULL),
-(996368, 'emp', 'emp', 'helio', NULL, NULL, NULL, NULL),
-(996369, 'admin', 'admin', 'helio', NULL, NULL, NULL, NULL),
-(996386, 'jbjhjhj', 'hhjjhhjjhj', 'ghjghjghg', NULL, NULL, NULL, NULL);
+(996363, 'cust', 'cust', 'eclipse', 1, 1, 0, NULL),
+(996364, 'mer', 'mer', 'helio', 1, 1, 0, NULL),
+(996368, 'emp', 'emp', 'helio', 1, 1, 0, NULL),
+(996369, 'admin', 'admin', 'helio', 1, 1, 0, NULL),
+(996386, 'jbjhjhj', 'hhjjhhjjhj', 'ghjghjghg', 1, 1, 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -96,6 +96,7 @@ CREATE TABLE IF NOT EXISTS `payment_request` (
   `authorizer_member_id` int(11) NOT NULL,
   `authorizer_account_id` bigint(10) NOT NULL,
   `status` varchar(15) NOT NULL,
+  `description` varchar(300) NOT NULL,
   PRIMARY KEY (`payment_id`),
   KEY `memberId` (`merchant_member_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
