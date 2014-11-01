@@ -32,6 +32,9 @@
 	<!--  To scan the components -->
     <context:component-scan base-package="edu.asu.safemoney"/>
 
+<bean id = "defaultProvider" class = "edu.asu.safemoney.helper.DefaultAuthenticationProvider">
+	<property name="userDetailsService" ref="loginService" />
+</bean>
 <bean id = "loginService" class = "edu.asu.safemoney.service.impln.LoginServiceImpl">
 	</bean>	
 	<bean id = "transactionManager" class = "org.springframework.orm.hibernate4.HibernateTransactionManager">

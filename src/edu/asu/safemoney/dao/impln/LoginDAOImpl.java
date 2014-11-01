@@ -8,6 +8,7 @@ import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -94,6 +95,9 @@ public class LoginDAOImpl implements LoginDAO{
 			loginDTO.setSiteKey(user.getSiteKey());
 			loginDTO.setUserDTO(userDTO);
 			loginDTO.setMemberId(userDTO.getMemberId());
+			loginDTO.setFailedAttemptCount(0);
+			loginDTO.setIsAccountNonLocked(true);
+			loginDTO.setIsEnabled(true);
 			userDTO.setLoginDTO(loginDTO);
 			
 			session.save(userDTO);
@@ -172,6 +176,65 @@ public class LoginDAOImpl implements LoginDAO{
 		} else {
 			return false;
 		}
+	}
+	
+	public boolean updateLoginFailureAttempts(String userName)
+	{
+		Session session = sessionFactory.openSession();
+		Transaction tx = session.beginTransaction();
+		Query query = session.getNamedQuery("LoginDTO.findByUserName").setString("userName", userName);
+		LoginDTO loginDTO = (LoginDTO) query.uniqueResult();
+		if(loginDTO != null)
+		{
+			int failedCount = loginDTO.getFailedAttemptCount();
+			if(failedCount >= 3)
+			{
+				loginDTO.setIsAccountNonLocked(false);
+			}
+			else
+			{
+				failedCount += 1;
+				loginDTO.setFailedAttemptCount(failedCount);
+			}
+			session.saveOrUpdate(loginDTO);
+			tx.commit();
+			session.close();
+			return true;
+		}
+		return false;
+		
+	} 
+	
+	public boolean resetFailureAttempts(String userName)
+	{
+		Session session = sessionFactory.openSession();
+		Transaction tx = session.beginTransaction();
+		Query query = session.getNamedQuery("LoginDTO.findByUserName").setString("userName", userName);
+		LoginDTO loginDTO = (LoginDTO) query.uniqueResult();
+		if(loginDTO != null)
+		{
+			loginDTO.setFailedAttemptCount(0);
+			loginDTO.setIsAccountNonLocked(true);
+			session.saveOrUpdate(loginDTO);
+			session.close();
+			tx.commit();
+			return true;
+		}
+		return false;
+	}
+	
+	public int getFailureAttemptCount(String userName)
+	{
+		System.out.println("Hi");
+		Session session = sessionFactory.openSession();
+		Query query = session.getNamedQuery("LoginDTO.findByUserName").setString("userName", userName);
+		LoginDTO loginDTO = (LoginDTO) query.uniqueResult();
+		session.close();
+		if(loginDTO != null)
+		{
+			return loginDTO.getFailedAttemptCount();
+		}
+		return -1;
 	}
 	
 

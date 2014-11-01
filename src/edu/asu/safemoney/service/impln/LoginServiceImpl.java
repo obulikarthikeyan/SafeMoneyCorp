@@ -56,10 +56,10 @@ public class LoginServiceImpl implements LoginService, UserDetailsService {
 			String userName = loginDTO.getUserName();
 			String password = loginDTO.getPassword();
 			System.out.println("password" + password);
-			boolean isEnabled = true;
+			boolean isEnabled = loginDTO.getIsEnabled();
 			boolean isAcctNonExpired = true;
 			boolean isCredentialsNonExpired = true;
-			boolean isAcctNonLocked = true;
+			boolean isAcctNonLocked = loginDTO.getIsAccountNonLocked();
 			if (uDTO != null) {
 				System.out.println("not null");
 				UserTypeDTO userTypeDTO = uDTO.getUserTypeId();

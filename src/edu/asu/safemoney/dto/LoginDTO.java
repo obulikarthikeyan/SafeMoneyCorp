@@ -61,12 +61,18 @@ public class LoginDTO implements Serializable {
     @Size(min = 1, max = 20)
     @Column(name = "site_key")
     private String siteKey;
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "isAccountNonLocked")
-    private Boolean isAccountNonLocked;
+    private boolean isAccountNonLocked;
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "isEnabled")
-    private Integer isEnabled;
+    private boolean isEnabled;
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "failedAttemptCount")
-    private Integer failedAttemptCount;
+    private int failedAttemptCount;
     @Column(name = "lastLoginDate")
     @Temporal(TemporalType.DATE)
     private Date lastLoginDate;
@@ -81,11 +87,14 @@ public class LoginDTO implements Serializable {
         this.memberId = memberId;
     }
 
-    public LoginDTO(Integer memberId, String userName, String password, String siteKey) {
+    public LoginDTO(Integer memberId, String userName, String password, String siteKey, boolean isAccountNonLocked, boolean isEnabled, int failedAttemptCount) {
         this.memberId = memberId;
         this.userName = userName;
         this.password = password;
         this.siteKey = siteKey;
+        this.isAccountNonLocked = isAccountNonLocked;
+        this.isEnabled = isEnabled;
+        this.failedAttemptCount = failedAttemptCount;
     }
 
     public Integer getMemberId() {
@@ -120,27 +129,27 @@ public class LoginDTO implements Serializable {
         this.siteKey = siteKey;
     }
 
-    public Boolean getIsAccountNonLocked() {
+    public boolean getIsAccountNonLocked() {
         return isAccountNonLocked;
     }
 
-    public void setIsAccountNonLocked(Boolean isAccountNonLocked) {
+    public void setIsAccountNonLocked(boolean isAccountNonLocked) {
         this.isAccountNonLocked = isAccountNonLocked;
     }
 
-    public Integer getIsEnabled() {
+    public boolean getIsEnabled() {
         return isEnabled;
     }
 
-    public void setIsEnabled(Integer isEnabled) {
+    public void setIsEnabled(boolean isEnabled) {
         this.isEnabled = isEnabled;
     }
 
-    public Integer getFailedAttemptCount() {
+    public int getFailedAttemptCount() {
         return failedAttemptCount;
     }
 
-    public void setFailedAttemptCount(Integer failedAttemptCount) {
+    public void setFailedAttemptCount(int failedAttemptCount) {
         this.failedAttemptCount = failedAttemptCount;
     }
 
