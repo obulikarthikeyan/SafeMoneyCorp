@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
-
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <html>
 <head>
@@ -43,8 +43,10 @@
 			
 						<li><a href="#Initiate" data-toggle="tab">Initiate
 								Payment</a></li>
+						<sec:authorize access="hasRole('EXT_MERCHANT')">
 						<li><a href="#Submit" data-toggle="tab">Submit Payment
 								Payment</a></li>
+								</sec:authorize>
 
 					</ul>
 
@@ -129,22 +131,7 @@
 										</div>
 
 										<div class="panel-body">
-											<%
-												if (request.getAttribute("message") != null) {
-											%>
-											<p class="label label-success" style="font-size: 13px">${message }</p>
-											<br>
-											<%
-												}
-											%>
-											<%
-												if (request.getAttribute("error") != null) {
-											%>
-											<p class="label label-warning" style="font-size: 13px">${error }</p>
-											<br>
-											<%
-												}
-											%>
+											
 											<div class="table-responsive">
 												<table class="table" style="width: 120%">
 													<thead>
@@ -406,6 +393,7 @@
 							<!-- /div> -->
 						</div>
 						
+						<sec:authorize access="hasRole('EXT_MERCHANT')">						
 						<div class="modal fade" id="submitAuthorizedPayment" tabindex="-1" role="dialog"
 							aria-labelledby="myModalLabel" aria-hidden="true">
 							<div class="modal-dialog">
@@ -452,6 +440,7 @@
 								</div>
 							</div>
 						</div>
+						</sec:authorize>
 						
 						<div class="tab-pane fade in active in active" id="Summary">
 							<br>

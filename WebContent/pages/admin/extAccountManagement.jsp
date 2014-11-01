@@ -60,7 +60,7 @@
 												<td>${request.requestId }</td>
 												<td>${request.memberId.memberId }</td>
 												<td>${request.requestType }</td>
-												<td>${request.requestDate }</td>
+												<td>${request.requestDate }</td>												
 												<td><strong>${request.status }</strong></td>
 												<td>ADMIN</td>
 												

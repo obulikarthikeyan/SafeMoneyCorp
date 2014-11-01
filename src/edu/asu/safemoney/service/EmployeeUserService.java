@@ -13,5 +13,7 @@ public interface EmployeeUserService {
 	public boolean authorizePaymentTransaction(int requestId);
 	
 	public boolean getViewRequestList(int requestId);
+	
+	public List<RequestDTO> getRequestList(int memberId);
 
 }

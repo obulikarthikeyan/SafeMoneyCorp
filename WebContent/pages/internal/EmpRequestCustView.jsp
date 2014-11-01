@@ -61,12 +61,10 @@
 								<thead>
 									<tr>
 										<th>Request ID</th>
-										<th>Requesting Member ID</th>
-										<th>Request Type</th>										
+										<th>Authorizing Member ID</th>
 										<th>Request Date</th>
 										<th>Status</th>
 										<th>Authorizing Authority</th>
-										<th>Action</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -75,13 +73,16 @@
 											<tr>
 												
 												<td>${request.requestId }</td>
-												<td>${request.memberId.memberId }</td>
-												<td>${request.requestType }</td>
+												<td>${request.authorizingMemberId }</td>
 												<td>${request.requestDate }</td>
 												<td><strong>${request.status }</strong></td>
-												<td>ADMIN</td>
-												
-												<c:if test="${request.status == 'NEW' }">
+												<c:if test="${request.authorizingAuthority == 'EXT_IND_CUST' }">
+												<td>Customer</td>
+												</c:if>
+												<c:if test="${request.authorizingAuthority == 'EXT_MERCHANT' }">
+												<td>Merchant</td>
+												</c:if>
+<%-- 												<c:if test="${request.status == 'NEW' }">
 													<td><button id="viewButton${request.requestId}" class="btn btn-success" 
 											data-toggle="modal" data-target="#viewUser">View</button></td>
 												<script type="text/javascript">
@@ -107,7 +108,7 @@
 												   	 $('#requestType').val(requestType);
 													});
 												</script>
-												</c:if>
+												</c:if> --%>
 											</tr>
 										</c:forEach>
 									</c:if>
@@ -120,7 +121,6 @@
 				<!-- /#page-wrapper -->
 			</div>
 		</div>
-	</div>
 	
 	<script type="text/javascript">
 		$.validator.addMethod('numbersOnly', function( val, element ) {
