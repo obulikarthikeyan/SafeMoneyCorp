@@ -39,7 +39,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "PaymentRequestDTO.findByMerchantLastName", query = "SELECT p FROM PaymentRequestDTO p WHERE p.merchantLastName = :merchantLastName"),
     @NamedQuery(name = "PaymentRequestDTO.findByAuthorizerMemberId", query = "SELECT p FROM PaymentRequestDTO p WHERE p.authorizerMemberId = :authorizerMemberId"),
     @NamedQuery(name = "PaymentRequestDTO.findByAuthorizerAccountId", query = "SELECT p FROM PaymentRequestDTO p WHERE p.authorizerAccountId = :authorizerAccountId"),
-    @NamedQuery(name = "PaymentRequestDTO.findByStatus", query = "SELECT p FROM PaymentRequestDTO p WHERE p.status = :status")})
+    @NamedQuery(name = "PaymentRequestDTO.findByStatus", query = "SELECT p FROM PaymentRequestDTO p WHERE p.status = :status"),
+    @NamedQuery(name = "PaymentRequestDTO.findByDescription", query = "SELECT p FROM PaymentRequestDTO p WHERE p.description = :description")})
 public class PaymentRequestDTO implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -83,6 +84,11 @@ public class PaymentRequestDTO implements Serializable {
     @Size(min = 1, max = 15)
     @Column(name = "status")
     private String status;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 300)
+    @Column(name = "description")
+    private String description;
     @JoinColumn(name = "merchant_member_id", referencedColumnName = "member_id")
     @ManyToOne(optional = false)
     private UserDTO merchantMemberId;
@@ -94,7 +100,7 @@ public class PaymentRequestDTO implements Serializable {
         this.paymentId = paymentId;
     }
 
-    public PaymentRequestDTO(Long paymentId, long merchantAccountId, Date date, double amount, String merchantFirstName, String merchantLastName, int authorizerMemberId, long authorizerAccountId, String status) {
+    public PaymentRequestDTO(Long paymentId, long merchantAccountId, Date date, double amount, String merchantFirstName, String merchantLastName, int authorizerMemberId, long authorizerAccountId, String status, String description) {
         this.paymentId = paymentId;
         this.merchantAccountId = merchantAccountId;
         this.date = date;
@@ -104,6 +110,7 @@ public class PaymentRequestDTO implements Serializable {
         this.authorizerMemberId = authorizerMemberId;
         this.authorizerAccountId = authorizerAccountId;
         this.status = status;
+        this.description = description;
     }
 
     public Long getPaymentId() {
@@ -176,6 +183,14 @@ public class PaymentRequestDTO implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public UserDTO getMerchantMemberId() {

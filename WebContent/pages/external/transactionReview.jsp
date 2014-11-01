@@ -1,35 +1,51 @@
 
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>SafeMoneyCorp - Manage User Account</title>
+<title>SafeMoneyCorp - Transaction Review</title>
 </head>
 <body>
 	<jsp:include page="/pages/sidebar.jsp"></jsp:include>
 	<div id="page-wrapper">
 		<div class="row">
 			<div class="col-lg-12">
-				<h1 class="page-header">Manage Account</h1>
+				<h1 class="page-header">Transactional Review</h1>
 			</div>
 			<!-- /.col-lg-12 -->
 		</div>
 		<!-- /.row -->
 
 
-		<div class="tab-pane fade in active in active" id="Summary">
 			<br>
-			<div class="panel panel-default">
+			<div class="panel panel-default" width="120%">
 				<div class="panel-heading">
-					<strong>Account Information</strong>
+					<strong>Transactional Review</strong>
 				</div>
 				<!-- /.panel-heading -->
 				<div class="panel-body">
-					<div class="table-responsive">
-					<br>
-					<br>
-									<%
+				
+				<ul class="nav nav-pills">
+						<li class="active"><a href="#transactionalReview" data-toggle="tab">Transaction History</a></li>
+						<li><a href="#createTransactionRequest" data-toggle="tab">Create Transaction Request</a>
+						</li>
+						
+
+					</ul>
+					
+					<div class="tab-content">
+						<div class="tab-pane fade in active in active" id="transactionalReview">
+							
+							<div class="col-lg-12">
+
+			<div class="panel panel-default" style="width:120%">
+			<br>
+				<div class="panel-heading"><strong>Transactional Review Requests to Bank</strong></div>
+			<br>
+					<div class="panel-body">
+					<%
 										if (request.getAttribute("message") != null) {
 									%>
 									<p class="label label-success" style="font-size:13px">${message }</p>
@@ -45,115 +61,77 @@
 									<%
 										}
 									%>
-						<table style="width: 70%; height: 60%">
-
-							<tbody>
-								<tr>
-									<td><b>Member ID</b></td>
-									<td>${userDTO.memberId }</td>
-
-								</tr>
-								<tr>
-									<td><b>First Name</b></td>
-									<td>${userDTO.firstName }</td>
-
-								</tr>
-								<tr>
-									<td><b>Last Name</b></td>
-									<td>${userDTO.lastName }</td>
-
-								</tr>
-								<tr>
-									<td><b>Email ID</b></td>
-									<td>${userDTO.emailId}</td>
-
-								</tr>
-								<tr>
-									<td><b>Contact Number</b></td>
-									<td>${userDTO.contactNo}</td>
-								</tr>
-
-
-								<tr>
-									<td><b>Address1</b></td>
-									<td>${userDTO.address1}</td>
-								</tr>
-
-								<tr>
-									<td><b>Address2</b></td>
-									<td>${userDTO.address2}</td>
-								</tr>
-
-								<tr>
-									<td><b>City</b></td>
-									<td>${userDTO.city}</td>
-								</tr>
-
-								<tr>
-									<td><b>State</b></td>
-									<td>${userDTO.state}</td>
-								</tr>
-
-								<tr>
-									<td><b>Zip</b></td>
-									<td>${userDTO.zip}</td>
-								</tr>
-
-								<tr>
-									<td><b>Date of Birth</b></td>
-									<td>${userDTO.dateOfBirth}</td>
-								</tr>
-								<tr>
-									<td><br></td>
-								</tr>
-								<tr>
-									<td><button class="btn btn-primary btn-lg"
-											data-toggle="modal" data-target="#myModal" style="width: 50%">
-											Update Account</button></td>
-									<td>		
-									<button  class="btn btn-lg btn-danger btn-block" data-toggle="modal" data-target="#myModalDelete" style="width: 50%">
-											Delete Account</button></td>
-
-								</tr>
-
-							</tbody>
-
-						</table>
-
-						<!-- /.table-responsive -->
-					</div>
-					
-					<div class="modal fade" id="myModalDelete" tabindex="-1" role="dialog"
-						aria-labelledby="myModalDelLabel" aria-hidden="true">
-						<div class="modal-dialog">
-							<div class="modal-content">
-								<div class="modal-header">
-									<button type="button" class="close" data-dismiss="modal"
-										aria-hidden="true">&times;</button>
-									<h4 class="modal-title" id="myModalDelLabel">Delete Account</h4>
-								</div>
-								
-								
-								<form id="deleteUser" role="form" method="POST"
-									action="deleteExternalUserDetials">
-									<div class="modal-body">
-					
-									<div>
-									Do you really want to Delete the account???
-									</div>
-						
-									<div class="modal-footer">
-											<button type="button" class="btn btn-default"
-												data-dismiss="modal">NO</button>
-											<button type="submit" class="btn btn-primary">YES</button>
-									</div>
-									</div>
-							 	</form>
-							 </div>
+						<div class="table-responsive">
+							<table class="table" style="width: 120%">
+								<thead>
+									<tr>
+										<th>Transaction ID</th>
+										<th>Transaction Type</th>
+										<th>Source Account</th>										
+										<th>Destination Account</th>
+										<th>Amount</th>
+										<th>Status</th>
+										<th>Transaction Date</th>
+										<th>Processed Date</th>
+									</tr>
+								</thead>
+								<tbody>
+									<c:if test="${not empty transactionList}">
+										<c:forEach var="transaction" items="${transactionList}" varStatus="status">
+											<tr>
+												
+												<td>${transaction.transactionId }</td>
+												<td><strong>${transaction.transactionType }</strong></td>
+												<td>${transaction.fromAccount}</td>
+												<td>${transaction.toAccount }</td>
+												<td><strong>${transaction.amount }</strong></td>
+												<td>${transaction.status }</td>
+												<td>${transaction.date }</td>
+												<td>${transaction.processedDate }</td>
+												
+												<c:if test="${request.status == 'NEW' }">
+													<td><button id="viewButton${request.requestId}" class="btn btn-success" 
+											data-toggle="modal" data-target="#viewUser">View</button></td>
+												<script type="text/javascript">
+													$('#viewButton${request.requestId}').click(function(){
+													var firstName = '${request.memberId.firstName}';
+													var lastName = '${request.memberId.lastName}';
+													var contactNo = '${request.memberId.contactNo}';
+													var emailId = '${request.memberId.emailId}';
+													var isCustomer = '${request.memberId.isCustomer}';
+													var requestId = '${request.requestId}';
+													var requestType = '${request.requestType}';
+													var type = 'Customer';
+													if(isCustomer == 'false')
+														type = 'Merchant';
+														
+												   	 $('#firstName').text(firstName);
+												   	 $('#lastName').text(lastName);
+												   	 $('#contactNo').text(contactNo);
+												   	 $('#emailId').text(emailId);
+												   	 $('#type').text(type);
+												   	 $('#requestId').val(requestId);
+												   	 $('#requestType1').text(requestType);
+												   	 $('#requestType').val(requestType);
+													});
+												</script>
+												</c:if>
+											</tr>
+										</c:forEach>
+									</c:if>
+								</tbody>
+							</table>
 						</div>
 					</div>
-								
-									
+				</div>
+			</div>
+
+						</div>
+					</div>
+					
+		
+				
+
 					<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
 						aria-labelledby="myModalLabel" aria-hidden="true">
 						<div class="modal-dialog">
@@ -161,8 +139,9 @@
 								<div class="modal-header">
 									<button type="button" class="close" data-dismiss="modal"
 										aria-hidden="true">&times;</button>
-									<h4 class="modal-title" id="myModalLabel">Update Account</h4>
+									<h4 class="modal-title" id="myModalLabel">Modal title</h4>
 								</div>
+								
 								
 								<form id="updateUser" role="form" method="POST"
 									action="updateExternalUserDetails">
@@ -213,8 +192,6 @@
 					</div>
 				</div>
 			</div>
-
-		</div>
 	</div>
 
 	<!-- /.panel-body -->

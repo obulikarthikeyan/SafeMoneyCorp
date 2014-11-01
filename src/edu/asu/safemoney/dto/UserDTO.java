@@ -172,6 +172,8 @@ public class UserDTO implements Serializable {
     private String isActive;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "memberId")
     private List<TransactionDTO> transactionDTOList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "custMemberId")
+    private List<TransactionReviewDTO> transactionReviewDTOList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "memberId")
     private List<RequestDTO> requestDTOList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "memberId")
@@ -412,6 +414,15 @@ public class UserDTO implements Serializable {
 
     public void setTransactionDTOList(List<TransactionDTO> transactionDTOList) {
         this.transactionDTOList = transactionDTOList;
+    }
+
+    @XmlTransient
+    public List<TransactionReviewDTO> getTransactionReviewDTOList() {
+        return transactionReviewDTOList;
+    }
+
+    public void setTransactionReviewDTOList(List<TransactionReviewDTO> transactionReviewDTOList) {
+        this.transactionReviewDTOList = transactionReviewDTOList;
     }
 
     @XmlTransient
