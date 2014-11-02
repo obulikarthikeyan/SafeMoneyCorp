@@ -12,6 +12,8 @@ public interface AdminUserService {
 	
 	public boolean approveExtUserRequest(long requestId);
 	
+	public boolean declineExtUserRequest(long requestId);
+	
 	public boolean deleteExtUserAccount(int memberId);
 
 }

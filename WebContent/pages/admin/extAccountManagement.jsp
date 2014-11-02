@@ -146,9 +146,9 @@
 									</table>	
 									</div>
 									<div class="modal-footer">
-									<button type="submit" class="btn btn-primary">Approve</button>
-										<button type="button" class="btn btn-default"
-											data-dismiss="modal">Close</button>
+									<button type="submit" class="btn btn-primary" name="adminAction" value="approve">Approve</button>
+										<button type="submit" class="btn btn-default"
+											name="adminAction" value="decline">Decline</button>
 										
 									</div>
 								</form>

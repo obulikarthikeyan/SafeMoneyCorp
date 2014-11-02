@@ -1,5 +1,8 @@
 package edu.asu.safemoney.service.impln;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -15,6 +18,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 
+
+
+import org.springframework.web.multipart.MultipartFile;
+
+
+
+
 //import antlr.collections.List;
 import edu.asu.safemoney.dao.ManageExternalUserAccountDAO;
 import edu.asu.safemoney.dao.RequestDAO;
@@ -22,10 +32,12 @@ import edu.asu.safemoney.dto.AccountDTO;
 import edu.asu.safemoney.dto.PaymentRequestDTO;
 import edu.asu.safemoney.dto.RequestDTO;
 import edu.asu.safemoney.dto.TransactionDTO;
+import edu.asu.safemoney.dto.TransactionReviewDTO;
 import edu.asu.safemoney.dto.UserDTO;
 import edu.asu.safemoney.helper.ExternalUserHelper;
 import edu.asu.safemoney.model.AccountModel;
 import edu.asu.safemoney.model.ModifyUserModel;
+import edu.asu.safemoney.model.TransactionModel;
 import edu.asu.safemoney.service.ManageExternalUserAccountService;
 
 @Service
@@ -77,7 +89,16 @@ public class ManageExternalUserAccountServiceImpl implements
 			requestDTO.setAuthorizingAuthority("INT_BANK_ADM");
 			
 			if(requestList!=null){
-			requestList.add(requestDTO);
+				
+				for(RequestDTO req : requestList)
+				{
+					System.out.println("req type: " + req.getRequestType());
+					if(req.getRequestType().equals("DELETE_ACCOUNT"))
+					{
+						return false;
+					}
+				}
+				requestList.add(requestDTO);
 			}
 			
 			else{
@@ -344,10 +365,13 @@ public class ManageExternalUserAccountServiceImpl implements
 				transactionList = new ArrayList<TransactionDTO>();
 				for(TransactionDTO transaction : tempList)
 				{
-					int numdays = ExternalUserHelper.getNumDays(new Date(), transaction.getProcessedDate());
-					if(transaction.getIsAuthorized() == true && numdays <= 2)
+					if(transaction.getIsAuthorized() == true)
 					{
-						transactionList.add(transaction);
+						int numdays = ExternalUserHelper.getNumDays(new Date(), transaction.getProcessedDate());
+						if(numdays <= 2)
+						{
+							transactionList.add(transaction);
+						}
 					}
 				}
 			}
@@ -371,5 +395,128 @@ public class ManageExternalUserAccountServiceImpl implements
 		
 	}
 	
+
+	@Override
+	@Transactional
+	public boolean sendTransactionModificationRequest(
+			TransactionModel transactionModel, int memberId) {
+		// TODO Auto-generated method stub
+		UserDTO userDTO = displayUserAccount(memberId);
+		if(userDTO != null)
+		{
+		TransactionReviewDTO reviewDTO = new TransactionReviewDTO();
+		reviewDTO.setAmount(transactionModel.getAmount());
+		reviewDTO.setAuthorizingAuthorityId(125);
+		reviewDTO.setAuthorizingAuthorityType("INT_BANK_EMP");
+		reviewDTO.setAuthorizingMemberId(null);
+		reviewDTO.setCustMemberId(userDTO);
+		reviewDTO.setFromAccount(transactionModel.getFromAccount());
+		reviewDTO.setToAccount(transactionModel.getToAccount());
+		reviewDTO.setProcessedDate(null);
+		reviewDTO.setRequestDate(new Date());
+		reviewDTO.setStatus("PENDING_BANK");
+		reviewDTO.setTransactionId(transactionModel.getTransactionId());
+		reviewDTO.setTransactionReviewId(ExternalUserHelper.generateRandomNumber());
+		reviewDTO.setTransactionType(transactionModel.getTransactionType());
+		reviewDTO.setReviewType("MODIFY");
+		boolean isReviewAdded = manageExternalUserAccountDAO.addTransactionReview(reviewDTO);
+		if(isReviewAdded)
+		{
+			boolean isTransactionUpdated = manageExternalUserAccountDAO.updateTransaction(transactionModel.getTransactionId());
+			if(isTransactionUpdated)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		}
+		return false;
+	}
+
+	@Transactional
+	@Override
+	public boolean deleteTransaction(long transactionId, int memberId) {
+		// TODO Auto-generated method stub
+		TransactionDTO transactionDTO = manageExternalUserAccountDAO.getTransactionDTO(transactionId);
+		if(transactionDTO != null && transactionDTO.getMemberId().getMemberId() == memberId)
+		{
+			boolean isDeleted = manageExternalUserAccountDAO.deleteTransaction(transactionDTO);
+			if(isDeleted)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	@Transactional
+	public boolean sendTransactionDeletionRequest(long transactionId,
+			int memberId) {
+		// TODO Auto-generated method stub
+		TransactionDTO transactionDTO = manageExternalUserAccountDAO.getTransactionDTO(transactionId);
+		if(transactionDTO != null && transactionDTO.getMemberId().getMemberId() == memberId)
+		{
+		TransactionReviewDTO reviewDTO = new TransactionReviewDTO();
+		reviewDTO.setAmount(transactionDTO.getAmount());
+		reviewDTO.setAuthorizingAuthorityId(125);
+		reviewDTO.setAuthorizingAuthorityType("INT_BANK_EMP");
+		reviewDTO.setAuthorizingMemberId(null);
+		reviewDTO.setCustMemberId(transactionDTO.getMemberId());
+		reviewDTO.setFromAccount(transactionDTO.getFromAccount());
+		reviewDTO.setToAccount(transactionDTO.getToAccount());
+		reviewDTO.setProcessedDate(null);
+		reviewDTO.setRequestDate(new Date());
+		reviewDTO.setStatus("PENDING_BANK");
+		reviewDTO.setTransactionId(transactionDTO.getTransactionId());
+		reviewDTO.setTransactionReviewId(ExternalUserHelper.generateRandomNumber());
+		reviewDTO.setTransactionType(transactionDTO.getTransactionType());
+		reviewDTO.setReviewType("DELETE");
+		boolean isReviewAdded = manageExternalUserAccountDAO.addTransactionReview(reviewDTO);
+		if(isReviewAdded)
+		{
+			boolean isTransactionUpdated = manageExternalUserAccountDAO.updateTransaction(transactionId);
+			if(isTransactionUpdated)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		}
+		return false;
+	}
+
+	@Override
+	public boolean writeCertFile(MultipartFile file, String filePath) {
+		// TODO Auto-generated method stub
+		 if (!file.isEmpty()) {
+	            try {
+	                byte[] bytes = file.getBytes();
+	 
+	                // Creating the directory to store file
+	                File dir = new File(filePath + File.separator + "tmpFiles");
+	                if (!dir.exists())
+	                    dir.mkdirs();
+	 
+	                // Create the file on server
+	                File serverFile = new File(dir.getAbsolutePath()
+	                        + File.separator + "temp.cert");
+	                BufferedOutputStream stream = new BufferedOutputStream(
+	                        new FileOutputStream(serverFile));
+	                stream.write(bytes);
+	                stream.close();
+	            }catch(Exception e)
+	            {
+	            	e.printStackTrace();
+	            }
+		 }
+		return true;
+	}
 
 }

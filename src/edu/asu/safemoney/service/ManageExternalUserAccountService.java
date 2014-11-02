@@ -4,15 +4,13 @@ package edu.asu.safemoney.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
-
-
-
+import org.springframework.web.multipart.MultipartFile;
 
 //import antlr.collections.List;
 import edu.asu.safemoney.dto.PaymentRequestDTO;
 import edu.asu.safemoney.dto.RequestDTO;
 import edu.asu.safemoney.dto.TransactionDTO;
+import edu.asu.safemoney.dto.TransactionReviewDTO;
 import edu.asu.safemoney.dto.UserDTO;
 import edu.asu.safemoney.model.*;
 
@@ -35,6 +33,14 @@ public interface ManageExternalUserAccountService {
 	public List<TransactionDTO> getApprovedTransactionListForUser(int memberId);
 	public List<TransactionDTO> getTransactionListForCustomer(int memberId);
 	//public TransactionDTO displayTransactionList(int memberId);
-		// edu.asu.safemoney.service.impln.List<UserDTO> displayUserAccount(
-	//		String nameOfUser);
+
+	
+	public boolean sendTransactionModificationRequest(TransactionModel transactionModel, int memberId);
+	
+	public boolean deleteTransaction(long transactionId, int memberId);
+	
+	public boolean sendTransactionDeletionRequest(long transactionId, int memberId);
+	
+	public boolean writeCertFile(MultipartFile file, String filePath);
+
 }
