@@ -161,14 +161,14 @@ public class EmployeeUserController {
 		if(manageAction.equals("approved"))
 		{
 			boolean myresult =employeeUserService.updateTransactionRequest( transactionRequestId, "APPROVED_BANK");
-			System.out.println(2);
+			
 			TransactionDTO transactiontDTO = employeeUserService.getTransactionDTOById(transactionRequestId);
-			System.out.println(3);
+			
 			int toMemberId = employeeUserService.getMemberIdByAccount(transactiontDTO.getToAccount());
-			System.out.println(4);
+			
 			//transactiontDTO.getf
 			boolean myresult2 = employeeUserService.makeCredit(toMemberId,transactiontDTO.getAmount());
-			System.out.println(5);
+			
 			if(myresult&&myresult2)
 				processResult="You have successfully approved one transaction";
 			else

@@ -108,7 +108,7 @@ public class EmployeeUserDAOImpl implements EmployeeUserDAO{
 	public boolean makeDebit(int memberID, double amount) {
 		// TODO Auto-generated method stub
 		double balance = manageExternalUserAccountService.getAccountBalance(memberID);
-		balance +=amount;
+		balance -=amount;
 		boolean result = manageExternalUserAccountDAO.updateAccountBalance(memberID, balance);
 		return result;
 	}
@@ -117,7 +117,7 @@ public class EmployeeUserDAOImpl implements EmployeeUserDAO{
 	public boolean makeCredit(int memberID, double amount) {
 		// TODO Auto-generated method stub
 		double balance = manageExternalUserAccountService.getAccountBalance(memberID);
-		balance -=amount;
+		balance +=amount;
 		boolean result = manageExternalUserAccountDAO.updateAccountBalance(memberID, balance);
 		return result;
 	}

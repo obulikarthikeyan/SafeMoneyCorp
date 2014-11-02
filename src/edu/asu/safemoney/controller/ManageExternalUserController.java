@@ -209,22 +209,22 @@ public class ManageExternalUserController {
 	{
 		
 		int memberId = (Integer) session.getAttribute("memberId");
-		AccountModel accountModel = manageExternalUserAccountService
-				.getAccountDetails(memberId);
-
-		List<PaymentRequestDTO> requestList = manageExternalUserAccountService
-				.getPaymentRequest(memberId);
+		
 		if (manageExternalUserAccountService.findAccount(toAccount)) {
 			
 
 			String result = manageExternalUserAccountService.makeTransform(
 					memberId, amount, toAccount);
-			
+			AccountModel accountModel = manageExternalUserAccountService
+					.getAccountDetails(memberId);
+
+			List<PaymentRequestDTO> requestList = manageExternalUserAccountService
+					.getPaymentRequest(memberId);
 			if (result.equals("success")) {
 
 				return new ModelAndView("external/transactions")
 						.addObject("message",
-								"Transform Transaction Successfull.")
+								"Transform Transaction Successfull, money is debited from your account, credit needs approving")
 						.addObject("account", accountModel)
 						.addObject("requestList", requestList);
 			} else if (result.startsWith("failure")) {
@@ -249,11 +249,18 @@ public class ManageExternalUserController {
 		}
 		
 		else
+		{
+			AccountModel accountModel = manageExternalUserAccountService
+					.getAccountDetails(memberId);
+
+			List<PaymentRequestDTO> requestList = manageExternalUserAccountService
+					.getPaymentRequest(memberId);
 			return new ModelAndView("external/transactions")
-		.addObject("error",
+			.addObject("error",
 				"The account you input does not exist!")
-		.addObject("account", accountModel)
-		.addObject("requestList", requestList);
+				.addObject("account", accountModel)
+				.addObject("requestList", requestList);
+		}
 			
 	}
 	
