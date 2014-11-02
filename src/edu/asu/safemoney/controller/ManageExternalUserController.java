@@ -28,6 +28,7 @@ import edu.asu.safemoney.model.AccountModel;
 import edu.asu.safemoney.model.ModifyUserModel;
 import edu.asu.safemoney.model.TransactionModel;
 import edu.asu.safemoney.model.UserModel;
+import edu.asu.safemoney.service.EmployeeUserService;
 import edu.asu.safemoney.service.ManageExternalUserAccountService;
 
 @Controller
@@ -36,6 +37,9 @@ public class ManageExternalUserController {
 
 	@Autowired
 	ManageExternalUserAccountService manageExternalUserAccountService;
+	
+	@Autowired
+	private EmployeeUserService employeeUserService;
 
 	// Takes place in the URL for ManageAccount in side menu
 	// Populate External user details in the form.
@@ -388,6 +392,18 @@ public class ManageExternalUserController {
 			return new ModelAndView("external/transactionReview").addObject("submitError", "Review could not be submitted");
 		}
 		
+	}
+	
+	@RequestMapping(value = "/external/viewTransactionHistoryPage", method = RequestMethod.GET)
+	public ModelAndView getTransactionHistoryPage(HttpSession session){
+		
+		int memberId = (Integer) session.getAttribute("memberId");
+		UserDTO customerDTO = manageExternalUserAccountService.displayUserAccount(memberId);
+		
+		List<TransactionDTO> transactionInfo = employeeUserService.getAllTransactions(memberId);
+
+		return new ModelAndView("/external/transactionHistory").addObject("transactionInfo",transactionInfo);
+
 	}
 
 }

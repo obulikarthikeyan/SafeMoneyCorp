@@ -45,50 +45,43 @@
 								<thead>
 									<tr>
 										<th>Transaction ID</th>
-										<th>Requesting Member ID</th>
-										<th>Request Type</th>
+										<th>From Account</th>
+										<th>To Account</th>
+										<th>Date</th>
+										<th>Amount</th>
 										<th>Status</th>
-										<th>Authorizing Authority</th>
-										<th>Action</th>
+										<th>Transaction Type</th>
+										<th>Processed Date</th>
+										<th>Authorized</th>
+										<th>Critical</th>
 									</tr>
 								</thead>
 								<tbody>
-									<c:if test="${not empty requestList}">
-										<c:forEach var="request" items="${requestList}" varStatus="status">
+								<c:if test="${not empty transactionInfo}">
+										<c:forEach var="request" items="${transactionInfo}" varStatus="status">
 											<tr>
 												
-												<td>${request.requestId }</td>
-												<td>${request.memberId.memberId }</td>
-												<td>${request.requestType }</td>
+												<td>${request.transactionId }</td>
+												<td>${request.fromAccount }</td>
+												<td>${request.toAccount }</td>
+												<td><strong>${request.date }</strong></td>
+												<td><strong>${request.amount }</strong></td>
 												<td><strong>${request.status }</strong></td>
-												<td>ADMIN</td>
-												
-												<c:if test="${request.status == 'NEW' }">
-													<td><button id="viewButton${request.requestId}" class="btn btn-success" 
-											data-toggle="modal" data-target="#viewUser">View</button></td>
-												<script type="text/javascript">
-													$('#viewButton${request.requestId}').click(function(){
-													var firstName = '${request.memberId.firstName}';
-													var lastName = '${request.memberId.lastName}';
-													var contactNo = '${request.memberId.contactNo}';
-													var emailId = '${request.memberId.emailId}';
-													var isCustomer = '${request.memberId.isCustomer}';
-													var requestId = '${request.requestId}';
-													var requestType = '${request.requestType}';
-													var type = 'Customer';
-													if(isCustomer == 'false')
-														type = 'Merchant';
-														
-												   	 $('#firstName').text(firstName);
-												   	 $('#lastName').text(lastName);
-												   	 $('#contactNo').text(contactNo);
-												   	 $('#emailId').text(emailId);
-												   	 $('#type').text(type);
-												   	 $('#requestId').val(requestId);
-												   	 $('#requestType').val(requestType);
-													});
-												</script>
+												<td><strong>${request.transactionType }</strong></td>
+												<td><strong>${request.processedDate }</strong></td>
+												<c:if test="${request.isAuthorized == true }">
+												<td>Yes</td>
 												</c:if>
+												<c:if test="${request.isAuthorized == false }">
+												<td>No</td>
+												</c:if>
+												<c:if test="${request.isCritical == true }">
+												<td>Yes</td>
+												</c:if>
+												<c:if test="${request.isCritical == false }">
+												<td>No</td>
+												</c:if>
+
 											</tr>
 										</c:forEach>
 									</c:if>

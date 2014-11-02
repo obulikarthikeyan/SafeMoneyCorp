@@ -60,9 +60,15 @@
 												<c:if test="${request.isAuthorized == true }">
 												<td>Yes</td>
 												</c:if>
+												<c:if test="${request.isAuthorized == false }">
+												<td>No</td>
+												</c:if>												
 												<c:if test="${request.isCritical == true }">
 												<td>Yes</td>
 												</c:if>
+												<c:if test="${request.isCritical == false }">
+												<td>No</td>
+												</c:if>												
 
 											</tr>
 										</c:forEach>
