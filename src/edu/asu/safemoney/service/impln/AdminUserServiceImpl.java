@@ -103,6 +103,28 @@ public class AdminUserServiceImpl implements AdminUserService {
 			
 		}
 		return false;
+	}
+
+	@Transactional
+	@Override
+	public boolean declineExtUserRequest(long requestId) {
+		// TODO Auto-generated method stub
+		RequestDTO requestDTO = requestDAO.getRequestByRequestId(requestId);
+		if(requestDTO != null && requestDTO.getStatus().equals("NEW"))
+		{
+			if(requestDTO.getRequestType().equals("CREATE_ACCOUNT") || requestDTO.getRequestType().equals("DELETE_ACCOUNT"))
+			{
+					requestDTO.setStatus("DECLINED");
+					requestDTO.setProcessedDate(new Date());
+					boolean isRequestUpdated = requestDAO.updateRequest(requestDTO);
+					if(isRequestUpdated)
+					{
+						return true;
+					}
+			}
+			
+		}
+		return false;
 	} 
 	
 

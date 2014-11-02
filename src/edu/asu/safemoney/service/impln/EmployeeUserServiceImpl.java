@@ -34,14 +34,22 @@ public class EmployeeUserServiceImpl implements EmployeeUserService{
 	private EmployeeUserDAO employeeUserDAO;
 	
 	@Autowired
-	private RequestDAO requestDAO;
+	private RequestDAO requestDAO;	
 	
 	@Autowired
-	private ManageExternalUserAccountDAO manageExternalUserAccountDAO;
-	
+	private ManageExternalUserAccountDAO manageExternalUserAccountDAO;	
 	
 	@Autowired
 	private AdminUserService adminUserService;
+	
+	
+	@Transactional
+	@Override
+	public List<RequestDTO> getRequestList(int memberId){
+		
+		List<RequestDTO> requestList = employeeUserDAO.displayEmployeeUserAccountDAO(memberId);
+		return requestList;
+	}
 	
 	@Transactional
 	@Override
@@ -99,6 +107,91 @@ public class EmployeeUserServiceImpl implements EmployeeUserService{
 		}
 		return true;
 	}
+	
+	@Transactional
+	@Override
+	public boolean sendExtUserTransactionViewRequests(int customerId, int employeeId){
+		
+		UserDTO empUserDTO = manageExternalUserAccountDAO.displayUserAccountDAO(employeeId);
+		UserDTO custUserDTO = manageExternalUserAccountDAO.displayUserAccountDAO(customerId);
+		
+		if(empUserDTO==null)
+		{
+			return false;
+		}
+		
+		if(custUserDTO==null)
+		{
+			return false;
+		}
+		
+		if(custUserDTO.getUserTypeId().getUserTypeId()!=322 && custUserDTO.getUserTypeId().getUserTypeId()!=366)
+		{
+			return false;
+		}
+		
+		List<RequestDTO> requestList= empUserDTO.getRequestDTOList();
+		
+		RequestDTO requestDTO = new RequestDTO();
+		UserTypeDTO authorityUserTypeId = custUserDTO.getUserTypeId();
+		
+		requestDTO.setMemberId(empUserDTO);
+		requestDTO.setRequestType("VIEW_TRANSACTION");
+		requestDTO.setStatus("NEW");
+		requestDTO.setRequestDate(new Date());
+		requestDTO.setProcessedDate(null);
+		requestDTO.setAuthorizingMemberId(customerId);		
+		requestDTO.setAuthorityUserTypeId(authorityUserTypeId.getUserTypeId());		
+		requestDTO.setAuthorizingAuthority(authorityUserTypeId.getUserType());
+		requestDTO.setRequestId(ExternalUserHelper.generateRandomNumber());
+		if(requestList!=null)
+		{
+			for (RequestDTO req : requestList)
+			{
+				if(req.getRequestType().equals("VIEW_TRANSACTION") && req.getAuthorizingMemberId()==customerId)
+				{
+					return false;
+				}
+				
+			}
+			requestList.add(requestDTO);
+
+		}
+		else
+		{
+			requestList= new ArrayList<RequestDTO>();
+			requestList.add(requestDTO);
+		}
+		return true;
+	}
+
+	
+	@Transactional
+	@Override
+	public List<RequestDTO> getTransactionRequestList(int memberId){
+		
+		List<RequestDTO> transactionRequestList = employeeUserDAO.displayEmployeeUserTransactionDAO(memberId);
+		return transactionRequestList;
+	}
+	
+	
+	@Transactional
+	@Override
+	public List<TransactionDTO> getAllTransactions(int memberId){
+		
+		List<TransactionDTO> transactionRequestList = employeeUserDAO.getTransactionListForCustomer(memberId);
+		return transactionRequestList;
+	}
+	
+
+	@Transactional
+	@Override
+	public List<RequestDTO> getTransactionList(int memberId){
+		
+		List<RequestDTO> transactionList = employeeUserDAO.displayEmployeeUserTransactionDAO(memberId);
+		return transactionList ;
+	}
+	
 	
 	@Transactional
 	@Override
@@ -173,6 +266,15 @@ public class EmployeeUserServiceImpl implements EmployeeUserService{
 	
 	@Transactional
 	@Override
+	public int getCustomerId (int requestId){
+		RequestDTO myRequest = requestDAO.getRequestByRequestId(requestId);
+		int customerId = myRequest.getAuthorizingMemberId();
+		return customerId;
+
+	}
+	
+	@Transactional
+	@Override
 	public boolean makeCredit(int memberID, double amount) {
 		// TODO Auto-generated method stub
 		
@@ -216,4 +318,9 @@ public class EmployeeUserServiceImpl implements EmployeeUserService{
 	}
 
 	
+	public long getAccountNo(int memberId)
+	{
+		long accountNo = employeeUserDAO.returnCustomerAccountNo(memberId);
+		return accountNo;
+	}
 }

@@ -37,6 +37,7 @@
    
     
     <authentication-manager alias="authenticationManager">
-        <authentication-provider user-service-ref="loginService" />
+        <authentication-provider ref="defaultProvider">
+        </authentication-provider>
     </authentication-manager>
 </beans:beans>

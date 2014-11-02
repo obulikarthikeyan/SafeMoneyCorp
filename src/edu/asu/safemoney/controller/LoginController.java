@@ -10,6 +10,11 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.http.HttpRequest;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.LockedException;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
@@ -64,14 +69,30 @@ public class LoginController {
 	
 	@RequestMapping(value="/login", method = RequestMethod.GET)
 	public String login(ModelMap model) {
-		return "shared/home";
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+		if (!(auth instanceof AnonymousAuthenticationToken)) {
+		    return "redirect:/landing";
+		}
+		else
+		{
+			return "shared/home";
+		}
 		
 	}
 	
 	
 	@RequestMapping(value="/logout", method = RequestMethod.GET)
 	public String logout(ModelMap model) {
-		return "shared/home";
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+		if (!(auth instanceof AnonymousAuthenticationToken)) {
+		    return "redirect:/landing";
+		}else
+		{
+			return "shared/home";
+		}
 	}
 	
 	@RequestMapping(value="/AuthError", method = RequestMethod.GET)
@@ -85,8 +106,32 @@ public class LoginController {
 	}
 	
 	@RequestMapping(value="/home", method = RequestMethod.GET)
-	public ModelAndView redirectToHome(ModelMap model) {
-		return new ModelAndView("shared/home").addObject("authError", "Authentication Failed");
+	public ModelAndView redirectToHome(@RequestParam(value = "error", required = false) String error, HttpServletRequest request) {
+		if(getAuthErrorMessage(request, "SPRING_SECURITY_LAST_EXCEPTION") != null)
+		{
+			return new ModelAndView("shared/home").addObject("error", getAuthErrorMessage(request, "SPRING_SECURITY_LAST_EXCEPTION"));
+		}
+		else
+		{
+			return new ModelAndView("shared/home").addObject("authError", "Authentication Failed");
+		}
+	}
+	
+	private String getAuthErrorMessage(HttpServletRequest request, String key){
+		 
+		Exception exception = 
+                   (Exception) request.getSession().getAttribute(key);
+ 
+		String error = "";
+		if (exception instanceof BadCredentialsException) {
+			error = "Invalid Credentials. Authentication Failed";
+		}else if(exception instanceof LockedException) {
+			error = exception.getMessage();
+		}else{
+			error = "Invalid username and password!";
+		}
+ 
+		return error;
 	}
 	
 	@RequestMapping(value="/signUp", method = RequestMethod.POST)

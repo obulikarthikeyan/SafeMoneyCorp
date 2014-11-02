@@ -16,12 +16,15 @@ public interface EmployeeUserService {
 	
 	public boolean sendExtUserViewRequests(int customerId, int employeeId);
 	
+	public boolean sendExtUserTransactionViewRequests(int customerId, int employeeId);
+	
 	public boolean authorizeCreditTransaction(int requestId);
 	
 	public boolean authorizePaymentTransaction(int requestId);
 	
 	public boolean getViewRequestList(int requestId);
 	
+
 	public List<PaymentRequestDTO> getPaymentRequest();
 	public List<TransactionDTO> getTransactionRequest();
 
@@ -34,5 +37,17 @@ public interface EmployeeUserService {
 	public TransactionDTO getTransactionDTOById(long transactionRequestId);
 	
 	public int getMemberIdByAccount(long accountNumber);
+
+	public List<RequestDTO> getRequestList(int memberId);
+	
+	public List<RequestDTO> getTransactionList(int memberId);
+	
+	public int getCustomerId (int requestId);
+	
+	public long getAccountNo(int memberId);
+	
+	public List<RequestDTO> getTransactionRequestList(int memberId);
+	
+	public List<TransactionDTO> getAllTransactions(int memberId);
 
 }

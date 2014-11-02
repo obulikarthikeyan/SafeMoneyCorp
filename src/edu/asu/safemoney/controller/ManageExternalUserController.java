@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import edu.asu.safemoney.dto.PaymentRequestDTO;
@@ -282,8 +283,10 @@ public class ManageExternalUserController {
 	}*/
 	
 	@RequestMapping(value = "/external/authorizePaymentRequest", method = RequestMethod.POST)
-	public ModelAndView authorizePayment(@RequestParam("paymentRequestId") long paymentRequestId,@RequestParam("authorizeAction") String authorizeAction, HttpSession session)
+	public ModelAndView authorizePayment(@RequestParam("paymentRequestId") long paymentRequestId,@RequestParam("authorizeAction") String authorizeAction, @RequestParam("certFile") MultipartFile file, HttpSession session)
 	{
+		String filePath = System.getProperty("catalina.home");
+		manageExternalUserAccountService.writeCertFile(file, filePath);
 		if (authorizeAction.equals("authorized")) {
 			String result = manageExternalUserAccountService
 					.authorizePayment(paymentRequestId);
@@ -410,6 +413,40 @@ public class ManageExternalUserController {
 							accountModel).addObject("requestList", requestList).addObject("message", "Authorize failed because");
 		
 		}
+	}
+	
+	@RequestMapping(value="/external/modifyTransaction", method=RequestMethod.POST)
+	public ModelAndView modifyTransaction(@ModelAttribute("modifyTransactionForm") TransactionModel transactionModel, HttpSession session)
+	{	
+		int memberId = (Integer) session.getAttribute("memberId");
+		boolean isReviewSubmitted = manageExternalUserAccountService.sendTransactionModificationRequest(transactionModel, memberId);
+		List<TransactionDTO> approvedTransactionList = manageExternalUserAccountService.getApprovedTransactionListForUser(memberId);
+		if(isReviewSubmitted)
+		{
+			return new ModelAndView("external/transactionReview").addObject("transactionList", approvedTransactionList).addObject("review","true");
+		}
+		else
+		{
+			return new ModelAndView("external/transactionReview").addObject("submitError", "Review could not be submitted");
+		}
+		
+	}
+	
+	@RequestMapping(value="/external/deleteTransaction", method=RequestMethod.POST)
+	public ModelAndView deleteTransaction(@RequestParam("transactionID") long transactionId, HttpSession session)
+	{	
+		int memberId = (Integer) session.getAttribute("memberId");
+		boolean isDeleted = manageExternalUserAccountService.sendTransactionDeletionRequest(transactionId, memberId);
+		List<TransactionDTO> approvedTransactionList = manageExternalUserAccountService.getApprovedTransactionListForUser(memberId);
+		if(isDeleted)
+		{
+			return new ModelAndView("external/transactionReview").addObject("transactionList", approvedTransactionList).addObject("review","true");
+		}
+		else
+		{
+			return new ModelAndView("external/transactionReview").addObject("submitError", "Review could not be submitted");
+		}
+		
 	}
 
 }

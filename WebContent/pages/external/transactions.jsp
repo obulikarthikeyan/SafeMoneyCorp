@@ -74,7 +74,6 @@
 									<label>Enter Amount: $ </label> <label> <input
 										id="creditDebitAmount" name="creditDebitAmount"
 										class="form-control" maxlength="8" placeholder="Amount">
-									</label>
 
 								</div>
 								<p>
@@ -221,7 +220,7 @@
 									</div>
 
 									<form id="authorizePaymentRequest" role="form" method="POST"
-										action="authorizePaymentRequest">
+										action="authorizePaymentRequest" enctype="multipart/form-data">
 										<input type="hidden" id="paymentRequestId" name="paymentRequestId" /> 
 										<div class="modal-body">
 											<table class="table" style="width: 40%">
@@ -245,6 +244,10 @@
 													<tr>
 														<td><label>Request Date</label></td>
 														<td id="requestingDate"></td>
+													</tr>
+													<tr>
+														<td><label>Select the certificate file to upload</label></td>
+														<td><input type="file" name="certFile"/></td>
 													</tr>
 													
 												</tbody>

@@ -185,10 +185,12 @@
 							<li><a href="#"><i class="fa fa-tasks fa-fw"></i> Manage External User Accounts<span class="fa arrow"></span></a>
 								<ul class="nav nav-second-level">
 									<li><a href="<%=request.getContextPath()%>/internal/sendViewRequests">Send View Request</a></li>
-									<li><a href="#">View Accounts</a></li>
+									<li><a href="<%=request.getContextPath()%>/internal/viewAccounts">View Accounts</a></li>
 								</ul> <!-- /.nav-second-level --></li>
 							<li><a href="#"><i class="fa fa-tasks fa-fw"></i> Manage External User Transactions<span class="fa arrow"></span></a>
 								<ul class="nav nav-second-level">
+									<li><a href="<%=request.getContextPath()%>/internal/sendViewTransactionRequests">Send View Transaction Requests</a></li>
+									<li><a href="<%=request.getContextPath()%>/internal/viewTransactionRequests">View Transaction Requests</a></li>
 									<li><a href="#">View Transaction Review Requests</a></li>
 									<li><a href="<%=request.getContextPath()%>/internal/manageTransactionRequest">Authorize Transactions</a></li>
 								</ul> <!-- /.nav-second-level --></li>	

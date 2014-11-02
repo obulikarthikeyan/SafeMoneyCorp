@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 31, 2014 at 05:02 AM
+-- Generation Time: Nov 02, 2014 at 04:40 AM
 -- Server version: 5.5.32
 -- PHP Version: 5.4.19
 
@@ -45,7 +45,7 @@ INSERT INTO `account` (`account_no`, `member_id`, `amount`, `is_active`) VALUES
 (1545151, 996368, 5000, 'true'),
 (6987456, 996364, 5000, 'true'),
 (8765433, 996369, 400, 'true'),
-(56352145, 996363, 500.27999999999975, 'true'),
+(56352145, 996363, 370.27999999999975, 'true'),
 (10401417978, 996386, 200, 'true');
 
 -- --------------------------------------------------------
@@ -59,10 +59,12 @@ CREATE TABLE IF NOT EXISTS `login` (
   `user_name` varchar(15) NOT NULL,
   `password` varchar(15) NOT NULL,
   `site_key` varchar(20) NOT NULL,
-  `isAccountNonLocked` tinyint(1) DEFAULT NULL,
-  `isEnabled` int(11) DEFAULT NULL,
-  `failedAttemptCount` int(11) DEFAULT NULL,
+  `isAccountNonLocked` tinyint(1) NOT NULL,
+  `isEnabled` tinyint(1) NOT NULL,
+  `failedAttemptCount` int(11) NOT NULL,
   `lastLoginDate` date DEFAULT NULL,
+  `otp` bigint(12) DEFAULT NULL,
+  `otp_date` datetime DEFAULT NULL,
   PRIMARY KEY (`member_id`),
   UNIQUE KEY `user_name` (`user_name`),
   KEY `memberid` (`member_id`)
@@ -72,12 +74,13 @@ CREATE TABLE IF NOT EXISTS `login` (
 -- Dumping data for table `login`
 --
 
-INSERT INTO `login` (`member_id`, `user_name`, `password`, `site_key`, `isAccountNonLocked`, `isEnabled`, `failedAttemptCount`, `lastLoginDate`) VALUES
-(996363, 'cust', 'cust', 'eclipse', NULL, NULL, NULL, NULL),
-(996364, 'mer', 'mer', 'helio', NULL, NULL, NULL, NULL),
-(996368, 'emp', 'emp', 'helio', NULL, NULL, NULL, NULL),
-(996369, 'admin', 'admin', 'helio', NULL, NULL, NULL, NULL),
-(996386, 'jbjhjhj', 'hhjjhhjjhj', 'ghjghjghg', NULL, NULL, NULL, NULL);
+INSERT INTO `login` (`member_id`, `user_name`, `password`, `site_key`, `isAccountNonLocked`, `isEnabled`, `failedAttemptCount`, `lastLoginDate`, `otp`, `otp_date`) VALUES
+(996363, 'cust', 'cust', 'eclipse', 1, 1, 0, NULL, 0, NULL),
+(996364, 'mer', 'mer', 'helio', 1, 1, 0, NULL, 0, NULL),
+(996368, 'emp', 'emp', 'helio', 1, 1, 0, NULL, 0, NULL),
+(996369, 'admin', 'admin', 'helio', 1, 1, 0, NULL, 0, NULL),
+(996386, 'jbjhjhj', 'hhjjhhjjhj', 'ghjghjghg', 1, 1, 0, NULL, 0, NULL),
+(996387, 'kjkjh', 'hjhjg', 'hhghg', 1, 1, 0, NULL, 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -96,6 +99,7 @@ CREATE TABLE IF NOT EXISTS `payment_request` (
   `authorizer_member_id` int(11) NOT NULL,
   `authorizer_account_id` bigint(10) NOT NULL,
   `status` varchar(15) NOT NULL,
+  `description` varchar(300) NOT NULL,
   PRIMARY KEY (`payment_id`),
   KEY `memberId` (`merchant_member_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -125,7 +129,8 @@ CREATE TABLE IF NOT EXISTS `request` (
 --
 
 INSERT INTO `request` (`request_id`, `member_id`, `request_type`, `authorizing_member_id`, `status`, `authorizing_authority`, `authority_user_type_id`, `request_date`, `processed_date`) VALUES
-(56356, 996386, 'CREATE_ACCOUNT', NULL, 'APPROVED', 'ADMIN', 123, '2014-10-28', '2014-10-28');
+(56356, 996386, 'CREATE_ACCOUNT', NULL, 'APPROVED', 'ADMIN', 123, '2014-10-28', '2014-10-28'),
+(5381225, 996387, 'CREATE_ACCOUNT', NULL, 'DECLINED', 'ADMIN', 123, '2014-11-01', '2014-11-01');
 
 -- --------------------------------------------------------
 
@@ -154,7 +159,14 @@ CREATE TABLE IF NOT EXISTS `transaction` (
 --
 
 INSERT INTO `transaction` (`transaction_id`, `member_id`, `from_account`, `to_account`, `date`, `amount`, `status`, `transaction_type`, `is_critical`, `is_authorized`, `processed_date`) VALUES
-(5035376, 996363, 56352145, 56352145, '2014-10-30 13:26:33', 50, 'APPROVED', 'Debit', 0, 1, '2014-10-30');
+(3996744, 996363, 56352145, 56352145, '2014-11-01 16:51:42', 20, 'PENDING', 'Credit', 1, 0, NULL),
+(5035376, 996363, 56352145, 56352145, '2014-10-30 13:26:33', 50, 'UNDER_REVIEW', 'Debit', 0, 1, '2014-10-30'),
+(5154517, 996363, 56352145, 56352145, '2014-11-01 18:16:08', 10, 'PENDING', 'Credit', 1, 0, NULL),
+(6113428, 996363, 56352145, 56352145, '2014-11-01 18:21:01', 20, 'PENDING', 'Credit', 1, 0, NULL),
+(6113812, 996363, 56352145, 56352145, '2014-11-01 16:52:05', 20, 'APPROVED', 'Debit', 0, 1, '2014-11-01'),
+(6296461, 996363, 56352145, 56352145, '2014-11-01 16:58:02', 20, 'APPROVED', 'Debit', 0, 1, '2014-11-01'),
+(6401166, 996363, 56352145, 56352145, '2014-11-01 18:21:17', 20, 'APPROVED', 'Debit', 0, 1, '2014-11-01'),
+(6485964, 996363, 56352145, 56352145, '2014-11-01 16:38:13', 20, 'UNDER_REVIEW', 'Debit', 0, 1, '2014-11-01');
 
 -- --------------------------------------------------------
 
@@ -170,15 +182,24 @@ CREATE TABLE IF NOT EXISTS `transaction_review` (
   `to_account` bigint(12) NOT NULL,
   `amount` double NOT NULL,
   `transaction_type` varchar(45) NOT NULL,
-  `status` int(11) NOT NULL,
+  `status` varchar(15) NOT NULL,
   `authorizing_authority_id` int(11) NOT NULL,
   `authorizing_member_id` int(11) DEFAULT NULL,
   `authorizing_authority_type` varchar(15) NOT NULL,
   `request_date` date NOT NULL,
   `processed_date` date DEFAULT NULL,
+  `review_type` varchar(15) NOT NULL,
   PRIMARY KEY (`transaction_review_id`),
   KEY `member_id_review` (`cust_member_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `transaction_review`
+--
+
+INSERT INTO `transaction_review` (`transaction_review_id`, `cust_member_id`, `transaction_id`, `from_account`, `to_account`, `amount`, `transaction_type`, `status`, `authorizing_authority_id`, `authorizing_member_id`, `authorizing_authority_type`, `request_date`, `processed_date`, `review_type`) VALUES
+(3529365, 996363, 5035376, 56352145, 56352145, 100, 'debit', 'PENDING_BANK', 125, NULL, 'INT_BANK_EMP', '2014-11-01', NULL, 'MODIFY'),
+(4304859, 996363, 6485964, 56352145, 56352145, 20, 'Debit', 'PENDING_BANK', 125, NULL, 'INT_BANK_EMP', '2014-11-01', NULL, 'DELETE');
 
 -- --------------------------------------------------------
 
@@ -216,7 +237,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   UNIQUE KEY `email_id` (`email_id`),
   KEY `member_id` (`member_id`),
   KEY `user_type_idx` (`user_type_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=996387 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=996388 ;
 
 --
 -- Dumping data for table `user`
@@ -227,7 +248,8 @@ INSERT INTO `user` (`member_id`, `first_name`, `last_name`, `email_id`, `contact
 (996364, 'John', 'Doe', 'john@smc.corp', 1234509876, 'xxxxxxx', 'yyyyyyy', 'zzzzz', 'NY', 23564, 789456123, 'What is your model name of your first phone?', 'What is the last 5 digits in your driving license?', 'what is name of your favorite teacher in high school?', 'XC01', '56897', 'Jennifer', '2014-09-09', 36, 'true', 366, 'SYSTEM', '2014-10-19', '2015-10-19', 'true'),
 (996368, 'Bank', 'Employee', 'bank.employee@smcorp', 1234509876, 'xxxxxxx', 'yyyyyyy', 'zzzzz', 'NY', 23564, 789456123, 'What is your model name of your first phone?', 'What is the last 5 digits in your driving license?', 'what is name of your favorite teacher in high school?', 'XC01', '56897', 'Jennifer', '2014-09-09', 36, 'true', 125, 'SYSTEM', '2014-10-19', '2015-10-19', 'true'),
 (996369, 'Bank', 'Admin', 'bank.admin@smcorp', 8890008765, 'xxxxxxx', 'yyyyyyyyy', 'zzzzz', 'AZ', 89963, 345678912, 'What is your favorite place?', 'What is your right eye power?', 'What is the name of your family doctor?', 'dallas', '0.0', 'Dr.Adam', '2014-10-17', 26, 'true', 123, 'SYSTEM', '2014-10-19', '2015-10-19', 'true'),
-(996386, 'kjhkjhj', 'hjhjhjh', 'kjjhjk@kjjh.com', 9878678676, 'bjbjhbvh', 'jjgjhjhhjhj', 'hbhjbhj', 'bj', 98788, 987878676, 'hjhjh', 'jhghjghj', 'hghjghh', 'jgghjg', 'ghjghjghjggh', 'jhghjghgj', '2014-10-28', 98, 'true', 322, 'SYSTEM', '2014-10-28', '2015-10-28', 'true');
+(996386, 'kjhkjhj', 'hjhjhjh', 'kjjhjk@kjjh.com', 9878678676, 'bjbjhbvh', 'jjgjhjhhjhj', 'hbhjbhj', 'bj', 98788, 987878676, 'hjhjh', 'jhghjghj', 'hghjghh', 'jgghjg', 'ghjghjghjggh', 'jhghjghgj', '2014-10-28', 98, 'true', 322, 'SYSTEM', '2014-10-28', '2015-10-28', 'true'),
+(996387, 'jhjhbh', 'jhjgh', 'jhjkhj@kjk.com', 9878786999, 'hjhjh', 'jgjg', 'hggh', 'fh', 87686, 888888888, 'jghghg', 'ghgfgfg', 'hghghggh', 'hghhf', 'fghhgh', 'hjghjghjg', '2014-11-01', 79, 'true', 322, 'SYSTEM', '2014-11-01', '2015-11-01', 'true');
 
 -- --------------------------------------------------------
 

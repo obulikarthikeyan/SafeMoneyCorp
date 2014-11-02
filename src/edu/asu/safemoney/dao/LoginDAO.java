@@ -20,6 +20,12 @@ public interface LoginDAO {
 	
 	public UserDTO copyToUserDTO(UserModel user);
 	
+	public boolean resetFailureAttempts(String userName);
+	
+	public boolean updateLoginFailureAttempts(String userName);
+	
+	public int getFailureAttemptCount(String userName);
+	
 	//public String getUserTypeId(int memberId);
 	
 }

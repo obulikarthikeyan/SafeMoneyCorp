@@ -9,7 +9,7 @@
 </head>
 <body>
 	<jsp:include page="/pages/sidebar.jsp"></jsp:include>
-	<div id="page-wrapper">
+	<div id="page-wrapper" style="width:105%">
 		<div class="row">
 			<div class="col-lg-12">
 				<h1 class="page-header">Transactional Review</h1>
@@ -20,12 +20,6 @@
 
 
 			<br>
-			<div class="panel panel-default" width="120%">
-				<div class="panel-heading">
-					<strong>Transactional Review</strong>
-				</div>
-				<!-- /.panel-heading -->
-				<div class="panel-body">
 				
 				<ul class="nav nav-pills">
 						<li class="active"><a href="#transactionalReview" data-toggle="tab">Transaction History</a></li>
@@ -39,8 +33,9 @@
 						<div class="tab-pane fade in active in active" id="transactionalReview">
 							
 							<div class="col-lg-12">
-
-			<div class="panel panel-default" style="width:120%">
+			<br>
+			<br>
+			<div class="panel panel-default" style="width:100%">
 			<br>
 				<div class="panel-heading"><strong>Transactional Review Requests to Bank</strong></div>
 			<br>
@@ -61,6 +56,14 @@
 									<%
 										}
 									%>
+									<%
+									if (request.getAttribute("submitError") != null) {
+									%>
+									<p class="label label-warning" style="font-size:13px">${submitError }</p>
+									<br>
+									<%
+										}
+									%>
 						<div class="table-responsive">
 							<table class="table" style="width: 120%">
 								<thead>
@@ -73,6 +76,8 @@
 										<th>Status</th>
 										<th>Transaction Date</th>
 										<th>Processed Date</th>
+										<th>Action</th>
+										<th></th>
 									</tr>
 								</thead>
 								<tbody>
@@ -88,37 +93,35 @@
 												<td>${transaction.status }</td>
 												<td>${transaction.date }</td>
 												<td>${transaction.processedDate }</td>
-												
-												<c:if test="${request.status == 'NEW' }">
-													<td><button id="viewButton${request.requestId}" class="btn btn-success" 
-											data-toggle="modal" data-target="#viewUser">View</button></td>
-												<script type="text/javascript">
-													$('#viewButton${request.requestId}').click(function(){
-													var firstName = '${request.memberId.firstName}';
-													var lastName = '${request.memberId.lastName}';
-													var contactNo = '${request.memberId.contactNo}';
-													var emailId = '${request.memberId.emailId}';
-													var isCustomer = '${request.memberId.isCustomer}';
-													var requestId = '${request.requestId}';
-													var requestType = '${request.requestType}';
-													var type = 'Customer';
-													if(isCustomer == 'false')
-														type = 'Merchant';
+											<c:if test="${transaction.status != 'UNDER_REVIEW' }">
+											<td><button id="modifyButton${transaction.transactionId}" class="btn btn-success" 
+											data-toggle="modal" data-target="#modify">Modify</button></td>
+											<td><button id="deleteButton${transaction.transactionId}" class="btn btn-warning" 
+											data-toggle="modal" data-target="#delete">Delete</button></td>
+											</c:if>
+											</tr>
+											<script type="text/javascript">
+													$('#modifyButton${transaction.transactionId}').click(function(){
+													var transactionId = '${transaction.transactionId}';
+													var transactionType = '${transaction.transactionType}';
+													var fromAccount = '${transaction.fromAccount}';
+													var toAccount = '${transaction.toAccount}';
+													var amount = '${transaction.amount}';
 														
-												   	 $('#firstName').text(firstName);
-												   	 $('#lastName').text(lastName);
-												   	 $('#contactNo').text(contactNo);
-												   	 $('#emailId').text(emailId);
-												   	 $('#type').text(type);
-												   	 $('#requestId').val(requestId);
-												   	 $('#requestType1').text(requestType);
-												   	 $('#requestType').val(requestType);
+												   	 $('#transactionId').val(transactionId);
+												   	 $('#transactionType').val(transactionType);
+												   	 $('#fromAccount').val(fromAccount);
+												   	 $('#toAccount').val(toAccount);
+												   	 $('#amount').val(amount);
+												   	
+													});
+													$('#deleteButton${transaction.transactionId}').click(function(){
+														var transactionId = '${transaction.transactionId}';
+														 $('#transactionID').val(transactionId);
 													});
 												</script>
-												</c:if>
-											</tr>
 										</c:forEach>
-									</c:if>
+										</c:if>
 								</tbody>
 							</table>
 						</div>
@@ -132,7 +135,7 @@
 		
 				
 
-					<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+					<div class="modal fade" id="modify" tabindex="-1" role="dialog"
 						aria-labelledby="myModalLabel" aria-hidden="true">
 						<div class="modal-dialog">
 							<div class="modal-content">
@@ -143,55 +146,88 @@
 								</div>
 								
 								
-								<form id="updateUser" role="form" method="POST"
-									action="updateExternalUserDetails">
+								<form id="modifyTransactionForm" role="form" method="POST"
+									action="modifyTransaction">
 									<div class="modal-body">
 									
-										<input class="form-control" type="hidden" style="width: 25%" id="memberId" name="memberId" placeholder="memberId"
-											tabindex="25" value="${userDTO.memberId}">
+										<input class="form-control" type="hidden" style="width: 25%" id=transactionId name="transactionId"
+											tabindex="1">
 										<br>	
-										<label>email_Id</label>
-										<input class="form-control" style="width: 25%" id="emailId" name="emailId" placeholder="emailId"
-											tabindex="15" value="${userDTO.emailId}">
+										<label>Transaction Type</label>
+										<select class="form-control" style="width: 25%" id="transactionType" name="transactionType" placeholder="Transaction Type"
+											tabindex="2">
+											<option value="debit" selected>Debit</option>
+											<option value="credit">Credit</option>
+											<option value="transfer">Transfer</option>
+										</select>
+										<script type="text/javascript">
+										$( "#transactionType" )
+										  .change(function () 
+												  {
+													if($("#transactionType").val() == "transfer")
+													{
+														$("#destAccount").show();
+														$("#toAccount").show();
+													}
+													else
+													{
+														$("#destAccount").hide();
+														$("#toAccount").hide();
+													}
+												  });
+										</script>
 										<br>	
-										<label>Contact_No</label>
-										<input class="form-control" style="width: 25%" id="contactNo" name="contactNo"
-											tabindex="10" maxlength="10" value="${userDTO.contactNo}">
+										<label>Source Account</label>
+										<input class="form-control" style="width: 25%" id="fromAccount" name="fromAccount"
+											tabindex="3" maxlength="10">
 										<br>	
-										<label>Address_1</label>
-										<input class="form-control" style="width: 35%" id="address1" name="address1"
-											tabindex="50" value="${userDTO.address1}">
+										<label id="destAccount">Destination Account</label>
+										<input class="form-control" style="width: 35%" id="toAccount" name="toAccount"
+											tabindex="4" maxlength="10">
 										<br>	
-										<label>Address_2</label>
-										<input class="form-control" style="width: 35%" id="address2" name="address2"
-											tabindex="50" value="${userDTO.address2}">
-										<br>	
-										<label>City</label>	
-										<input class="form-control" style="width: 25%" id="city" name="city"
-											tabindex="15" value="${userDTO.city}">
-										
-										<br>	
-										<label>State</label>
-										<input class="form-control" style="width: 25%" id="state" name="state"
-											tabindex="2" maxlength="2" value="${userDTO.state}">
-										
-										<br>	
-										<label>Zip</label>
-										<input class="form-control" style="width: 25%" id="zip" name="zip"
-											tabindex="5" maxlength="5" value="${userDTO.zip}">
-									</div>
+										<label>Amount</label>
+										<input class="form-control" style="width: 35%" id="amount" name="amount"
+											tabindex="5">
 									<div class="modal-footer">
 										<button type="button" class="btn btn-default"
 											data-dismiss="modal">Close</button>
-										<button type="submit" class="btn btn-primary">Save
-											changes</button>
+										<button type="submit" class="btn btn-primary">Submit</button>
+									</div>
 									</div>
 								</form>
 							</div>
 						</div>
 					</div>
-				</div>
-			</div>
+					
+					<div class="modal fade" id="delete" tabindex="-1" role="dialog"
+						aria-labelledby="myModalLabel" aria-hidden="true">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal"
+										aria-hidden="true">&times;</button>
+									<h4 class="modal-title" id="myModalLabel">Transactional Review - Delete Transaction</h4>
+								</div>
+								
+								
+								<form id="deleteTransactionForm" role="form" method="POST"
+									action="deleteTransaction">
+									<div class="modal-body">
+									
+										<input class="form-control" type="hidden" style="width: 25%" id="transactionID" name="transactionID"
+											tabindex="1">
+										<br>	
+										<label>Do You Want to Delete the Transaction?</label>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-default"
+											data-dismiss="modal">No</button>
+										<button type="submit" class="btn btn-primary">Yes</button>
+									</div>
+									</div>
+								</form>
+							</div>
+						</div>
+						</div>
 	</div>
 
 	<!-- /.panel-body -->
@@ -209,14 +245,14 @@
 	    return true;
 	}, "Please use characters [a-zA-Z], [0-9], [,][.][_][;][-]");
 	
-	$.validator.addMethod('alphabetsOnly', function( val, element ) {
-	    var regexp = new RegExp("^[a-zA-Z]+$");
+	$.validator.addMethod('amount', function( val, element ) {
+	    var regexp = new RegExp("^[1-9][0-9]*[.][0-9]*$");
 
 	    if (!regexp.test(val)) {
 	       return false;
 	    }
 	    return true;
-	}, "Please type alphabets only");
+	}, "Invalid Amount. Please type numbers or . only");
 
 	$.validator.addMethod('numbersOnly', function( val, element ) {
 	    var regexp = new RegExp("^[0-9]+$");
@@ -229,61 +265,31 @@
 	
 	$('#updateUser').validate({
 		rules:{
-			emailId:{
-				required: true,
-				email: true,
-				maxlength: 25
-			},
-			
-			contactNo:{
+			fromAccount:{
 				required: true,
 				numbersOnly: true,
 				maxlength: 10
 			},
 			
-			address1:{
+			toAccount:{
 				required: true,
-				addressField: true,
-				maxlength: 50
-			},
-			
-			address2:{
-				required: true,
-				addressField: true,
-				maxlength: 50
-			},
-			
-			city:{
-				required: true,
-				alphabetsOnly: true,
-				maxlength: 15
-			},
-			state:{
-				required: true,
-				alphabetsOnly: true,
-				maxlength: 2,
-				minlength:2
-			},
-			
-			zip:{
-				required:true,
 				numbersOnly: true,
-				maxlength:5,
-				minlength:5
+				maxlength: 10
+			},
+			
+			amount:{
+				required: true,
+				numbersOnly: true,
+				maxlength: 10
+			}
 			},
 		messages:{
-			emailId: "Please Enter a valid Email ID",
-			contactNo: "Please Enter a valid contact no",
-			address1: "Address1 should be less than 50 characters",
-			address2: "Address2 should be less than 50 characters",
-			city: "Please enter a valid city",
-			state: "Please enter a valid state(Should be 2 characters)",
-			zip: "The Zip code should be a 5 digit number"
+			fromAccount: "This field is required",
+			toAccount: "This field is required",
+			amount: "Invalid Amount"
 			
 		}
-			
-		}
-	})
+	});
 	</script>	
 </body>
 </html>
