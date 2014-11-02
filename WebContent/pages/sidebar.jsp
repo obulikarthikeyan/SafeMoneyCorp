@@ -190,7 +190,7 @@
 							<li><a href="#"><i class="fa fa-tasks fa-fw"></i> Manage External User Transactions<span class="fa arrow"></span></a>
 								<ul class="nav nav-second-level">
 									<li><a href="#">View Transaction Review Requests</a></li>
-									<li><a href="#">Authorize Transactions</a></li>
+									<li><a href="<%=request.getContextPath()%>/internal/manageTransactionRequest">Authorize Transactions</a></li>
 								</ul> <!-- /.nav-second-level --></li>	
 
 						</sec:authorize>

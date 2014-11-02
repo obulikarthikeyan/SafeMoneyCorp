@@ -27,8 +27,12 @@ public interface ManageExternalUserAccountDAO {
 	public List<PaymentRequestDTO> getPaymentRequest(int memberId);
 	
 	public PaymentRequestDTO getPaymentRequestByPaymentId(long paymentId);
+	public TransactionDTO getTransactionByTransactionId(long transactionRequestId);//getTransactionByTransactionId
 	public boolean updatePaymentRequest(PaymentRequestDTO paymentDTO);
+	public boolean updateTransactionRequest(TransactionDTO transactionDTO);
 	public boolean addPaymentRequest(PaymentRequestDTO paymentRequestDTO);
+	boolean findAccount(long accountNumber);
+	
 
 	
 	
