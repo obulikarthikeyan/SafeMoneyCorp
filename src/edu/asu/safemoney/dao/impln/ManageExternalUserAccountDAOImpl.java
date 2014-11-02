@@ -4,8 +4,8 @@ package edu.asu.safemoney.dao.impln;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -19,6 +19,7 @@ import edu.asu.safemoney.dto.AccountDTO;
 import edu.asu.safemoney.dto.PaymentRequestDTO;
 import edu.asu.safemoney.dto.RequestDTO;
 import edu.asu.safemoney.dto.TransactionDTO;
+import edu.asu.safemoney.dto.TransactionReviewDTO;
 import edu.asu.safemoney.dto.UserDTO;
 import edu.asu.safemoney.model.AccountModel;
 import edu.asu.safemoney.model.ModifyUserModel;
@@ -288,5 +289,76 @@ public class ManageExternalUserAccountDAOImpl implements ManageExternalUserAccou
 		{
 			return false;
 		}
+	}
+
+	@Override
+	public boolean addTransactionReview(
+			TransactionReviewDTO transactionReviewDTO) {
+		// TODO Auto-generated method stub
+		try
+		{
+			Session session = sessionFactory.getCurrentSession();
+			session.save(transactionReviewDTO);
+			return true;
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+		
+	}
+
+	@Override
+	public boolean updateTransaction(long transactionId) {
+		// TODO Auto-generated method stub
+		Session session = sessionFactory.getCurrentSession();
+		Query query = session.getNamedQuery("TransactionDTO.findByTransactionId").setLong("transactionId", transactionId);
+		try
+		{
+			TransactionDTO transactionDTO = (TransactionDTO) query.uniqueResult();
+			transactionDTO.setStatus("UNDER_REVIEW");
+			session.saveOrUpdate(transactionDTO);
+			return true;
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	@Override
+	public TransactionDTO getTransactionDTO(long transactionId) {
+		// TODO Auto-generated method stub
+		
+		Session session = sessionFactory.getCurrentSession();
+		Query query = session.getNamedQuery("TransactionDTO.findByTransactionId").setLong("transactionId", transactionId);
+		TransactionDTO transactionDTO = null;
+		try
+		{
+			transactionDTO = (TransactionDTO) query.uniqueResult();
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return transactionDTO;
+	}
+
+	@Override
+	public boolean deleteTransaction(TransactionDTO transactionDTO) {
+		// TODO Auto-generated method stub
+		Session session = sessionFactory.getCurrentSession();
+		try
+		{
+			session.delete(transactionDTO);
+			return true;
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return false;
 	}
 }

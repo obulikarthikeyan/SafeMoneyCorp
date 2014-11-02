@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.aop.aspectj.AspectJAdviceParameterNameDiscoverer.AmbiguousBindingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,11 +33,13 @@ public class AdminUserController {
 	@RequestMapping("/admin/approveExtUserAccount")
 	public ModelAndView approveExtUserAccountRequest(
 			@RequestParam("requestId") long requestId,
-			@RequestParam("requestType") String requestType) {
+			@RequestParam("requestType") String requestType, @RequestParam("adminAction") String adminAction) {
+		ModelAndView mv = new ModelAndView("/admin/extAccountManagement");
+		if(adminAction.equals("approve"))
+		{
 		boolean isApproved = adminUserService.approveExtUserRequest(requestId);
 		List<RequestDTO> requestList = adminUserService
 				.getExterUserAccountRequests();
-		ModelAndView mv = new ModelAndView("/admin/extAccountManagement");
 		mv.addObject("requestList", requestList);
 		if (requestType.equals("CREATE_ACCOUNT")) {
 			if (isApproved) {
@@ -56,6 +59,37 @@ public class AdminUserController {
 			} else {
 				mv.addObject("error",
 						"Sorry! The request could not be processed.");
+			}
+			return mv;
+		}
+		return mv;
+		}
+		else if(adminAction.equals("decline"))
+		{
+			boolean isDeclined = adminUserService.declineExtUserRequest(requestId);
+			List<RequestDTO> requestList = adminUserService
+					.getExterUserAccountRequests();
+			mv.addObject("requestList", requestList);
+			if (requestType.equals("CREATE_ACCOUNT")) {
+				if (isDeclined) {
+					mv.addObject("message",
+							"Request has been Declined");
+				} else {
+					mv.addObject("error",
+							"Sorry! The request could not be processed.");
+				}
+				return mv;
+			}
+			else if(requestType.equals("DELETE_ACCOUNT"))
+			{
+				if (isDeclined) {
+					mv.addObject("message",
+							"Request has been Declined");
+				} else {
+					mv.addObject("error",
+							"Sorry! The request could not be processed.");
+				}
+				return mv;
 			}
 			return mv;
 		}
