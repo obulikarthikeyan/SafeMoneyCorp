@@ -33,6 +33,8 @@ public interface ManageExternalUserAccountService {
 	public String submitPayment(long paymentId);
 	public String initiatePayment (int memberId, long toAccount, String status, double amount);
 	public List<TransactionDTO> getApprovedTransactionListForUser(int memberId);
+	public List<TransactionDTO> getTransactionListForCustomer(int memberId);
+	//public TransactionDTO displayTransactionList(int memberId);
 		// edu.asu.safemoney.service.impln.List<UserDTO> displayUserAccount(
 	//		String nameOfUser);
 }

@@ -355,5 +355,21 @@ public class ManageExternalUserAccountServiceImpl implements
 		}
 		return transactionList;
 	}
+	
+	@Override
+	@Transactional
+	public List<TransactionDTO> getTransactionListForCustomer(int memberId){
+		
+		UserDTO userDTO = manageExternalUserAccountDAO.displayUserAccountDAO(memberId);
+		List<TransactionDTO> transactionList = null;
+		if(userDTO != null)
+		{
+			transactionList = userDTO.getTransactionDTOList();
+		}
+		
+		return transactionList;
+		
+	}
+	
 
 }
