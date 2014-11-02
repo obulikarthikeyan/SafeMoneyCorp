@@ -92,6 +92,33 @@ public class ManageExternalUserController {
 		
 	}
 
+	@RequestMapping(value="/external/createNewReq", method=RequestMethod.POST)
+	public ModelAndView doNewTransaction( 
+			@ModelAttribute("createNewReq") TransactionModel transactionModel, HttpSession session){
+			int memberId= (int) session.getAttribute("memberId");
+			System.out.println("memberId is : " +memberId);
+			System.out.println("Transaction amount is:" + transactionModel.getTransactionAmount());
+			System.out.println("Transaction type is:" + transactionModel.getTransactionType());
+			System.out.println("Transaction date is:" + transactionModel.getTransactionDate());
+			
+			boolean isCreated= manageExternalUserAccountService.createRequest(transactionModel, memberId);
+			UserDTO userDTO= manageExternalUserAccountService.displayUserAccount(memberId);
+			ModelAndView mv = new ModelAndView("external/transactionReview").addObject("userDTO", userDTO);
+			if(isCreated)
+			{
+				return mv.addObject("message", "Profile Updated Successfully");
+			}
+			else
+			{
+				
+				return mv.addObject("error", "Update Failed!");
+			}
+		
+		
+	}
+
+
+	
 	@RequestMapping(value = "/external/deleteExternalUserDetials", method = RequestMethod.POST)
 	public ModelAndView doDeleteAccount(HttpSession session) {
 		int memberID= (Integer)session.getAttribute("memberId");

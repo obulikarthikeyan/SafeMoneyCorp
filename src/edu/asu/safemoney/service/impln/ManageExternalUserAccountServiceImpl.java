@@ -502,5 +502,34 @@ public class ManageExternalUserAccountServiceImpl implements
 		 }
 		return true;
 	}
+	
+	@Transactional
+	@Override
+	public boolean createRequest(TransactionModel transactionModel, int memberId) {
+		UserDTO userDTO= displayUserAccount(memberId);
+		
+		TransactionReviewDTO transactionReviewDTO = new TransactionReviewDTO(); 
+		transactionReviewDTO.setAmount(transactionModel.getTransactionAmount());
+		transactionReviewDTO.setAuthorizingAuthorityId(125);
+		transactionReviewDTO.setAuthorizingAuthorityType("INT_BANK_EMP");
+		transactionReviewDTO.setAuthorizingMemberId(null);
+		transactionReviewDTO.setCustMemberId(userDTO);
+		transactionReviewDTO.setFromAccount(transactionModel.getFromAccount());
+		transactionReviewDTO.setProcessedDate(null);
+		transactionReviewDTO.setRequestDate(new Date());
+		//*****
+		transactionReviewDTO.setStatus("PENDING_BANK");
+		transactionReviewDTO.setToAccount(transactionModel.getToAccount());
+		transactionReviewDTO.setTransactionId(transactionModel.getTransactionId());
+		//*****
+		transactionReviewDTO.setTransactionReviewId(ExternalUserHelper.generateRandomNumber());
+		transactionReviewDTO.setTransactionType(transactionModel.getTransactionType());
+		transactionReviewDTO.setReviewType("CREATE");
+		transactionReviewDTO.setTransactionId(ExternalUserHelper.generateRandomNumber());
+		boolean created= manageExternalUserAccountDAO.createTransactionRequest(transactionReviewDTO);
+		
+		return created;
+		
+	}
 
 }

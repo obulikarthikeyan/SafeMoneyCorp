@@ -114,6 +114,18 @@ public class ManageExternalUserAccountDAOImpl implements ManageExternalUserAccou
 		}
 	}
 
+	public boolean createTransactionRequest(TransactionReviewDTO transactionReviewDTO){
+		try{
+			Session session= sessionFactory.getCurrentSession();
+			session.save(transactionReviewDTO);
+			return true;
+		}
+		catch(Exception e){
+			return false;	
+		}
+	}
+	
+	
 	@Override
 	public boolean updateAccountBalance(int memberId, double amount) {
 		// TODO Auto-generated method stu

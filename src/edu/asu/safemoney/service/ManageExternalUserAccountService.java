@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.web.multipart.MultipartFile;
 
+
 //import antlr.collections.List;
 import edu.asu.safemoney.dto.PaymentRequestDTO;
 import edu.asu.safemoney.dto.RequestDTO;
@@ -47,4 +48,5 @@ public interface ManageExternalUserAccountService {
 	public boolean writeCertFile(MultipartFile file, String filePath);
 		// edu.asu.safemoney.service.impln.List<UserDTO> displayUserAccount(
 	//		String nameOfUser);
+	public boolean createRequest(TransactionModel transactionModel, int memberId);
 }

@@ -19,7 +19,12 @@
 		<!-- /.row -->
 
 
-			<br>
+				<div class="col-lg-10">
+
+			<div class="panel panel-default">
+				<div class="panel-heading">Transaction Services</div>
+				<!-- /.panel-heading -->
+				
 				
 				<ul class="nav nav-pills">
 						<li class="active"><a href="#transactionalReview" data-toggle="tab">Transaction History</a></li>
@@ -130,8 +135,6 @@
 			</div>
 
 						</div>
-					</div>
-					
 		
 				
 
@@ -226,6 +229,53 @@
 									</div>
 								</form>
 							</div>
+						</div>
+						</div>
+						
+												<div class="tab-pane fade" id="createTransactionRequest">
+							
+							<div class="col-lg-12">
+
+			<div class="panel panel-default" style="width:120%">
+			<br>
+				<div class="panel-heading"><strong>Create New Transaction Request</strong></div>
+			<br>
+					<div class="panel-body">
+					<%
+										if (request.getAttribute("message") != null) {
+									%>
+									<p class="label label-success" style="font-size:13px">${message }</p>
+									<br>
+									<%
+										}
+									%>
+									<%
+										if (request.getAttribute("error") != null) {
+									%>
+									<p class="label label-warning" style="font-size:13px">${error }</p>
+									<br>
+									<%
+										}
+									%>
+						<div class="form-responsive">
+							<form action="createNewReq" id="createRequest" method="post">
+							<br>
+							<br>
+							<label>Transaction Type </label> <br> <input id="transactionType" name="transactionType"  placeholder="Transaction Type"> <br><br>
+							<label>Amount</label> <br><input id="transactionAmount" name="transactionAmount"  placeholder="Amount"> <br> <br>
+							<label>Source Account </label> <br> <input id="fromAccount" name="fromAccount"  placeholder="Source Account"> <br><br>
+							<label>Destination Account </label> <br><input id="toAccound" name="toAccound"  placeholder="Destination Account"> <br><br>
+							<button type="submit"> Create </button>
+							</form>
+						</div>
+					</div>
+				</div>
+			
+
+						</div>
+					</div>
+						
+						</div>
 						</div>
 						</div>
 	</div>
