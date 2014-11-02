@@ -63,6 +63,26 @@ public class UserModel {
 	int userTypeId;
 	
 	String isCustomer;
+	
+	boolean isEmployee;
+	
+	String designation;
+
+	public boolean isEmployee() {
+		return isEmployee;
+	}
+
+	public void setEmployee(boolean isEmployee) {
+		this.isEmployee = isEmployee;
+	}
+
+	public String getDesignation() {
+		return designation;
+	}
+
+	public void setDesignation(String designation) {
+		this.designation = designation;
+	}
 
 	public String getIsCustomer() {
 		return isCustomer;

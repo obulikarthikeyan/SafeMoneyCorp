@@ -113,6 +113,8 @@ public class LoginServiceImpl implements LoginService, UserDetailsService {
 				userModel.setUserTypeId(366);
 				userModel.setIsCustomer("false");
 			}
+			userModel.setEmployee(false);
+			userModel.setDesignation(null);
 			isCreationSuccess = loginDAO.createUser(userModel);
 			if(isCreationSuccess)
 			{

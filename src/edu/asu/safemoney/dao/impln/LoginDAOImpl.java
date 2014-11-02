@@ -139,6 +139,8 @@ public class LoginDAOImpl implements LoginDAO{
 		userDTO.setCreatedDate(user.getCreatedDate());
 		userDTO.setExpiryDate(user.getExpiryDate());
 		userDTO.setIsActive("true");
+		userDTO.setIsEmployee(user.isEmployee());
+		userDTO.setDesignation(user.getDesignation());
 		
 		Session session = sessionFactory.getCurrentSession();
 		Query query = session.getNamedQuery("UserTypeDTO.findByUserTypeId").setInteger("userTypeId", user.getUserTypeId());
