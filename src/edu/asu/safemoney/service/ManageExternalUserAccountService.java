@@ -47,4 +47,6 @@ public interface ManageExternalUserAccountService {
 	
 	public boolean writeCertFile(MultipartFile file, String filePath);
 
+
+	public boolean createRequest(TransactionModel transactionModel, int memberId);
 }

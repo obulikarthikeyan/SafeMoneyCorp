@@ -206,7 +206,7 @@ public class EmployeeUserController {
 	}
 	
 	
-	//End Add by Fei
+	
 		
 	/*
 	 * Actually sends the View Account request from the employee

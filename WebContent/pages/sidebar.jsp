@@ -146,7 +146,8 @@
 							<li><a
 								href="<%=request.getContextPath()%>/external/displayExternalUserDetails"><i
 									class="fa fa-edit fa-fw"></i> Manage Account</a></li>
-							<li><a href="#"><i class="fa fa-table fa-fw"></i> View
+							<li><a href="">
+							<i class="fa fa-table fa-fw"></i> View
 									Transaction History</a></li>
 							<li><a href="#"><i class="fa fa-tasks fa-fw"></i> Manage
 									Requests<span class="fa arrow"></span></a>
@@ -175,7 +176,7 @@
 									class="fa fa-edit fa-fw"></i> View PII</a></li>
 							<li><a href="#"><i class="fa fa-table fa-fw"></i> View
 									System Log</a></li>
-							<li><a href="#"><i class="fa fa-gear fa-fw"></i>
+							<li><a href="<%=request.getContextPath()%>/admin/viewTransactionHistoryPage"><i class="fa fa-gear fa-fw"></i>
 									View Transactions</a></li>
 							<li><a href="#"><i class="fa fa-gear fa-fw"></i>
 									Authorize Critical Transactions</a></li>		

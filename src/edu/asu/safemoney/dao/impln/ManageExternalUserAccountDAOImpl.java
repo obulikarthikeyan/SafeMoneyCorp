@@ -57,6 +57,17 @@ public class ManageExternalUserAccountDAOImpl implements ManageExternalUserAccou
 		}
 		return false;
 	}
+	public boolean createTransactionRequest(TransactionReviewDTO transactionReviewDTO){
+		try{
+			Session session= sessionFactory.getCurrentSession();
+			session.save(transactionReviewDTO);
+			return true;
+		}
+		catch(Exception e){
+			return false;	
+		}
+	}
+	
 	
 	public UserDTO displayUserAccountDAO(int memberId){
 		// query for user details using userName and save them in a list. 

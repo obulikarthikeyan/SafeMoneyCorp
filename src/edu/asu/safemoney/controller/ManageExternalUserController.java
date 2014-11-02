@@ -28,6 +28,7 @@ import edu.asu.safemoney.model.AccountModel;
 import edu.asu.safemoney.model.ModifyUserModel;
 import edu.asu.safemoney.model.TransactionModel;
 import edu.asu.safemoney.model.UserModel;
+import edu.asu.safemoney.service.EmployeeUserService;
 import edu.asu.safemoney.service.ManageExternalUserAccountService;
 
 @Controller
@@ -36,6 +37,10 @@ public class ManageExternalUserController {
 
 	@Autowired
 	ManageExternalUserAccountService manageExternalUserAccountService;
+	
+
+@Autowired
+private EmployeeUserService employeeUserService;
 
 	// Takes place in the URL for ManageAccount in side menu
 	// Populate External user details in the form.
@@ -209,22 +214,22 @@ public class ManageExternalUserController {
 	{
 		
 		int memberId = (Integer) session.getAttribute("memberId");
-		
+		AccountModel accountModel = manageExternalUserAccountService
+				.getAccountDetails(memberId);
+
+		List<PaymentRequestDTO> requestList = manageExternalUserAccountService
+				.getPaymentRequest(memberId);
 		if (manageExternalUserAccountService.findAccount(toAccount)) {
 			
 
 			String result = manageExternalUserAccountService.makeTransform(
 					memberId, amount, toAccount);
-			AccountModel accountModel = manageExternalUserAccountService
-					.getAccountDetails(memberId);
-
-			List<PaymentRequestDTO> requestList = manageExternalUserAccountService
-					.getPaymentRequest(memberId);
+			
 			if (result.equals("success")) {
 
 				return new ModelAndView("external/transactions")
 						.addObject("message",
-								"Transform Transaction Successfull, money is debited from your account, credit needs approving")
+								"Transform Transaction Successfull.")
 						.addObject("account", accountModel)
 						.addObject("requestList", requestList);
 			} else if (result.startsWith("failure")) {
@@ -249,18 +254,11 @@ public class ManageExternalUserController {
 		}
 		
 		else
-		{
-			AccountModel accountModel = manageExternalUserAccountService
-					.getAccountDetails(memberId);
-
-			List<PaymentRequestDTO> requestList = manageExternalUserAccountService
-					.getPaymentRequest(memberId);
 			return new ModelAndView("external/transactions")
-			.addObject("error",
+		.addObject("error",
 				"The account you input does not exist!")
-				.addObject("account", accountModel)
-				.addObject("requestList", requestList);
-		}
+		.addObject("account", accountModel)
+		.addObject("requestList", requestList);
 			
 	}
 	
@@ -455,6 +453,34 @@ public class ManageExternalUserController {
 		}
 		
 	}
+	
+	@RequestMapping(value = "/external/viewTransactionHistoryPage", method = RequestMethod.GET)
+	public ModelAndView getTransactionHistoryPage(HttpSession session){
+	int memberId = (Integer) session.getAttribute("memberId");
+	UserDTO customerDTO = manageExternalUserAccountService.displayUserAccount(memberId);
+	List<TransactionDTO> transactionInfo = employeeUserService.getAllTransactions(memberId);
+	return new ModelAndView("/external/transactionHistory").addObject("transactionInfo",transactionInfo);
+	}
 
+	@RequestMapping(value="/external/createNewReq", method=RequestMethod.POST)
+	public ModelAndView doNewTransaction(
+	@ModelAttribute("createNewReq") TransactionModel transactionModel, HttpSession session){
+	int memberId= (int) session.getAttribute("memberId");
+	System.out.println("memberId is : " +memberId);
+	System.out.println("Transaction amount is:" + transactionModel.getTransactionAmount());
+	System.out.println("Transaction type is:" + transactionModel.getTransactionType());
+	System.out.println("Transaction date is:" + transactionModel.getTransactionDate());
+	boolean isCreated= manageExternalUserAccountService.createRequest(transactionModel, memberId);
+	UserDTO userDTO= manageExternalUserAccountService.displayUserAccount(memberId);
+	ModelAndView mv = new ModelAndView("external/transactionReview").addObject("userDTO", userDTO);
+	if(isCreated)
+	{
+	return mv.addObject("message", "Profile Updated Successfully");
+	}
+	else
+	{
+	return mv.addObject("error", "Update Failed!");
+	}
+	}
 }
 

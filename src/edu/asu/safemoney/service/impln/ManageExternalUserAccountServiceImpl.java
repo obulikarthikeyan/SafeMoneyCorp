@@ -1,3 +1,4 @@
+
 package edu.asu.safemoney.service.impln;
 
 import java.io.BufferedOutputStream;
@@ -239,7 +240,7 @@ public class ManageExternalUserAccountServiceImpl implements
 			txnDTO.setStatus("PENDING");//
 			txnDTO.setTransactionId(ExternalUserHelper.generateRandomNumber());// long
 			txnDTO.setTransactionType(type);
-			txnDTO.setProcessedDate(new Date());
+			txnDTO.setProcessedDate(null);
 			
 			
 			boolean isTxnCreated = manageExternalUserAccountDAO.createTransaction(txnDTO);
@@ -609,7 +610,35 @@ public class ManageExternalUserAccountServiceImpl implements
 		boolean result =  manageExternalUserAccountDAO.findAccount( accountNumber);
 		return result;
 	}
+	
+	@Transactional
+	@Override
+	public boolean createRequest(TransactionModel transactionModel, int memberId) {
+		UserDTO userDTO= displayUserAccount(memberId);
+		
+		TransactionReviewDTO transactionReviewDTO = new TransactionReviewDTO(); 
+		transactionReviewDTO.setAmount(transactionModel.getTransactionAmount());
+		transactionReviewDTO.setAuthorizingAuthorityId(125);
+		transactionReviewDTO.setAuthorizingAuthorityType("INT_BANK_EMP");
+		transactionReviewDTO.setAuthorizingMemberId(null);
+		transactionReviewDTO.setCustMemberId(userDTO);
+		transactionReviewDTO.setFromAccount(transactionModel.getFromAccount());
+		transactionReviewDTO.setProcessedDate(null);
+		transactionReviewDTO.setRequestDate(new Date());
+		//*****
+		transactionReviewDTO.setStatus("PENDING_BANK");
+		transactionReviewDTO.setToAccount(transactionModel.getToAccount());
+		transactionReviewDTO.setTransactionId(transactionModel.getTransactionId());
+		//*****
+		transactionReviewDTO.setTransactionReviewId(ExternalUserHelper.generateRandomNumber());
+		transactionReviewDTO.setTransactionType(transactionModel.getTransactionType());
+		transactionReviewDTO.setReviewType("CREATE");
+		transactionReviewDTO.setTransactionId(ExternalUserHelper.generateRandomNumber());
+		boolean created= manageExternalUserAccountDAO.createTransactionRequest(transactionReviewDTO);
+		
+		return created;
+		
+	}
 
 	
-
 }
