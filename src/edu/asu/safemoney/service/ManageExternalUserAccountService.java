@@ -28,9 +28,13 @@ public interface ManageExternalUserAccountService {
 	public String makeTransform(int memberID, double amount, long toAccount);
 	public List<PaymentRequestDTO> getPaymentRequest(int memberId);
 	public String authorizePayment (long paymentId );
+	public String declinePayment(long paymentId);
 	public String submitPayment(long paymentId);
-	public String initiatePayment (int memberId, long toAccount, String status, double amount);
+	public String initiatePayment (int fromMemberId, long toAccount,  double amount,String description);
 	public List<TransactionDTO> getApprovedTransactionListForUser(int memberId);
+
+	public boolean findAccount(long accountNumber);
+
 	public List<TransactionDTO> getTransactionListForCustomer(int memberId);
 	//public TransactionDTO displayTransactionList(int memberId);
 
@@ -43,4 +47,6 @@ public interface ManageExternalUserAccountService {
 	
 	public boolean writeCertFile(MultipartFile file, String filePath);
 
+
+	public boolean createRequest(TransactionModel transactionModel, int memberId);
 }

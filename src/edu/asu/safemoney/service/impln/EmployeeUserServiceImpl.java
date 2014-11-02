@@ -1,10 +1,13 @@
 package edu.asu.safemoney.service.impln;
 
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.ModelAndView;
 
 import edu.asu.safemoney.dao.*;
+import edu.asu.safemoney.dto.AccountDTO;
+import edu.asu.safemoney.dto.PaymentRequestDTO;
 import edu.asu.safemoney.dto.RequestDTO;
 import edu.asu.safemoney.dto.TransactionDTO;
 import edu.asu.safemoney.dto.UserDTO;
@@ -207,6 +212,57 @@ public class EmployeeUserServiceImpl implements EmployeeUserService{
 	public boolean authorizePaymentTransaction(int requsetId){
 		return false;
 	}
+
+	@Transactional
+	@Override
+	public List<PaymentRequestDTO> getPaymentRequest() {
+		// TODO Auto-generated method stub
+		List<PaymentRequestDTO> requestList = employeeUserDAO.getPaymentRequest();
+		/*for(RequestDTO rDTO : requestList)
+		{
+			System.out.println("Request Name: " + rDTO.getRequestType());
+		}*/
+		return requestList;
+	}
+
+	@Transactional
+	@Override
+	public List<TransactionDTO> getTransactionRequest() {
+		// TODO Auto-generated method stub
+		List<TransactionDTO> requestList = employeeUserDAO.getTransactionRequest();
+		/*for(RequestDTO rDTO : requestList)
+		{
+			System.out.println("Request Name: " + rDTO.getRequestType());
+		}*/
+		return requestList;
+	}
+
+	@Transactional
+	@Override
+	public boolean updatePaymentRequest(long paymentRequestId, String status) {
+		// TODO Auto-generated method stub
+		PaymentRequestDTO paymentDTO = manageExternalUserAccountDAO
+				.getPaymentRequestByPaymentId(paymentRequestId);
+		paymentDTO.setStatus(status);
+		if (manageExternalUserAccountDAO.updatePaymentRequest(paymentDTO))
+			return true;
+		else
+			return false;
+	}
+	
+	
+	@Transactional
+	@Override
+	public boolean updateTransactionRequest(long transactionRequestId,String status) {
+		// TODO Auto-generated method stub
+		TransactionDTO transactionDTO = manageExternalUserAccountDAO.getTransactionByTransactionId(transactionRequestId);
+		transactionDTO.setStatus(status);
+		transactionDTO.setProcessedDate(new Date());
+		if (manageExternalUserAccountDAO.updateTransactionRequest(transactionDTO))
+			return true;
+		else
+			return false;
+	}
 	
 	@Transactional
 	@Override
@@ -214,10 +270,54 @@ public class EmployeeUserServiceImpl implements EmployeeUserService{
 		RequestDTO myRequest = requestDAO.getRequestByRequestId(requestId);
 		int customerId = myRequest.getAuthorizingMemberId();
 		return customerId;
+
 	}
 	
 	@Transactional
 	@Override
+	public boolean makeCredit(int memberID, double amount) {
+		// TODO Auto-generated method stub
+		
+		return employeeUserDAO.makeCredit(memberID, amount);
+	}
+
+	@Transactional
+	@Override
+	public boolean makeDebit(int memberID, double amount) {
+		// TODO Auto-generated method stub
+		
+		
+		return employeeUserDAO.makeDebit(memberID, amount);
+	}
+
+	@Override
+	@Transactional
+	public PaymentRequestDTO getPaymentDTOById(long paymentRequestId) {
+		// TODO Auto-generated method stub
+		PaymentRequestDTO paymentRequestDTO = employeeUserDAO.getPaymentDTOById(paymentRequestId);
+		
+		return paymentRequestDTO;
+	}
+
+	@Override
+	@Transactional
+	public TransactionDTO getTransactionDTOById(long transactionRequestId) {
+		// TODO Auto-generated method stub
+		TransactionDTO transactionDTO = employeeUserDAO.getTransactionDTOById(transactionRequestId);
+		return transactionDTO;
+	}
+
+	@Override
+	@Transactional
+	public int getMemberIdByAccount(long accountNumber) {
+		// TODO Auto-generated method stub
+		int foundAccountNumber = employeeUserDAO.getMemberIdByAccount(accountNumber);
+		return foundAccountNumber;
+	
+		
+	}
+
+	
 	public long getAccountNo(int memberId)
 	{
 		long accountNo = employeeUserDAO.returnCustomerAccountNo(memberId);

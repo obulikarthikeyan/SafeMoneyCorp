@@ -21,6 +21,7 @@ import edu.asu.safemoney.dto.RequestDTO;
 import edu.asu.safemoney.dto.TransactionDTO;
 import edu.asu.safemoney.dto.TransactionReviewDTO;
 import edu.asu.safemoney.dto.UserDTO;
+import edu.asu.safemoney.dto.UserTypeDTO;
 import edu.asu.safemoney.model.AccountModel;
 import edu.asu.safemoney.model.ModifyUserModel;
 import edu.asu.safemoney.model.TransactionModel;
@@ -56,6 +57,17 @@ public class ManageExternalUserAccountDAOImpl implements ManageExternalUserAccou
 		}
 		return false;
 	}
+	public boolean createTransactionRequest(TransactionReviewDTO transactionReviewDTO){
+		try{
+			Session session= sessionFactory.getCurrentSession();
+			session.save(transactionReviewDTO);
+			return true;
+		}
+		catch(Exception e){
+			return false;	
+		}
+	}
+	
 	
 	public UserDTO displayUserAccountDAO(int memberId){
 		// query for user details using userName and save them in a list. 
@@ -136,6 +148,7 @@ public class ManageExternalUserAccountDAOImpl implements ManageExternalUserAccou
 			{
 				try
 				{
+					
 					accountDTO.setAmount(amount);
 					session.saveOrUpdate(accountDTO);
 					return true;
@@ -217,22 +230,63 @@ public class ManageExternalUserAccountDAOImpl implements ManageExternalUserAccou
 	@Override
 	public List<PaymentRequestDTO> getPaymentRequest(int memberId)
 	{
+		//different user type has thfferent precedure
 		List<PaymentRequestDTO> paymentRequest = new ArrayList<PaymentRequestDTO>();
 		
 		
 		Session session = sessionFactory.getCurrentSession();
-		Query query = session.getNamedQuery("PaymentRequestDTO.findByAuthorizerMemberId").setInteger("authorizerMemberId", memberId);
-		List requests = query.list();
-		if(requests != null)
+		UserDTO initiater = displayUserAccountDAO(memberId);
+		UserTypeDTO initiaterType = initiater.getUserTypeId();
+		AccountModel initiaterAccountModel =  getAccountDetails(memberId);
+		BigInteger bi = BigInteger.valueOf(initiaterAccountModel.getAccountNo());
+		//initiater.geta
+
+		if(initiaterType.getUserTypeId()==366)//Merchant
 		{
-			for(Object request : requests)
-			{	
-				PaymentRequestDTO paymentRequestDTO = (PaymentRequestDTO) request;
-				paymentRequest.add(paymentRequestDTO);
+			//find the account number
+			
+			Query query = session.getNamedQuery("PaymentRequestDTO.findByMerchantAccountId").setBigInteger("merchantAccountId", bi);
+			List requests = query.list();
+			if(requests != null)
+			{
+				for(Object request : requests)
+				{	
+					PaymentRequestDTO paymentRequestDTO = (PaymentRequestDTO) request;
+					paymentRequest.add(paymentRequestDTO);
+				}
 			}
+			
+			Query query2 = session.getNamedQuery("PaymentRequestDTO.findByAuthorizerMemberId").setInteger("authorizerMemberId", memberId);
+			List requests2 = query2.list();
+			if(requests2 != null)
+			{
+				for(Object request2 : requests2)
+				{	
+					PaymentRequestDTO paymentRequestDTO2 = (PaymentRequestDTO) request2;
+					paymentRequest.add(paymentRequestDTO2);
+				}
+			}
+			
+			return paymentRequest;
 		}
+		else if(initiaterType.getUserTypeId()==322)
+		{
+			Query query = session.getNamedQuery("PaymentRequestDTO.findByAuthorizerMemberId").setInteger("authorizerMemberId", memberId);
+			List requests = query.list();
+			if(requests != null)
+			{
+				for(Object request : requests)
+				{	
+					PaymentRequestDTO paymentRequestDTO = (PaymentRequestDTO) request;
+					paymentRequest.add(paymentRequestDTO);
+				}
+			}
+			
+			return paymentRequest;
+		}
+		else
+			return null;
 		
-		return paymentRequest;
 		/*List<RequestDTO> requestList = new ArrayList<RequestDTO>();
 		Session session = sessionFactory.getCurrentSession();
 		Query query = session.getNamedQuery("RequestDTO.findByAuthorityUserTypeId").setInteger("authorityUserTypeId", 123);
@@ -262,6 +316,16 @@ public class ManageExternalUserAccountDAOImpl implements ManageExternalUserAccou
 		
 		
 	}
+	
+	@Override
+	public TransactionDTO getTransactionByTransactionId(long transactionRequestId) {
+		// TODO Auto-generated method stub
+		BigInteger requestId = BigInteger.valueOf(transactionRequestId);
+		Session session = sessionFactory.getCurrentSession();
+		Query query = session.getNamedQuery("TransactionDTO.findByTransactionId").setBigInteger("transactionId", requestId);
+		TransactionDTO transactionRequestDTO =   (TransactionDTO) query.uniqueResult();
+		return transactionRequestDTO;
+	}
 
 	@Override
 	public boolean updatePaymentRequest(PaymentRequestDTO paymentDTO) {
@@ -270,6 +334,21 @@ public class ManageExternalUserAccountDAOImpl implements ManageExternalUserAccou
 		try
 		{
 			session.saveOrUpdate(paymentDTO);
+			return true;
+		}
+		catch(Exception e)
+		{
+			return false;
+		}
+	}
+	
+	@Override
+	public boolean updateTransactionRequest(TransactionDTO transactionDTO) {
+		// TODO Auto-generated method stub
+		Session session = sessionFactory.getCurrentSession();
+		try
+		{
+			session.saveOrUpdate(transactionDTO);
 			return true;
 		}
 		catch(Exception e)
@@ -293,6 +372,19 @@ public class ManageExternalUserAccountDAOImpl implements ManageExternalUserAccou
 	}
 
 	@Override
+	public boolean findAccount(long accountNumber) {
+		// TODO Auto-generated method stub
+		BigInteger account = BigInteger.valueOf(accountNumber);
+		Session session = sessionFactory.getCurrentSession();
+		Query query = session.getNamedQuery("AccountDTO.findByAccountNo").setBigInteger("accountNo", account);
+		AccountDTO accountDTO =   (AccountDTO) query.uniqueResult();
+		if(accountDTO==null)
+			return false;
+		else 
+			return true;
+	}
+
+	
 	public boolean addTransactionReview(
 			TransactionReviewDTO transactionReviewDTO) {
 		// TODO Auto-generated method stub
