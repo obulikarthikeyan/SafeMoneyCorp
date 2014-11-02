@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>SafeMoneyCorp - Emp Request View</title>
+<title>SafeMoneyCorp - Emp Request Transaction</title>
 </head>
 <body>
 	<jsp:include page="/pages/sidebar.jsp"></jsp:include>
@@ -26,7 +26,7 @@
 				<div class="panel-body">
 					<div class="row">
 						<div class="form-group" >
-							<form id ="sendRequestForm" name="sendRequestForm" target="_self" method="post" action="requestTransactionAccess" style="margin:5%" class="form-inline">
+							<form id ="sendRequestForm" name="sendRequestForm" target="_self" method="post" action="requestTransaction" style="margin:5%" class="form-inline">
 								<ul class="list-unstyled">
 									<li><br></li>
 									<li>					
@@ -68,8 +68,8 @@
 									</tr>
 								</thead>
 								<tbody>
-									<c:if test="${not empty requestList}">
-										<c:forEach var="request" items="${requestList}" varStatus="status">
+									<c:if test="${not empty transactionRequestList}">
+										<c:forEach var="request" items="${transactionRequestList}" varStatus="status">
 											<tr>
 												
 												<td>${request.requestId }</td>

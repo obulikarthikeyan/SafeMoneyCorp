@@ -254,9 +254,9 @@
 											</table>
 										</div>
 										<div class="modal-footer">
-											<button type="submit" class="btn btn-primary">Authorize</button>
-											<button type="button" class="btn btn-default"
-												data-dismiss="modal">Close</button>
+											<button type="submit" class="btn btn-primary" name ="authorizeAction" value="authorized">Authorize</button>
+											<button type="submit" class="btn btn-default" name = "authorizeAction" value = "declined">Declie</button>
+												
 
 										</div>
 									</form>
@@ -267,14 +267,14 @@
 
 						<div class="tab-pane fade" id="Initiate">
 							<form id="initiatePayment" role="form" method="POST" action="initiatePayment">
-								<br> <label>Merchant Account Number: </label> 
+								<br> <label>To Account Number: </label> 
 								<input id="toMerchantAccountNumber" name="toMerchantAccountNumber" class="form-control" placeholder="Account No."> <br>
 								<label>Amount: </label> 
 								<input id="amount" name="amount" class="form-control" placeholder="Amount"> <br> 
 								<label>Description:
 								</label>
 
-								<textarea class="form-control" rows="3"></textarea>
+								<textarea id="description" name="description" class="form-control" rows="3"></textarea>
 								<br>
 								<p>
 									<button type="submit" class="btn btn-success">Initiate
@@ -307,22 +307,7 @@
 									</div>
 
 									<div class="panel-body">
-										<%
-											if (request.getAttribute("message") != null) {
-										%>
-										<p class="label label-success" style="font-size: 13px">${message }</p>
-										<br>
-										<%
-											}
-										%>
-										<%
-											if (request.getAttribute("error") != null) {
-										%>
-										<p class="label label-warning" style="font-size: 13px">${error }</p>
-										<br>
-										<%
-											}
-										%>
+										
 										<div class="table-responsive">
 											<table class="table" style="width: 120%">
 												<thead>
@@ -515,18 +500,59 @@
 	</div>
 	<script type="text/javascript">
 	$.validator.addMethod('amount', function( val, element ) {
-	    var regexp = new RegExp("^[1-9][0-9]*$");
+	    var regexp = new RegExp("^[1-9][0-9]*[.]?[0-9]*$");
 
 	    if (!regexp.test(val)) {
 	       return false;
 	    }
 	    return true;
 	}, "Please Enter a valid Amount");
+	
+	$.validator.addMethod('account', function( val, element ) {
+	    var regexp = new RegExp("^[0-9][0-9]*$");
+
+	    if (!regexp.test(val)) {
+	       return false;
+	    }
+	    return true;
+	}, "Please Enter a valid Account Number");
+	
 	$("#creditDebit").validate({
 		rules: {
 			creditDebitAmount: {
 				required: true,
 				amount: true
+			}
+		}
+	}),
+	$("#Transform").validate({
+		rules: {
+			
+			transformAmount:{
+				required: true,
+				amount:true
+			},
+			toAccountNumber:
+			{
+				required: true,
+				account:true
+			}
+		}
+	}),
+	$("#initiatePayment").validate({
+		rules: {
+			amount:{
+				required: true,
+				amount:true
+			},
+			description:
+			{
+				required: true
+			},
+			toMerchantAccountNumber:
+			{
+				required: true,
+				account:true
 			}
 		}
 	})
