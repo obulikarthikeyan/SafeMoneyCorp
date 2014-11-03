@@ -256,6 +256,8 @@ public class EmployeeUserServiceImpl implements EmployeeUserService{
 	public boolean updateTransactionRequest(long transactionRequestId,String status) {
 		// TODO Auto-generated method stub
 		TransactionDTO transactionDTO = manageExternalUserAccountDAO.getTransactionByTransactionId(transactionRequestId);
+		transactionDTO.setIsAuthorized(true);
+
 		transactionDTO.setStatus(status);
 		transactionDTO.setProcessedDate(new Date());
 		if (manageExternalUserAccountDAO.updateTransactionRequest(transactionDTO))

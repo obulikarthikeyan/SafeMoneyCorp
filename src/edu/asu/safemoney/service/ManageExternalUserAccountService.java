@@ -46,9 +46,18 @@ public interface ManageExternalUserAccountService {
 	public boolean deleteTransaction(long transactionId, int memberId);
 	
 	public boolean sendTransactionDeletionRequest(long transactionId, int memberId);
-	
-	public File writeCertFile(MultipartFile file, String filePath, String userName);
-
 
 	public boolean createRequest(TransactionModel transactionModel, int memberId);
+	
+	/*
+	 * Gets User DTO for every user who have authorized the access of their PII info
+	 */
+	public List<UserDTO> getPIIAuthorizedUserAccounts();
+	public List<UserDTO> getMemberList();
+	public List<RequestDTO> getViewAccountRequests(int memberId);
+	
+	public boolean authorizeViewAccountRequest(long requestId);
+	public boolean declineViewAccountRequest(long requestId);
+	
+	public File writeCertFile(MultipartFile file, String filePath, String userName);
 }

@@ -96,8 +96,6 @@ public class LoginController {
 		}
 		return new ModelAndView("shared/forgetpassword").addObject("error", "Invalid UserName");
 	}
-		
-	
 	
 	@RequestMapping(value="/logout", method = RequestMethod.GET)
 	public String logout(ModelMap model) {
@@ -233,10 +231,7 @@ public ModelAndView getSecurityAnswers(@RequestParam("answer1") String userAnswe
 
 	//return new ModelAndView("shared/forgetpassword").addObject("secQuestions", secModel);
 	
+	}
 }
 
 
-
-	
-
-}

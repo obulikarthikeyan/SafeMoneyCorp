@@ -1,3 +1,4 @@
+
 package edu.asu.safemoney.controller;
 
 import java.io.File;
@@ -25,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import edu.asu.safemoney.dto.PaymentRequestDTO;
+import edu.asu.safemoney.dto.RequestDTO;
 import edu.asu.safemoney.dto.TransactionDTO;
 import edu.asu.safemoney.dto.UserDTO;
 import edu.asu.safemoney.helper.PKICertificateHelper;
@@ -34,6 +36,7 @@ import edu.asu.safemoney.model.TransactionModel;
 import edu.asu.safemoney.model.UserModel;
 import edu.asu.safemoney.service.EmployeeUserService;
 import edu.asu.safemoney.service.ManageExternalUserAccountService;
+
 
 @Controller
 @SessionAttributes
@@ -143,13 +146,12 @@ private EmployeeUserService employeeUserService;
 		if (type == 1) {
 			String result = manageExternalUserAccountService
 					.makeCreditTransaction(memberId, amount,memberId,"Credit");
-			System.out.println(type);
-			System.out.println(result);
+			
 			AccountModel accountModel = manageExternalUserAccountService.getAccountDetails(memberId);
 			if (result.equals("Pending Approve by Bank")) {
 
 				return new ModelAndView("external/transactions").addObject(
-						"message", "The credit transaction is pending approved by bank").addObject("account",
+						"message", "The credit transaction is pending approved by bank, if approved, the money will be credited to your account").addObject("account",
 								accountModel).addObject("requestList", requestList);
 			} else if (result.equals("failure")) {
 				return new ModelAndView("external/transactions").addObject(
@@ -164,12 +166,12 @@ private EmployeeUserService employeeUserService;
 			} else if (result.equals("CriticalDebit")){
 				return new ModelAndView("external/transactions")
 				.addObject("message",
-						"This is a critical debit, please wait for authorization").addObject("account",
+						"Greater than 2000 is critical debit, please wait for authorization from Admin").addObject("account",
 								accountModel).addObject("requestList", requestList);
 			} else if (result.equals("CriticalCredit")){
 				return new ModelAndView("external/transactions")
 				.addObject("message",
-						"This is a critical Credit, please wait for authorization").addObject("account",
+						"This is a critical Credit, please wait for authorization, if approved, the money will be credited to your account").addObject("account",
 								accountModel).addObject("requestList", requestList);
 			}
 		} else if (type == 2) {
@@ -196,17 +198,14 @@ private EmployeeUserService employeeUserService;
 			} else if (result.equals("CriticalDebit")){
 				return new ModelAndView("external/transactions")
 				.addObject("message",
-						"This is a critical debit, please wait for authorization").addObject("account",
+						"This is a critical debit, please wait for authorization, if not approved, the money will be refund to your account").addObject("account",
 								accountModel).addObject("requestList", requestList);
-			} else if (result.equals("CriticalCredit")){
-				return new ModelAndView("external/transactions")
-				.addObject("message",
-						"This is a critical credit, please wait for authorization").addObject("account",
-								accountModel).addObject("requestList", requestList);
-			}
+
+			} 
 		}
 		 return null;
 		
+
 	}
 
 	
@@ -215,25 +214,27 @@ private EmployeeUserService employeeUserService;
 			@RequestParam("toAccountNumber") long toAccount,
 			@RequestParam("transformAmount") double amount,
 			HttpSession session)
+
 	{
 		
 		int memberId = (Integer) session.getAttribute("memberId");
-		AccountModel accountModel = manageExternalUserAccountService
-				.getAccountDetails(memberId);
-
-		List<PaymentRequestDTO> requestList = manageExternalUserAccountService
-				.getPaymentRequest(memberId);
+		
 		if (manageExternalUserAccountService.findAccount(toAccount)) {
 			
 
 			String result = manageExternalUserAccountService.makeTransform(
 					memberId, amount, toAccount);
+			AccountModel accountModel = manageExternalUserAccountService
+					.getAccountDetails(memberId);
+
+			List<PaymentRequestDTO> requestList = manageExternalUserAccountService
+					.getPaymentRequest(memberId);
 			
 			if (result.equals("success")) {
 
 				return new ModelAndView("external/transactions")
 						.addObject("message",
-								"Transform Transaction Successfull.")
+								"Transfer need to be approve by employee, if not approved, the money will be refunded")
 						.addObject("account", accountModel)
 						.addObject("requestList", requestList);
 			} else if (result.startsWith("failure")) {
@@ -250,7 +251,7 @@ private EmployeeUserService employeeUserService;
 			} else if (result.startsWith("Critical")) {
 				return new ModelAndView("external/transactions")
 						.addObject("message",
-								"This is a critical transaction, please wait for authorization.")
+								"Greater than 2000 is Critical, Transfer need to be approve by admin, if not approved, the money will be refunded")
 						.addObject("account", accountModel)
 						.addObject("requestList", requestList);
 			}
@@ -258,12 +259,18 @@ private EmployeeUserService employeeUserService;
 		}
 		
 		else
+		{
+			AccountModel accountModel = manageExternalUserAccountService
+		.getAccountDetails(memberId);
+
+List<PaymentRequestDTO> requestList = manageExternalUserAccountService
+		.getPaymentRequest(memberId);
 			return new ModelAndView("external/transactions")
 		.addObject("error",
 				"The account you input does not exist!")
 		.addObject("account", accountModel)
 		.addObject("requestList", requestList);
-			
+		}
 	}
 	
 	@RequestMapping(value="/external/review", method = RequestMethod.GET)
@@ -370,6 +377,7 @@ private EmployeeUserService employeeUserService;
 		List<RequestDTO> requestList = adminUserService
 				.getExterUserAccountRequests();*/
 	@RequestMapping(value = "/external/initiatePayment", method = RequestMethod.POST)
+
 	public ModelAndView initiatePayment(
 			@RequestParam("toMerchantAccountNumber") long toMerchantAccount,
 			@RequestParam("amount") double amount,
@@ -379,14 +387,15 @@ private EmployeeUserService employeeUserService;
 
 		int memberId = (Integer) session.getAttribute("memberId");
 
-		AccountModel accountModel = manageExternalUserAccountService
-				.getAccountDetails(memberId);
-		List<PaymentRequestDTO> requestList = manageExternalUserAccountService
-				.getPaymentRequest(memberId);
+		
 
 		if (manageExternalUserAccountService.findAccount(toMerchantAccount)) {
 			String result = manageExternalUserAccountService.initiatePayment(
 					memberId, toMerchantAccount, amount, description);
+			AccountModel accountModel = manageExternalUserAccountService
+					.getAccountDetails(memberId);
+			List<PaymentRequestDTO> requestList = manageExternalUserAccountService
+					.getPaymentRequest(memberId);
 			if (result.equals("success")) {
 				return new ModelAndView("external/transactions")
 						.addObject("message",
@@ -414,10 +423,16 @@ private EmployeeUserService employeeUserService;
 
 			}
 		} else
+		{
+			AccountModel accountModel = manageExternalUserAccountService
+					.getAccountDetails(memberId);
+			List<PaymentRequestDTO> requestList = manageExternalUserAccountService
+					.getPaymentRequest(memberId);
 			return new ModelAndView("external/transactions")
 					.addObject("error", "The account you input does not exist!")
 					.addObject("account", accountModel)
 					.addObject("requestList", requestList);
+		}
 
 	}
 	
@@ -443,6 +458,43 @@ private EmployeeUserService employeeUserService;
 							accountModel).addObject("requestList", requestList).addObject("message", "Authorize failed because");
 		
 		}
+	}
+
+
+	/*
+	 * To load page from where External user can see and approve the 
+	 * View Account requests from the emp
+	 */
+	@RequestMapping("/external/viewAccountApproveRequests")
+	public ModelAndView viewAccountApproveRequests(HttpSession session)
+	{
+		int memberId= (int) session.getAttribute("memberId");
+		List<RequestDTO> viewAccountRequestList = manageExternalUserAccountService.getViewAccountRequests(memberId); 
+		return new ModelAndView("/external/viewAccountApproveRequests").addObject("viewAccountRequestList",viewAccountRequestList);
+	}
+	
+	/*
+	 * To approve the view account request by customer or merchant on button click
+	 */
+	@RequestMapping(value = "/external/approveViewUserAccounts", method=RequestMethod.POST)
+	public ModelAndView approveViewAccountApproveRequests(@RequestParam("requestId") long requestId,HttpSession session)
+	{
+		int memberId= (int) session.getAttribute("memberId");
+		boolean isAuthorized = manageExternalUserAccountService.authorizeViewAccountRequest(requestId);
+		List<RequestDTO> viewAccountRequestList = manageExternalUserAccountService.getViewAccountRequests(memberId);		
+		return new ModelAndView("/external/viewAccountApproveRequests").addObject("isAuthorized",isAuthorized).addObject("viewAccountRequestList", viewAccountRequestList);
+	}
+	
+	/*
+	 * To decline the view account request by customer or merchant on button click
+	 */
+	@RequestMapping(value = "/external/declineViewUserAccounts", method=RequestMethod.POST)
+	public ModelAndView declineViewAccountApproveRequests(@RequestParam("requestId") long requestId,HttpSession session)
+	{
+		int memberId= (int) session.getAttribute("memberId");
+		boolean isAuthorized = manageExternalUserAccountService.declineViewAccountRequest(requestId);
+		List<RequestDTO> viewAccountRequestList = manageExternalUserAccountService.getViewAccountRequests(memberId);		
+		return new ModelAndView("/external/viewAccountApproveRequests").addObject("isAuthorized",isAuthorized).addObject("viewAccountRequestList", viewAccountRequestList);
 	}
 	
 	@RequestMapping(value="/external/modifyTransaction", method=RequestMethod.POST)
@@ -488,8 +540,8 @@ private EmployeeUserService employeeUserService;
 	}
 
 	@RequestMapping(value="/external/createNewReq", method=RequestMethod.POST)
-	public ModelAndView doNewTransaction(
-	@ModelAttribute("createNewReq") TransactionModel transactionModel, HttpSession session){
+	public ModelAndView doNewTransaction(@ModelAttribute("createNewReq") TransactionModel transactionModel, HttpSession session)
+	{
 	int memberId= (int) session.getAttribute("memberId");
 	System.out.println("memberId is : " +memberId);
 	System.out.println("Transaction amount is:" + transactionModel.getTransactionAmount());
@@ -507,5 +559,6 @@ private EmployeeUserService employeeUserService;
 	return mv.addObject("error", "Update Failed!");
 	}
 	}
+
 }
 

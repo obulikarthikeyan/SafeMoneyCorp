@@ -4,6 +4,7 @@ import java.util.List;
 
 import edu.asu.safemoney.dto.AccountDTO;
 import edu.asu.safemoney.dto.PaymentRequestDTO;
+import edu.asu.safemoney.dto.RequestDTO;
 import edu.asu.safemoney.dto.TransactionDTO;
 import edu.asu.safemoney.dto.TransactionReviewDTO;
 import edu.asu.safemoney.dto.UserDTO;
@@ -46,6 +47,14 @@ public interface ManageExternalUserAccountDAO {
 	
 	public boolean createTransactionRequest(TransactionReviewDTO transactionReviewDTO);
 
+	public List<UserDTO> getPIIAuthorizedUserAccountsDTO();
 	
+	public List<UserDTO> getMembersListForDisplay();
+	
+	public List<RequestDTO> getViewAccountRequestsForCustomer(int memberId);
+	
+	public boolean authorizeViewAccountRequest(long requestId);
+	
+	public boolean declineViewAccountRequest(long requestId);
 	
 }

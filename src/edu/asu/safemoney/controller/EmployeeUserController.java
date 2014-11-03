@@ -24,6 +24,9 @@ import org.springframework.web.servlet.ModelAndView;
 import edu.asu.safemoney.dto.AccountDTO;
 import edu.asu.safemoney.dto.PaymentRequestDTO;
 import edu.asu.safemoney.dao.EmployeeUserDAO;
+
+	
+
 import edu.asu.safemoney.dto.RequestDTO;
 import edu.asu.safemoney.dto.TransactionDTO;
 import edu.asu.safemoney.dto.UserDTO;
@@ -132,11 +135,11 @@ public class EmployeeUserController {
 			
 			if(myresult&&myresult2)
 			{
-				processResult="You have successfully approved one payment request";
+				processResult="You have successfully declined one payment request";
 			}
 			else
 			{
-				processResult = "Approve payment request failed";
+				processResult = "declined payment request failed";
 			}
 		}
 		
@@ -165,9 +168,20 @@ public class EmployeeUserController {
 			TransactionDTO transactiontDTO = employeeUserService.getTransactionDTOById(transactionRequestId);
 			
 			int toMemberId = employeeUserService.getMemberIdByAccount(transactiontDTO.getToAccount());
+			int fromMemberId = employeeUserService.getMemberIdByAccount(transactiontDTO.getFromAccount());
 			
 			//transactiontDTO.getf
-			boolean myresult2 = employeeUserService.makeCredit(toMemberId,transactiontDTO.getAmount());
+			boolean myresult2 = false;
+			String type = transactiontDTO.getTransactionType();
+			if(type.equals("Debit"))
+			{
+				
+				myresult2=true;
+			}
+			else
+			{	
+				myresult2=employeeUserService.makeCredit(toMemberId,transactiontDTO.getAmount());
+			}
 			
 			if(myresult&&myresult2)
 				processResult="You have successfully approved one transaction";
@@ -184,9 +198,18 @@ public class EmployeeUserController {
 			TransactionDTO transactiontDTO = employeeUserService.getTransactionDTOById(transactionRequestId);
 			
 			int fromMemberId = employeeUserService.getMemberIdByAccount(transactiontDTO.getFromAccount());
+			boolean myresult2=false;
 			
 			//transactiontDTO.getf
-			boolean myresult2 = employeeUserService.makeCredit(fromMemberId,transactiontDTO.getAmount());
+			String type = transactiontDTO.getTransactionType();
+			if(type.equals("Debit"))
+			{
+				myresult2 = employeeUserService.makeCredit(fromMemberId,transactiontDTO.getAmount());
+			}
+			else
+			{	
+				myresult2 = employeeUserService.makeCredit(fromMemberId,transactiontDTO.getAmount());
+			}
 			
 			if(myresult&&myresult2)
 				processResult="You have successfully declined one transaction";
@@ -204,7 +227,6 @@ public class EmployeeUserController {
 		.addObject("paymentRequestList", paymentList).addObject(
 				"transactionRequestList", transactionList).addObject("message",processResult);
 	}
-	
 	
 	
 		
@@ -409,6 +431,13 @@ public class EmployeeUserController {
 		List<TransactionDTO> transactionInfo = employeeUserService.getAllTransactions(customerId);
 
 		return new ModelAndView("/internal/customerTransactionAccount").addObject("transactionInfo",transactionInfo);
+	}
+	
+	@RequestMapping(value="/internal/getMemberIdLog")
+	public ModelAndView getMemberIdList(HttpSession session)
+	{
+		List<UserDTO> memberInfo = manageExternalUserAccountService.getMemberList();
+		return new ModelAndView("/internal/memberIdLog").addObject("memberInfo", memberInfo);
 	}
 	
 

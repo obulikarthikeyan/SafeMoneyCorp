@@ -4,6 +4,10 @@ import java.util.List;
 
 import edu.asu.safemoney.dto.RequestDTO;
 
+import edu.asu.safemoney.dto.TransactionDTO;
+
+import edu.asu.safemoney.model.UserModel;
+
 public interface AdminUserService {
 	
 	public List<RequestDTO> getExterUserAccountRequests();
@@ -15,5 +19,9 @@ public interface AdminUserService {
 	public boolean declineExtUserRequest(long requestId);
 	
 	public boolean deleteExtUserAccount(int memberId);
+	
+	public List<TransactionDTO> getTransactionRequest();
+
+	public boolean createEmployee(UserModel userModel);
 
 }

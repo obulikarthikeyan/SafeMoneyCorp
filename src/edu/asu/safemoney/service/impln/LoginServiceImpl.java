@@ -1,5 +1,6 @@
 package edu.asu.safemoney.service.impln;
 
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -106,9 +107,8 @@ public class LoginServiceImpl implements LoginService, UserDetailsService {
 
 	@Transactional
 	public boolean createUser(UserModel userModel) {
-		String siteKey = loginDAO.getSiteKey(userModel.getUserName());
-		boolean isCreationSuccess = false; 
-		if(siteKey != null && !siteKey.isEmpty())
+		boolean isCreationSuccess= false;
+		if(validateUser(userModel))
 		{
 
 			return false;
@@ -186,18 +186,17 @@ public class LoginServiceImpl implements LoginService, UserDetailsService {
 	}
 	
 	@Transactional
-	private boolean validateNewUser(UserModel userModel)
-	{
-		
+	public boolean validateUser(UserModel userModel){
 		String siteKey = loginDAO.getSiteKey(userModel.getUserName());
-		boolean isEmailExists = loginDAO.isEmailExists(userModel.getEmailId());
-		if((siteKey != null && !siteKey.isEmpty()) || isEmailExists)
+		boolean emailExist= loginDAO.isEmailExists(userModel.getEmailId());
+		if((siteKey != null && !siteKey.isEmpty() )|| emailExist)
 		{
-			return false;
-		} else {
+
 			return true;
 		}
-		
+		else 
+			return false;
+
 	}
 	
 	@Transactional

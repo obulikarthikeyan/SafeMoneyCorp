@@ -235,7 +235,7 @@
 												<thead>
 													<tr>
 														<th>Payment Request ID</th>
-														<th>Authorizer ID</th>
+														<th>Payment Description</th>
 														<th>Authorizer Accnt</th>
 														<th>Merchant Accnt</th>
 														<th>Authorized Amount</th>
@@ -251,7 +251,7 @@
 															<tr>
 																
 																	<td>${request.paymentId }</td>
-																	<td>${request.authorizerMemberId }</td>
+																	<td>${request.description }</td>
 																	<td>${request.authorizerAccountId }
 																	<td>${request.merchantAccountId }
 																	<td>${request.amount }</td>
@@ -271,6 +271,8 @@
 																							var authorizedAmount = '${request.amount}';
 																							var authorizedDate = '${request.date}';
 																							var paymentRequestId = '${request.paymentId}';
+																							var description = '${request.description}';
+																								
 
 																							$(
 																									'#authorizerAccountId')
@@ -289,6 +291,10 @@
 																									'#paymentRequestId2')
 																									.val(
 																											paymentRequestId);
+																							$(
+																							'#authorizedDescription')
+																							.val(
+																									description);
 																						});
 																	</script>
 															
@@ -336,6 +342,10 @@
 													<tr>
 														<td><label>Authorized Date</label></td>
 														<td id="authorizedDate"></td>
+													</tr>
+													<tr>
+														<td><label>Description</label></td>
+														<td id="authorizedDescription"></td>
 													</tr>
 													
 												</tbody>

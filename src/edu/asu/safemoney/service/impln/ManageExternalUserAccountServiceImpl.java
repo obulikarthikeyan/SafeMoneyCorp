@@ -1,4 +1,3 @@
-
 package edu.asu.safemoney.service.impln;
 
 import java.io.BufferedOutputStream;
@@ -153,71 +152,143 @@ public class ManageExternalUserAccountServiceImpl implements
 				return "NOFUND";
 			}
 		}
-		else if (((amount > 2000)&&(type.equals("Debit")))||type.equals("transform")) {
-			
-			AccountModel accountModel =getAccountDetails(memberID);
-			AccountModel toaccountModel = getAccountDetails(toMemberId);
-			TransactionDTO txnDTO = new TransactionDTO();
-			txnDTO.setAmount(amount);
-			txnDTO.setDate(new Date());
-			txnDTO.setFromAccount(accountModel.getAccountNo());
-			txnDTO.setToAccount(toaccountModel.getAccountNo());
-			txnDTO.setIsAuthorized(false);// boolean
-			txnDTO.setIsCritical(true);
-			txnDTO.setMemberId(displayUserAccount(memberID));// input
-																// UserDTO
-			txnDTO.setStatus("PENDING_BANK");//
-			txnDTO.setTransactionId(ExternalUserHelper.generateRandomNumber());// long
-			txnDTO.setTransactionType(type);
-			txnDTO.setProcessedDate(new Date());
-			//txn
+		
+		else if(type.equals("Debit"))
+		{
+			if(amount<=2000)
+			{
+				double balance = getAccountBalance(memberID);
+				if (balance > amount) {
+					balance -= amount;
+					boolean isSuccess = manageExternalUserAccountDAO
+							.updateAccountBalance(memberID, balance);
+					if (isSuccess) {
+						AccountModel accountModel = getAccountDetails(memberID);
+						AccountModel toaccountModel = getAccountDetails(toMemberId);
+						TransactionDTO txnDTO = new TransactionDTO();
+						txnDTO.setAmount(amount);
+						txnDTO.setDate(new Date());
+						txnDTO.setFromAccount(accountModel.getAccountNo());
+						txnDTO.setToAccount(toaccountModel.getAccountNo());
+						txnDTO.setIsAuthorized(true);// boolean
+						txnDTO.setIsCritical(false);
+						txnDTO.setMemberId(displayUserAccount(memberID));// input
+						txnDTO.setStatus("APPROVED");//
+						txnDTO.setTransactionId(ExternalUserHelper.generateRandomNumber());// long
+						txnDTO.setTransactionType(type);
+						txnDTO.setProcessedDate(new Date());
 
-			boolean isTxnCreated = manageExternalUserAccountDAO
-					.createTransaction(txnDTO);
-			if (isTxnCreated) {
-				if(type.equals("transform"))
-					return "success";
+						boolean isTxnCreated = manageExternalUserAccountDAO
+								.createTransaction(txnDTO);
+						if (isTxnCreated) {
+							return "success";
+						}
+					} else {
+						return "failed";
+					}
+				}
 				else
-					return "CriticalDebit";
+				{
+					return "NOFUND";
+				}
 			}
-			
-		} else {
+			else
+			{
+				double balance = getAccountBalance(memberID);
+				if (balance > amount) {
+					balance -= amount;
+					boolean isSuccess = manageExternalUserAccountDAO
+							.updateAccountBalance(memberID, balance);
+					if (isSuccess) {
+						AccountModel accountModel = getAccountDetails(memberID);
+						AccountModel toaccountModel = getAccountDetails(toMemberId);
+						TransactionDTO txnDTO = new TransactionDTO();
+						txnDTO.setAmount(amount);
+						txnDTO.setDate(new Date());
+						txnDTO.setFromAccount(accountModel.getAccountNo());
+						txnDTO.setToAccount(toaccountModel.getAccountNo());
+						txnDTO.setIsAuthorized(false);// boolean
+						txnDTO.setIsCritical(true);
+						txnDTO.setMemberId(displayUserAccount(memberID));// input
+																			// UserDTO
+						txnDTO.setStatus("PENDING_BANK");//
+						txnDTO.setTransactionId(ExternalUserHelper
+								.generateRandomNumber());// long
+						txnDTO.setTransactionType(type);
+						txnDTO.setProcessedDate(new Date());
+						// txn
+
+						boolean isTxnCreated = manageExternalUserAccountDAO
+								.createTransaction(txnDTO);
+						if (isTxnCreated) {
+							return "CriticalDebit";
+						}
+					}
+				else 
+					return "failed";
+				}
+				else
+				{
+					return "NOFUND";
+				}
+				
+				
+			}
+		}
+		else if (type.equals("transfer")) {
+
 			double balance = getAccountBalance(memberID);
 			if (balance > amount) {
 				balance -= amount;
 				boolean isSuccess = manageExternalUserAccountDAO
 						.updateAccountBalance(memberID, balance);
-				if (isSuccess) {
-					AccountModel accountModel = getAccountDetails(memberID);
-					AccountModel toaccountModel = getAccountDetails(toMemberId);
-					TransactionDTO txnDTO = new TransactionDTO();
-					txnDTO.setAmount(amount);
-					txnDTO.setDate(new Date());
-					txnDTO.setFromAccount(accountModel.getAccountNo());
-					txnDTO.setToAccount(toaccountModel.getAccountNo());
-					txnDTO.setIsAuthorized(true);// boolean
+				AccountModel accountModel = getAccountDetails(memberID);
+				AccountModel toaccountModel = getAccountDetails(toMemberId);
+				TransactionDTO txnDTO = new TransactionDTO();
+				txnDTO.setAmount(amount);
+				txnDTO.setDate(new Date());
+				txnDTO.setFromAccount(accountModel.getAccountNo());
+				txnDTO.setToAccount(toaccountModel.getAccountNo());
+				if(amount<=2000)
+				{	
 					txnDTO.setIsCritical(false);
-					txnDTO.setMemberId(displayUserAccount(memberID));// input
-					txnDTO.setStatus("APPROVED");//
-					txnDTO.setTransactionId(ExternalUserHelper.generateRandomNumber());// long
-					txnDTO.setTransactionType(type);
-					txnDTO.setProcessedDate(new Date());
-
-					boolean isTxnCreated = manageExternalUserAccountDAO
-							.createTransaction(txnDTO);
-					if (isTxnCreated) {
-						return "success";
-					}
-				} else {
-					return "failure";
 				}
-			}
-			else
-			{
+				else
+				{
+					txnDTO.setIsCritical(true);
+				}
+				txnDTO.setIsAuthorized(false);// boolean
+				
+				txnDTO.setMemberId(displayUserAccount(memberID));// input
+																	// UserDTO
+				txnDTO.setStatus("PENDING_BANK");//
+				txnDTO.setTransactionId(ExternalUserHelper
+						.generateRandomNumber());// long
+				txnDTO.setTransactionType(type);
+				txnDTO.setProcessedDate(new Date());
+				// txn
+
+				boolean isTxnCreated = manageExternalUserAccountDAO
+						.createTransaction(txnDTO);
+
+				if (isTxnCreated)
+				{
+					
+					if(amount>2000)
+						return "Critical";
+					else
+						return "success";
+
+				}
+				else
+					return "failed";
+			} else {
 				return "NOFUND";
 			}
+
 		}
-		return "failure";
+		return "Unrecognised type";
+		
 	}
 	
 	@Transactional
@@ -234,13 +305,14 @@ public class ManageExternalUserAccountServiceImpl implements
 			txnDTO.setFromAccount(fromAccountModel.getAccountNo());
 			txnDTO.setToAccount(accountModel.getAccountNo());
 			txnDTO.setIsAuthorized(false);// boolean
-			txnDTO.setIsCritical(true);
+			txnDTO.setIsCritical(false);
+			
 			txnDTO.setMemberId(displayUserAccount(memberID));// input
 																// UserDTO
-			txnDTO.setStatus("PENDING");//
+			txnDTO.setStatus("PENDING_BANK");//
 			txnDTO.setTransactionId(ExternalUserHelper.generateRandomNumber());// long
 			txnDTO.setTransactionType(type);
-			txnDTO.setProcessedDate(null);
+			txnDTO.setProcessedDate(new Date());
 			
 			
 			boolean isTxnCreated = manageExternalUserAccountDAO.createTransaction(txnDTO);
@@ -250,7 +322,7 @@ public class ManageExternalUserAccountServiceImpl implements
 				
 			}
 		} 
-		return "failure";
+		return "failed";
 
 	}
 	
@@ -267,8 +339,14 @@ public class ManageExternalUserAccountServiceImpl implements
 
 			return "success";
 
-		} else {
-			return debitResult + "Cannot Debit from your account because "+debitResult;
+		}
+		else if(debitResult.equals("NOFUND"))
+		{
+			return "NOFUND";
+		}
+		else 
+		{
+			return debitResult;
 		}
 		// return "failure";
 	}
@@ -387,7 +465,7 @@ public class ManageExternalUserAccountServiceImpl implements
 		}
 		
 		
-		else if(initiaterType.getUserTypeId()==322)
+		else if(initiaterType.getUserTypeId()==322)//customer
 			{
 				initiateStatus="AUTHORIZED";
 				String debitResult = makeDebitTransaction(fromMemberId,amount,toMemberId,"payment");
@@ -641,5 +719,42 @@ public class ManageExternalUserAccountServiceImpl implements
 		
 	}
 
+	@Transactional
+	@Override
+	public List<UserDTO> getPIIAuthorizedUserAccounts(){
+		List<UserDTO> userAccountList = manageExternalUserAccountDAO.getPIIAuthorizedUserAccountsDTO();
+		return userAccountList;
+	}
 	
+	@Transactional
+	@Override
+	public List<UserDTO> getMemberList(){
+		List<UserDTO> memberList = manageExternalUserAccountDAO.getMembersListForDisplay();
+		return memberList;
+	}
+	
+	@Transactional
+	@Override
+	public List<RequestDTO> getViewAccountRequests(int memberId){
+		List<RequestDTO> viewAccountRequests =  manageExternalUserAccountDAO.getViewAccountRequestsForCustomer(memberId);
+		return viewAccountRequests;
+	}
+	
+	@Transactional
+	@Override
+	public boolean authorizeViewAccountRequest(long requestId)
+	{
+		boolean isAuthorized = manageExternalUserAccountDAO.authorizeViewAccountRequest(requestId);
+		
+		return isAuthorized;
+	}
+	
+	@Transactional
+	@Override
+	public boolean declineViewAccountRequest(long requestId)
+	{
+		boolean isAuthorized = manageExternalUserAccountDAO.declineViewAccountRequest(requestId);
+		
+		return isAuthorized;
+	}
 }

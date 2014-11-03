@@ -1,4 +1,3 @@
-
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
@@ -6,7 +5,6 @@
 <html lang="en">
 
 <head>
-
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -68,6 +66,7 @@
 					style="font-size: 24px; color: #5E5E5E"><strong>SafeMoneyCorp</strong></a>
 			</div>
 			<!-- /.navbar-header -->
+
 			<sec:authorize access="isAuthenticated()">
 			<ul class="nav navbar-top-links navbar-right">
 				Logged in as
@@ -102,7 +101,7 @@
 							<li><a href="#"><i class="fa fa-tasks fa-fw"></i> Manage
 									Requests<span class="fa arrow"></span></a>
 								<ul class="nav nav-second-level">
-									<li><a href="#">View Bank Requests</a></li>
+									<li><a href="<%=request.getContextPath()%>/external/viewAccountApproveRequests">Approve View Account Requests</a></li>
 									<li><a href="#">Authorize Requests</a></li>
 								</ul> <!-- /.nav-second-level --></li>
 							<li><a href="<%=request.getContextPath()%>/external/review"><i class="fa fa-gear fa-fw"></i>
@@ -118,7 +117,7 @@
 						<sec:authorize access="hasRole('INT_BANK_ADMIN')">
 							<li><a href="#"><i class="fa fa-tasks fa-fw"></i> Manage Accounts<span class="fa arrow"></span></a>
 								<ul class="nav nav-second-level">
-									<li><a href="#">Internal Users</a></li>
+									<li><a href="<%=request.getContextPath() %>/admin/employeeRegistration">Internal Users</a></li>
 									<li><a href="<%=request.getContextPath() %>/admin/extUserAccount">External Users</a></li>
 								</ul> <!-- /.nav-second-level --></li>
 							<li><a
@@ -128,11 +127,12 @@
 									System Log</a></li>
 							<li><a href="<%=request.getContextPath()%>/admin/viewTransactionHistoryPage"><i class="fa fa-gear fa-fw"></i>
 									View Transactions</a></li>
-							<li><a href="#"><i class="fa fa-gear fa-fw"></i>
+							<li><a href="<%=request.getContextPath()%>/admin/authorizeCriticalTransactions"><i class="fa fa-gear fa-fw"></i>
 									Authorize Critical Transactions</a></li>		
 
 						</sec:authorize>
 						<sec:authorize access="hasRole('INT_BANK_EMP')">
+							<li><a href="<%=request.getContextPath()%>/internal/getMemberIdLog"><i class="fa fa-tasks fa-fw"></i> Member Id Log<span class="fa arrow"></span></a>
 							<li><a href="#"><i class="fa fa-tasks fa-fw"></i> Manage External User Accounts<span class="fa arrow"></span></a>
 								<ul class="nav nav-second-level">
 									<li><a href="<%=request.getContextPath()%>/internal/sendViewRequests">Send View Request</a></li>
@@ -184,4 +184,3 @@
 
 </body>
 </html>
-
