@@ -193,10 +193,12 @@ private EmployeeUserService employeeUserService;
 				.addObject("message",
 						"This is a critical debit, please wait for authorization, if not approved, the money will be refund to your account").addObject("account",
 								accountModel).addObject("requestList", requestList);
+
 			} 
 		}
 		 return null;
 		
+
 	}
 
 	
@@ -205,6 +207,7 @@ private EmployeeUserService employeeUserService;
 			@RequestParam("toAccountNumber") long toAccount,
 			@RequestParam("transformAmount") double amount,
 			HttpSession session)
+
 	{
 		
 		int memberId = (Integer) session.getAttribute("memberId");
@@ -261,7 +264,6 @@ List<PaymentRequestDTO> requestList = manageExternalUserAccountService
 		.addObject("account", accountModel)
 		.addObject("requestList", requestList);
 		}
-			
 	}
 	
 	@RequestMapping(value="/external/review", method = RequestMethod.GET)
@@ -347,6 +349,7 @@ List<PaymentRequestDTO> requestList = manageExternalUserAccountService
 		List<RequestDTO> requestList = adminUserService
 				.getExterUserAccountRequests();*/
 	@RequestMapping(value = "/external/initiatePayment", method = RequestMethod.POST)
+
 	public ModelAndView initiatePayment(
 			@RequestParam("toMerchantAccountNumber") long toMerchantAccount,
 			@RequestParam("amount") double amount,

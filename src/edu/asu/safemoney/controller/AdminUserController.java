@@ -1,4 +1,3 @@
-
 package edu.asu.safemoney.controller;
 
 import java.util.List;
@@ -9,16 +8,17 @@ import javax.servlet.http.HttpSession;
 import org.springframework.aop.aspectj.AspectJAdviceParameterNameDiscoverer.AmbiguousBindingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
-import edu.asu.safemoney.dto.PaymentRequestDTO;
 import edu.asu.safemoney.dto.RequestDTO;
 import edu.asu.safemoney.dto.TransactionDTO;
 import edu.asu.safemoney.dto.UserDTO;
+import edu.asu.safemoney.model.UserModel;
 import edu.asu.safemoney.service.AdminUserService;
 import edu.asu.safemoney.service.EmployeeUserService;
 import edu.asu.safemoney.service.ManageExternalUserAccountService;
@@ -154,6 +154,28 @@ public class AdminUserController {
 		List<TransactionDTO> transactionInfo = employeeUserService.getAllTransactions(memberId);
 
 		return new ModelAndView("/admin/ExternalUserTransactions").addObject("transactionInfo",transactionInfo);
+	}
+	
+	@RequestMapping("/admin/employeeRegistration")
+	public ModelAndView employeeReigstration()
+	{
+		return new ModelAndView("/admin/manageInternalUsers");
+	}
+	
+	
+	@RequestMapping("admin/createEmployee")
+	public ModelAndView createEmployee(@ModelAttribute("signUpForm") UserModel userModel){
+		System.out.println("email" + userModel.getEmailId());
+		boolean created= adminUserService.createEmployee(userModel);
+		if(!created)
+		{
+			return new ModelAndView("admin/manageInternalUsers").addObject("signUpForm", userModel);
+		}
+		else
+		{
+			return new ModelAndView("shared/landing");
+		}
+			
 	}
 	//authorizeCriticalTransactions
 	

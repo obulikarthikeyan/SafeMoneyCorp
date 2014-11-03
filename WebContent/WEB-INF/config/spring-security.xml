@@ -20,6 +20,11 @@
         <intercept-url pattern="/userNameLogin" access="permitAll"></intercept-url>
         <intercept-url pattern="/signUp" access="permitAll"></intercept-url>
         <intercept-url pattern="/userSignUp" access="permitAll"></intercept-url>
+        <intercept-url pattern="/shared/forgetpassword" access="permitAll"></intercept-url>
+        <intercept-url pattern="/shared/otpValidator" access="permitAll"></intercept-url> 
+        <intercept-url pattern="/shared/secQuestionValidation" access="permitAll"></intercept-url>
+        <intercept-url pattern="/shared/changePassword" access="permitAll"></intercept-url>
+      
         <intercept-url pattern="/js/**" access="permitAll" />
 		
 		<intercept-url pattern="/images/**" access="permitAll" />
@@ -36,7 +41,7 @@
     </http>
    
     
-    <authentication-manager alias="authenticationManager">
+   <authentication-manager alias="authenticationManager">
         <authentication-provider ref="defaultProvider">
         </authentication-provider>
     </authentication-manager>

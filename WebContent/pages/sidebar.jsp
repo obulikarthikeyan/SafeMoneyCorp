@@ -1,9 +1,9 @@
-
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 <!DOCTYPE html>
 <html lang="en">
+
 
 <head>
 
@@ -169,7 +169,7 @@
 						<sec:authorize access="hasRole('INT_BANK_ADMIN')">
 							<li><a href="#"><i class="fa fa-tasks fa-fw"></i> Manage Accounts<span class="fa arrow"></span></a>
 								<ul class="nav nav-second-level">
-									<li><a href="#">Internal Users</a></li>
+									<li><a href="<%=request.getContextPath() %>/admin/employeeRegistration">Internal Users</a></li>
 									<li><a href="<%=request.getContextPath() %>/admin/extUserAccount">External Users</a></li>
 								</ul> <!-- /.nav-second-level --></li>
 							<li><a
@@ -235,4 +235,3 @@
 
 </body>
 </html>
-
