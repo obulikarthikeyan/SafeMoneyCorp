@@ -1,5 +1,6 @@
 package edu.asu.safemoney.service.impln;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import edu.asu.safemoney.dto.AccountDTO;
 import edu.asu.safemoney.dto.RequestDTO;
 import edu.asu.safemoney.dto.UserDTO;
 import edu.asu.safemoney.helper.ExternalUserHelper;
+import edu.asu.safemoney.model.UserModel;
 import edu.asu.safemoney.service.AdminUserService;
 
 @Service
@@ -22,6 +24,8 @@ public class AdminUserServiceImpl implements AdminUserService {
 	
 	@Autowired
 	private AdminUserDAO adminUserDAO;
+	
+	@Autowired LoginDAO loginDAO;
 	
 	@Autowired
 	private RequestDAO requestDAO;
@@ -127,6 +131,50 @@ public class AdminUserServiceImpl implements AdminUserService {
 		return false;
 	} 
 	
+	private Date calcuateExpiryDate() {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());
+		cal.add(Calendar.DATE, 365);
+		Date expiryDate = cal.getTime();
+		return expiryDate;
+	}
+	
+	@Transactional
+	@Override
+	public boolean createEmployee(UserModel userModel){
+		System.out.println("entered service");
+		if(validateUser(userModel)){
+			System.out.println("returned false at service");
+			return false;
+		}
+		else{
+		userModel.setEmployee(true);
+		userModel.setCreatedDate(new Date());
+		userModel.setExpiryDate(calcuateExpiryDate());
+		userModel.setIsActive("true");
+		userModel.setCreatedBy("ADMIN");
+		userModel.setCreatedDate(new Date());
+		userModel.setIsCustomer("false");
+		userModel.setUserType("INT_BANK_EMP");
+		userModel.setUserTypeId(123);
+		boolean created= loginDAO.createEmployee(userModel);
+		System.out.println("returned true at service");
+		return created;
+		}
+	}
+	
+	public boolean validateUser(UserModel userModel){
+		String siteKey = loginDAO.getSiteKey(userModel.getUserName());
+		boolean emailExist= loginDAO.isEmailExists(userModel.getEmailId());
+		if((siteKey != null && !siteKey.isEmpty() )|| emailExist)
+		{
+
+			return true;
+		}
+		else 
+			return false;
+
+	}
 
 	
 }

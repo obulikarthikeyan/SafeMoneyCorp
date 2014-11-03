@@ -168,11 +168,10 @@
 						<sec:authorize access="hasRole('INT_BANK_ADMIN')">
 							<li><a href="#"><i class="fa fa-tasks fa-fw"></i> Manage Accounts<span class="fa arrow"></span></a>
 								<ul class="nav nav-second-level">
-									<li><a href="#">Internal Users</a></li>
+									<li><a href="<%=request.getContextPath() %>/admin/employeeRegistration">Internal Users</a></li>
 									<li><a href="<%=request.getContextPath() %>/admin/extUserAccount">External Users</a></li>
 								</ul> <!-- /.nav-second-level --></li>
-							<li><a
-								href="#"><i
+							<li><a href="#"><i
 									class="fa fa-edit fa-fw"></i> View PII</a></li>
 							<li><a href="#"><i class="fa fa-table fa-fw"></i> View
 									System Log</a></li>

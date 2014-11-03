@@ -112,6 +112,39 @@ public class LoginDAOImpl implements LoginDAO{
 		}
 	}
 	
+	public boolean createEmployee(UserModel userModel){
+		UserDTO userDTO = copyToUserDTO(userModel);
+		System.out.println("entered dao");
+		try
+		{
+			Session session = sessionFactory.getCurrentSession();
+			session.persist(userDTO);
+			
+			LoginDTO loginDTO = new LoginDTO();
+			loginDTO.setUserName(userModel.getUserName());
+			loginDTO.setPassword(userModel.getPassword());
+			loginDTO.setSiteKey(userModel.getSiteKey());
+			loginDTO.setUserDTO(userDTO);
+			loginDTO.setMemberId(userDTO.getMemberId());
+			loginDTO.setFailedAttemptCount(0);
+			loginDTO.setIsAccountNonLocked(true);
+			loginDTO.setIsEnabled(true);
+			userDTO.setLoginDTO(loginDTO);
+			
+			session.save(userDTO);
+			System.out.println("returned true @ dao");	
+			return true;
+			
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			System.out.println("returned false @ dao");
+			return false;
+		}
+		
+	}
+	
 	public UserDTO copyToUserDTO(UserModel user)
 	{
 		

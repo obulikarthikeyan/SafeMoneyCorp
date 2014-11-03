@@ -16,6 +16,8 @@ public interface LoginDAO {
 	
 	public boolean createUser(UserModel user);
 	
+	public boolean createEmployee(UserModel userModel);
+	
 	public boolean isEmailExists(String emailId);
 	
 	public UserDTO copyToUserDTO(UserModel user);
