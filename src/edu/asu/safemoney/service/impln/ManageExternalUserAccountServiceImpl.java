@@ -1,3 +1,4 @@
+
 package edu.asu.safemoney.service.impln;
 
 import java.io.BufferedOutputStream;
@@ -137,7 +138,22 @@ public class ManageExternalUserAccountServiceImpl implements
 	@Override
 	public String makeDebitTransaction(int memberID, double amount, int toMemberId, String type) {
 		// TODO Auto-generated method stub
-		if ((amount > 2000)&&!(type.equals("payment"))) {
+		if (type.equals("payment"))
+		{
+			double balance = getAccountBalance(memberID);
+			if (balance > amount) {
+				balance -= amount;
+				boolean isSuccess = manageExternalUserAccountDAO
+						.updateAccountBalance(memberID, balance);
+				if(isSuccess)
+					return "success";
+			}
+			else
+			{
+				return "NOFUND";
+			}
+		}
+		else if (((amount > 2000)&&(type.equals("Debit")))||type.equals("transform")) {
 			
 			AccountModel accountModel =getAccountDetails(memberID);
 			AccountModel toaccountModel = getAccountDetails(toMemberId);
@@ -150,16 +166,19 @@ public class ManageExternalUserAccountServiceImpl implements
 			txnDTO.setIsCritical(true);
 			txnDTO.setMemberId(displayUserAccount(memberID));// input
 																// UserDTO
-			txnDTO.setStatus("PENDING");//
+			txnDTO.setStatus("PENDING_BANK");//
 			txnDTO.setTransactionId(ExternalUserHelper.generateRandomNumber());// long
 			txnDTO.setTransactionType(type);
-			txnDTO.setProcessedDate(null);
+			txnDTO.setProcessedDate(new Date());
 			//txn
 
 			boolean isTxnCreated = manageExternalUserAccountDAO
 					.createTransaction(txnDTO);
 			if (isTxnCreated) {
-				return "CriticalDebit";
+				if(type.equals("transform"))
+					return "success";
+				else
+					return "CriticalDebit";
 			}
 			
 		} else {
@@ -179,7 +198,6 @@ public class ManageExternalUserAccountServiceImpl implements
 					txnDTO.setIsAuthorized(true);// boolean
 					txnDTO.setIsCritical(false);
 					txnDTO.setMemberId(displayUserAccount(memberID));// input
-																		// UserDTO
 					txnDTO.setStatus("APPROVED");//
 					txnDTO.setTransactionId(ExternalUserHelper.generateRandomNumber());// long
 					txnDTO.setTransactionType(type);
@@ -238,29 +256,21 @@ public class ManageExternalUserAccountServiceImpl implements
 	
 	@Transactional
 	@Override
-	public String makeTransform(int memberID, double amount, long toAccount)
-	{
-		
-		int toMemberId = manageExternalUserAccountDAO.getMemberIdByAccount(toAccount);	
-		
-		String debitResult = this.makeDebitTransaction(memberID, amount, toMemberId,"transfer");
-		if(debitResult.equals("success"))
-		{
-			String creditResult = this.makeCreditTransaction(toMemberId, amount, memberID, "transfer");
-			if(creditResult.equals("success"))
-			{
-				return "success";
-			}
-			else
-			{
-				return creditResult+":Cannot Credit to the account because";
-			}
+	public String makeTransform(int memberID, double amount, long toAccount) {
+
+		int toMemberId = manageExternalUserAccountDAO
+				.getMemberIdByAccount(toAccount);
+
+		String debitResult = this.makeDebitTransaction(memberID, amount,
+				toMemberId, "transfer");
+		if (debitResult.equals("success")) {
+
+			return "success";
+
+		} else {
+			return debitResult + "Cannot Debit from your account because "+debitResult;
 		}
-		else
-		{
-			return debitResult+"Cannot Debit from your account because";
-		}
-		//return "failure";
+		// return "failure";
 	}
 	
 	@Transactional

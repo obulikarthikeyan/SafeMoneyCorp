@@ -2,6 +2,7 @@ package edu.asu.safemoney.dao.impln;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+
 import java.util.List;
 
 import org.hibernate.Query;
@@ -108,7 +109,7 @@ public class EmployeeUserDAOImpl implements EmployeeUserDAO{
 	public boolean makeDebit(int memberID, double amount) {
 		// TODO Auto-generated method stub
 		double balance = manageExternalUserAccountService.getAccountBalance(memberID);
-		balance +=amount;
+		balance -=amount;
 		boolean result = manageExternalUserAccountDAO.updateAccountBalance(memberID, balance);
 		return result;
 	}
@@ -117,7 +118,7 @@ public class EmployeeUserDAOImpl implements EmployeeUserDAO{
 	public boolean makeCredit(int memberID, double amount) {
 		// TODO Auto-generated method stub
 		double balance = manageExternalUserAccountService.getAccountBalance(memberID);
-		balance -=amount;
+		balance +=amount;
 		boolean result = manageExternalUserAccountDAO.updateAccountBalance(memberID, balance);
 		return result;
 	}

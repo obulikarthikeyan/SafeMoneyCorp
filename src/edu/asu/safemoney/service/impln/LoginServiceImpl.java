@@ -21,6 +21,7 @@ import edu.asu.safemoney.dto.LoginDTO;
 import edu.asu.safemoney.dto.RequestDTO;
 import edu.asu.safemoney.dto.UserDTO;
 import edu.asu.safemoney.dto.UserTypeDTO;
+import edu.asu.safemoney.helper.PKICertificateHelper;
 import edu.asu.safemoney.model.UserModel;
 import edu.asu.safemoney.service.LoginService;
 
@@ -113,6 +114,8 @@ public class LoginServiceImpl implements LoginService, UserDetailsService {
 				userModel.setUserTypeId(366);
 				userModel.setIsCustomer("false");
 			}
+			userModel.setEmployee(false);
+			userModel.setDesignation(null);
 			isCreationSuccess = loginDAO.createUser(userModel);
 			if(isCreationSuccess)
 			{
@@ -135,6 +138,8 @@ public class LoginServiceImpl implements LoginService, UserDetailsService {
 				{
 					return false;
 				}*/
+				PKICertificateHelper pkiHelper = new PKICertificateHelper();
+				pkiHelper.getCertificateForUser(userModel.getUserName());
 				return true;
 			}
 			else

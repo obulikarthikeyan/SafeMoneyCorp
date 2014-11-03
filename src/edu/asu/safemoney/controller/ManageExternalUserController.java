@@ -38,8 +38,9 @@ public class ManageExternalUserController {
 	@Autowired
 	ManageExternalUserAccountService manageExternalUserAccountService;
 	
-	@Autowired
-	private EmployeeUserService employeeUserService;
+
+@Autowired
+private EmployeeUserService employeeUserService;
 
 	// Takes place in the URL for ManageAccount in side menu
 	// Populate External user details in the form.
@@ -96,33 +97,6 @@ public class ManageExternalUserController {
 		
 	}
 
-	@RequestMapping(value="/external/createNewReq", method=RequestMethod.POST)
-	public ModelAndView doNewTransaction( 
-			@ModelAttribute("createNewReq") TransactionModel transactionModel, HttpSession session){
-			int memberId= (int) session.getAttribute("memberId");
-			System.out.println("memberId is : " +memberId);
-			System.out.println("Transaction amount is:" + transactionModel.getTransactionAmount());
-			System.out.println("Transaction type is:" + transactionModel.getTransactionType());
-			System.out.println("Transaction date is:" + transactionModel.getTransactionDate());
-			
-			boolean isCreated= manageExternalUserAccountService.createRequest(transactionModel, memberId);
-			UserDTO userDTO= manageExternalUserAccountService.displayUserAccount(memberId);
-			ModelAndView mv = new ModelAndView("external/transactionReview").addObject("userDTO", userDTO);
-			if(isCreated)
-			{
-				return mv.addObject("message", "Profile Updated Successfully");
-			}
-			else
-			{
-				
-				return mv.addObject("error", "Update Failed!");
-			}
-		
-		
-	}
-
-
-	
 	@RequestMapping(value = "/external/deleteExternalUserDetials", method = RequestMethod.POST)
 	public ModelAndView doDeleteAccount(HttpSession session) {
 		int memberID= (Integer)session.getAttribute("memberId");
@@ -237,8 +211,6 @@ public class ManageExternalUserController {
 			@RequestParam("toAccountNumber") long toAccount,
 			@RequestParam("transformAmount") double amount,
 			HttpSession session)
-
-	
 	{
 		
 		int memberId = (Integer) session.getAttribute("memberId");
@@ -287,6 +259,7 @@ public class ManageExternalUserController {
 				"The account you input does not exist!")
 		.addObject("account", accountModel)
 		.addObject("requestList", requestList);
+			
 	}
 	
 	@RequestMapping(value="/external/review", method = RequestMethod.GET)
@@ -483,18 +456,31 @@ public class ManageExternalUserController {
 	
 	@RequestMapping(value = "/external/viewTransactionHistoryPage", method = RequestMethod.GET)
 	public ModelAndView getTransactionHistoryPage(HttpSession session){
-		
-		int memberId = (Integer) session.getAttribute("memberId");
-		UserDTO customerDTO = manageExternalUserAccountService.displayUserAccount(memberId);
-		
-		List<TransactionDTO> transactionInfo = employeeUserService.getAllTransactions(memberId);
-
-		return new ModelAndView("/external/transactionHistory").addObject("transactionInfo",transactionInfo);
-
-
+	int memberId = (Integer) session.getAttribute("memberId");
+	UserDTO customerDTO = manageExternalUserAccountService.displayUserAccount(memberId);
+	List<TransactionDTO> transactionInfo = employeeUserService.getAllTransactions(memberId);
+	return new ModelAndView("/external/transactionHistory").addObject("transactionInfo",transactionInfo);
 	}
-	
 
-
+	@RequestMapping(value="/external/createNewReq", method=RequestMethod.POST)
+	public ModelAndView doNewTransaction(
+	@ModelAttribute("createNewReq") TransactionModel transactionModel, HttpSession session){
+	int memberId= (int) session.getAttribute("memberId");
+	System.out.println("memberId is : " +memberId);
+	System.out.println("Transaction amount is:" + transactionModel.getTransactionAmount());
+	System.out.println("Transaction type is:" + transactionModel.getTransactionType());
+	System.out.println("Transaction date is:" + transactionModel.getTransactionDate());
+	boolean isCreated= manageExternalUserAccountService.createRequest(transactionModel, memberId);
+	UserDTO userDTO= manageExternalUserAccountService.displayUserAccount(memberId);
+	ModelAndView mv = new ModelAndView("external/transactionReview").addObject("userDTO", userDTO);
+	if(isCreated)
+	{
+	return mv.addObject("message", "Profile Updated Successfully");
+	}
+	else
+	{
+	return mv.addObject("error", "Update Failed!");
+	}
+	}
 }
 
