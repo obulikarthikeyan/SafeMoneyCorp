@@ -1,9 +1,21 @@
 package edu.asu.safemoney.service.impln;
 
+
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.Properties;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -21,6 +33,7 @@ import edu.asu.safemoney.dto.LoginDTO;
 import edu.asu.safemoney.dto.RequestDTO;
 import edu.asu.safemoney.dto.UserDTO;
 import edu.asu.safemoney.dto.UserTypeDTO;
+import edu.asu.safemoney.model.SecurityQuestionsModel;
 import edu.asu.safemoney.helper.PKICertificateHelper;
 import edu.asu.safemoney.model.UserModel;
 import edu.asu.safemoney.service.LoginService;
@@ -33,12 +46,14 @@ public class LoginServiceImpl implements LoginService, UserDetailsService {
 	
 	@Autowired
 	private RequestDAO requestDAO;
-
+    
+	
 	@Override
 	@Transactional
 	public UserDetails loadUserByUsername(String userName)
 			throws UsernameNotFoundException {
 		User user = null;
+	
 		System.out.println("userName: " + userName);
 		if (userName != null && !userName.isEmpty()) {
 			LoginDTO loginDTO = loginDAO.getLoginDetails(userName);
@@ -92,9 +107,8 @@ public class LoginServiceImpl implements LoginService, UserDetailsService {
 
 	@Transactional
 	public boolean createUser(UserModel userModel) {
-		String siteKey = loginDAO.getSiteKey(userModel.getUserName());
-		boolean isCreationSuccess = false; 
-		if(siteKey != null && !siteKey.isEmpty())
+		boolean isCreationSuccess= false;
+		if(validateUser(userModel))
 		{
 
 			return false;
@@ -119,6 +133,7 @@ public class LoginServiceImpl implements LoginService, UserDetailsService {
 			isCreationSuccess = loginDAO.createUser(userModel);
 			if(isCreationSuccess)
 			{
+
 				/*int memberId = loginDAO.getMemberIdByUserName(userModel.getUserName());
 				System.out.println("MemebrID: " + memberId);
 				UserDTO userDTO = loginDAO.getUserByMemberId(memberId);
@@ -171,17 +186,163 @@ public class LoginServiceImpl implements LoginService, UserDetailsService {
 	}
 	
 	@Transactional
-	private boolean validateNewUser(UserModel userModel)
-	{
+	public boolean validateUser(UserModel userModel){
 		String siteKey = loginDAO.getSiteKey(userModel.getUserName());
-		boolean isEmailExists = loginDAO.isEmailExists(userModel.getEmailId());
-		if((siteKey != null && !siteKey.isEmpty()) || isEmailExists)
+		boolean emailExist= loginDAO.isEmailExists(userModel.getEmailId());
+		if((siteKey != null && !siteKey.isEmpty() )|| emailExist)
 		{
+
+			return true;
+		}
+		else 
 			return false;
-		} else {
+
+	}
+	
+	@Transactional
+	public SecurityQuestionsModel getSecurityQuestions(String userName)
+	{
+		return loginDAO.getSecurityQuestions(userName);
+		
+	}
+	
+	
+	@Transactional
+	public boolean changePassword(String userName, String password)
+	{
+		if(userName!=null && password!=null)
+		{
+			loginDAO.changePassword(userName,password);
+			return true;
+		}
+		else return false;
+	}
+	
+	@Transactional
+	public boolean otpValidator(long userOtpCode, String userName)
+	{
+		long temp = loginDAO.getOtpCode(userName);
+		System.out.println("user-code"+ userOtpCode);
+		
+		java.util.Date date= new java.util.Date();
+		
+		
+		   timeDifference td = new timeDifference();
+		   
+
+		if(temp!=-1 && temp==userOtpCode )
+		{
+			System.out.println("inside if stmt");
+			if(td.timeDiff(loginDAO.getOtpTime(userName), new Timestamp(date.getTime())))
+				return true;
+			else return false;
+		}
+		else return false;
+	
+	}
+
+	@Transactional
+	public boolean getSecurityAnswers(String userName, String userAnswer1, String userAnswer2, String userAnswer3)
+	{
+		int count = 0;
+		SecurityQuestionsModel dbSecAnswers = loginDAO.getSecurityAnswers(userName);
+		System.out.println("in service");
+		System.out.println("user"+ userAnswer2);
+		System.out.println("db"+ dbSecAnswers.getAnswer2());
+		
+		if(userAnswer1.equals(dbSecAnswers.getAnswer1()))
+		{
+			count++;
+			System.out.println("Answer 1 correct");
+		}
+		
+		if(userAnswer2.equals(dbSecAnswers.getAnswer2()))
+		{
+			count++;
+			System.out.println("Answer 2 correct");
+		}
+		
+		if(userAnswer3.equals(dbSecAnswers.getAnswer3()))
+		{
+			count++;
+			System.out.println("Answer 3 correct");
+		}
+		
+		if(count>=1)
+		{
+			System.out.println("in service");
+			//SendMail sendOtpMail = new SendMail();
+			System.out.println("imp"+ userName);
+			String temp = send(userName);
+			if(temp!=null)
+			{
+				Long optCode = Long.parseLong(temp);
+				loginDAO.setOtpCode(userName, optCode);
+			}
+			
+		
 			return true;
 		}
 		
+		
+		else {
+			 return false;
+		}
+		
+		
 	}
-
+	
+	@Transactional
+	public String send(String userName) {
+		System.out.println("s");
+		Properties props = new Properties();
+		System.out.println("Done1");
+		props.put("mail.smtp.host", "smtp.gmail.com");
+		props.put("mail.smtp.socketFactory.port", "465");
+		props.put("mail.smtp.socketFactory.class",
+				"javax.net.ssl.SSLSocketFactory");
+		props.put("mail.smtp.auth", "true");
+		props.put("mail.smtp.port", "465");
+ 
+		Session session = Session.getDefaultInstance(props,
+			new javax.mail.Authenticator() {
+			//System.out.println("Done");
+		//LoginDTO trd = new LoginDTO();
+		
+				protected PasswordAuthentication getPasswordAuthentication() {
+					//return new PasswordAuthentication("donotreplysbsbank@gmail.com","obuli123");
+					return new PasswordAuthentication("priyank4some1@gmail.com","redhathatred");
+				}
+			});
+ 
+		
+		
+		
+		
+		try {
+			
+			String e_mail = loginDAO.getEmail(userName);
+			System.out.println("email in send mail via logindao"+ e_mail);
+			Message message = new MimeMessage(session);
+			System.out.println("Done2");
+			message.setFrom(new InternetAddress("donotreplysbsbank@gmail.com"));
+			message.setRecipients(Message.RecipientType.TO,
+					InternetAddress.parse(e_mail));
+			OTPGenerator otp =new OTPGenerator();
+			String otpCode = otp.generateOTP(6);
+			message.setSubject("Your OTP Code : "+ otpCode);
+			message.setText("Thank you for banking with us!: Your Security and Privacy is Our Priority");
+ 
+			Transport.send(message);
+			
+			System.out.println("Done3");
+			return otpCode;
+ 
+		} catch (MessagingException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	
+	
 }

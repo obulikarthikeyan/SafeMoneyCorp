@@ -1,6 +1,8 @@
 package edu.asu.safemoney.dao.impln;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -18,6 +20,7 @@ import edu.asu.safemoney.dto.RequestDTO;
 import edu.asu.safemoney.dto.UserDTO;
 import edu.asu.safemoney.dto.UserTypeDTO;
 import edu.asu.safemoney.helper.ExternalUserHelper;
+import edu.asu.safemoney.model.SecurityQuestionsModel;
 import edu.asu.safemoney.model.UserModel;
 
 @Repository
@@ -91,7 +94,10 @@ public class LoginDAOImpl implements LoginDAO{
 			
 			LoginDTO loginDTO = new LoginDTO();
 			loginDTO.setUserName(user.getUserName());
-			loginDTO.setPassword(user.getPassword());
+			String plainPassword = user.getPassword();
+			//password encoding
+			String pw_hash = BCrypt.hashpw(plainPassword, BCrypt.gensalt());
+			loginDTO.setPassword(pw_hash);
 			loginDTO.setSiteKey(user.getSiteKey());
 			loginDTO.setUserDTO(userDTO);
 			loginDTO.setMemberId(userDTO.getMemberId());
@@ -110,39 +116,6 @@ public class LoginDAOImpl implements LoginDAO{
 			e.printStackTrace();
 			return false;
 		}
-	}
-	
-	public boolean createEmployee(UserModel userModel){
-		UserDTO userDTO = copyToUserDTO(userModel);
-		System.out.println("entered dao");
-		try
-		{
-			Session session = sessionFactory.getCurrentSession();
-			session.persist(userDTO);
-			
-			LoginDTO loginDTO = new LoginDTO();
-			loginDTO.setUserName(userModel.getUserName());
-			loginDTO.setPassword(userModel.getPassword());
-			loginDTO.setSiteKey(userModel.getSiteKey());
-			loginDTO.setUserDTO(userDTO);
-			loginDTO.setMemberId(userDTO.getMemberId());
-			loginDTO.setFailedAttemptCount(0);
-			loginDTO.setIsAccountNonLocked(true);
-			loginDTO.setIsEnabled(true);
-			userDTO.setLoginDTO(loginDTO);
-			
-			session.save(userDTO);
-			System.out.println("returned true @ dao");	
-			return true;
-			
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-			System.out.println("returned false @ dao");
-			return false;
-		}
-		
 	}
 	
 	public UserDTO copyToUserDTO(UserModel user)
@@ -214,6 +187,107 @@ public class LoginDAOImpl implements LoginDAO{
 		}
 	}
 	
+	
+	public String getEmail(String userName)
+	{
+		System.out.println("inEmail");
+		Session session = sessionFactory.getCurrentSession();
+		Query query = session.getNamedQuery("LoginDTO.findByUserName").setString("userName", userName);
+		LoginDTO loginDTO = (LoginDTO) query.uniqueResult();
+		System.out.println(loginDTO.getMemberId());
+		Query query1 = session.getNamedQuery("UserDTO.findByMemberId").setInteger("memberId", loginDTO.getMemberId());
+		UserDTO userDTO = (UserDTO) query1.uniqueResult();
+		System.out.println("e-mail dao"+ userDTO.getEmailId());
+		return userDTO.getEmailId();
+	}
+	
+	public boolean setOtpCode(String userName, Long optCode)
+	{
+		Session session = sessionFactory.getCurrentSession();
+		Query query = session.getNamedQuery("LoginDTO.findByUserName").setString("userName", userName);
+		LoginDTO loginDTO = (LoginDTO) query.uniqueResult();
+		
+		
+		loginDTO.setOtp(optCode);
+		
+		//Setting Date and Time
+		java.util.Date date= new java.util.Date();
+		loginDTO.setOtpDate(new Timestamp(date.getTime()));
+		System.out.println("dao"+ optCode);
+		session.saveOrUpdate(loginDTO);
+		return true;
+	
+		
+	}
+	
+	public SecurityQuestionsModel getSecurityQuestions(String userName)
+	{
+		Session session = sessionFactory.getCurrentSession();
+		Query query = session.getNamedQuery("LoginDTO.findByUserName").setString("userName", userName);
+		LoginDTO loginDTO = (LoginDTO) query.uniqueResult();
+		int memberId = loginDTO.getMemberId();
+		query = session.getNamedQuery("UserDTO.findByMemberId").setInteger("memberId", memberId);
+		UserDTO userDTO = (UserDTO) query.uniqueResult();
+		SecurityQuestionsModel secModel  = new SecurityQuestionsModel();
+		secModel.setQuestion1(userDTO.getSecQuestion1());
+		secModel.setQuestion2(userDTO.getSecQuestion2());
+		secModel.setQuestion3(userDTO.getSecQuestion3());
+		return secModel;
+		
+	}
+	
+	public Long getOtpCode(String userName)
+	{
+		Session session = sessionFactory.getCurrentSession();
+		Query query = session.getNamedQuery("LoginDTO.findByUserName").setString("userName", userName);
+		LoginDTO loginDTO = (LoginDTO) query.uniqueResult();
+		
+		
+		if(loginDTO.getOtp()!=-1)
+			return loginDTO.getOtp();
+		
+		else return (long) -1;
+	}
+	
+	public String getOtpTime(String userName)
+	{
+		Session session = sessionFactory.getCurrentSession();
+		Query query = session.getNamedQuery("LoginDTO.findByUserName").setString("userName", userName);
+		LoginDTO loginDTO = (LoginDTO) query.uniqueResult();
+		String temp = loginDTO.getOtpDate().toString();
+		if(temp!=null)
+			return temp;
+		else
+			return null;
+	}
+	
+	public SecurityQuestionsModel getSecurityAnswers(String userName)
+	{
+		Session session = sessionFactory.getCurrentSession();
+		Query query = session.getNamedQuery("LoginDTO.findByUserName").setString("userName", userName);
+		LoginDTO loginDTO = (LoginDTO) query.uniqueResult();
+		int memberId = loginDTO.getMemberId();
+		query = session.getNamedQuery("UserDTO.findByMemberId").setInteger("memberId", memberId);
+		UserDTO userDTO = (UserDTO) query.uniqueResult();
+		SecurityQuestionsModel secModel  = new SecurityQuestionsModel();
+		secModel.setAnswer1(userDTO.getSecAnswer1());
+		secModel.setAnswer2(userDTO.getSecAnswer2());
+		secModel.setAnswer3(userDTO.getSecAnswer3());
+		return secModel;
+		
+	}
+	public void changePassword(String userName, String password)
+	{
+		
+		Session session = sessionFactory.getCurrentSession();
+		Query query = session.getNamedQuery("LoginDTO.findByUserName").setString("userName", userName);
+		LoginDTO loginDTO = (LoginDTO) query.uniqueResult();
+		loginDTO.setPassword(password);
+		session.saveOrUpdate(loginDTO);
+	}
+		
+
+		
 	public boolean updateLoginFailureAttempts(String userName)
 	{
 		Session session = sessionFactory.openSession();
@@ -270,6 +344,39 @@ public class LoginDAOImpl implements LoginDAO{
 			return loginDTO.getFailedAttemptCount();
 		}
 		return -1;
+	}
+	
+	public boolean createEmployee(UserModel userModel){
+		UserDTO userDTO = copyToUserDTO(userModel);
+		System.out.println("entered dao");
+		try
+		{
+			Session session = sessionFactory.getCurrentSession();
+			session.persist(userDTO);
+			
+			LoginDTO loginDTO = new LoginDTO();
+			loginDTO.setUserName(userModel.getUserName());
+			loginDTO.setPassword(userModel.getPassword());
+			loginDTO.setSiteKey(userModel.getSiteKey());
+			loginDTO.setUserDTO(userDTO);
+			loginDTO.setMemberId(userDTO.getMemberId());
+			loginDTO.setFailedAttemptCount(0);
+			loginDTO.setIsAccountNonLocked(true);
+			loginDTO.setIsEnabled(true);
+			userDTO.setLoginDTO(loginDTO);
+			
+			session.save(userDTO);
+			System.out.println("returned true @ dao");	
+			return true;
+			
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			System.out.println("returned false @ dao");
+			return false;
+		}
+		
 	}
 	
 

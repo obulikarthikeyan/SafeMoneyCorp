@@ -163,6 +163,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 		}
 	}
 	
+	@Transactional
 	public boolean validateUser(UserModel userModel){
 		String siteKey = loginDAO.getSiteKey(userModel.getUserName());
 		boolean emailExist= loginDAO.isEmailExists(userModel.getEmailId());

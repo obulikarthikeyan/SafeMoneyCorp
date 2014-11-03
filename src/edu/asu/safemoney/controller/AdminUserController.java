@@ -1,4 +1,3 @@
-
 package edu.asu.safemoney.controller;
 
 import java.util.List;
@@ -43,29 +42,6 @@ public class AdminUserController {
 		List<RequestDTO> requestList= adminUserService.getExterUserAccountRequests();
 		return new ModelAndView("/admin/extAccountManagement").addObject("requestList", requestList);
 	}
-	
-	@RequestMapping("/admin/employeeRegistration")
-	public ModelAndView employeeReigstration()
-	{
-		return new ModelAndView("/admin/manageInternalUsers");
-	}
-	
-	
-	@RequestMapping("admin/createEmployee")
-	public ModelAndView createEmployee(@ModelAttribute("signUpForm") UserModel userModel){
-		System.out.println("email" + userModel.getEmailId());
-		boolean created= adminUserService.createEmployee(userModel);
-		if(!created)
-		{
-			return new ModelAndView("admin/manageInternalUsers").addObject("signUpForm", userModel);
-		}
-		else
-		{
-			return new ModelAndView("shared/landing");
-		}
-			
-	}
-	
 	
 	@RequestMapping("/admin/approveExtUserAccount")
 	public ModelAndView approveExtUserAccountRequest(
@@ -154,6 +130,7 @@ public class AdminUserController {
 	@RequestMapping("/admin/piiAuthorization")
 	public ModelAndView getPiiAuthorizationPage()
 	{
+		
 		return new ModelAndView("/admin/viewPIIAuthorization");
 	}
 	
@@ -178,5 +155,28 @@ public class AdminUserController {
 
 		return new ModelAndView("/admin/ExternalUserTransactions").addObject("transactionInfo",transactionInfo);
 	}
+	
+	@RequestMapping("/admin/employeeRegistration")
+	public ModelAndView employeeReigstration()
+	{
+		return new ModelAndView("/admin/manageInternalUsers");
+	}
+	
+	
+	@RequestMapping("admin/createEmployee")
+	public ModelAndView createEmployee(@ModelAttribute("signUpForm") UserModel userModel){
+		System.out.println("email" + userModel.getEmailId());
+		boolean created= adminUserService.createEmployee(userModel);
+		if(!created)
+		{
+			return new ModelAndView("admin/manageInternalUsers").addObject("signUpForm", userModel);
+		}
+		else
+		{
+			return new ModelAndView("shared/landing");
+		}
+			
+	}
+	
 }
 

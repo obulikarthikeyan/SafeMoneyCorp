@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -34,7 +35,7 @@
 				<input id="j_password" name="j_password"  type="password" class="form-control" style="position:absolute;width:200px;left:400px;top:300px;z-index:2" placeholder="Password" maxlength="12" autofocus="autofocus"/>
 				
 				<input name="login" type="submit" value="Log In" style="position:absolute;left:630px;top:300px;z-index:4;" class = "btn btn-primary"/>
-				<h5 style="position:absolute;left:400px;top:340px;color:#FFF"><a href="#"><strong>Forgot Password?</strong></a></h5>
+				<h5 style="position:absolute;left:400px;top:340px;color:#FFF"><a href="<%=request.getContextPath() %>/shared/forgetpassword"><strong>Forgot Password?</strong></a></h5>
 				
 				<a href="<%= request.getContextPath() %>" style="position:absolute;width:300px;left:400px;top:400px;z-index:5" class = "btn btn-primary">Login with a different UserName?</a>
 				<span style="position:absolute;width:300px;left:505px;top:565px;">&nbsp;</span>
