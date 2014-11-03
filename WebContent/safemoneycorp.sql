@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 02, 2014 at 04:40 AM
+-- Generation Time: Nov 03, 2014 at 02:44 AM
 -- Server version: 5.5.32
 -- PHP Version: 5.4.19
 
@@ -45,7 +45,7 @@ INSERT INTO `account` (`account_no`, `member_id`, `amount`, `is_active`) VALUES
 (1545151, 996368, 5000, 'true'),
 (6987456, 996364, 5000, 'true'),
 (8765433, 996369, 400, 'true'),
-(56352145, 996363, 370.27999999999975, 'true'),
+(56352145, 996363, 80.27999999999975, 'true'),
 (10401417978, 996386, 200, 'true');
 
 -- --------------------------------------------------------
@@ -75,6 +75,7 @@ CREATE TABLE IF NOT EXISTS `login` (
 --
 
 INSERT INTO `login` (`member_id`, `user_name`, `password`, `site_key`, `isAccountNonLocked`, `isEnabled`, `failedAttemptCount`, `lastLoginDate`, `otp`, `otp_date`) VALUES
+(58155, 'kjnjhbhjhj', 'hjhjhj', 'jghjghjg', 1, 1, 0, NULL, 0, NULL),
 (996363, 'cust', 'cust', 'eclipse', 1, 1, 0, NULL, 0, NULL),
 (996364, 'mer', 'mer', 'helio', 1, 1, 0, NULL, 0, NULL),
 (996368, 'emp', 'emp', 'helio', 1, 1, 0, NULL, 0, NULL),
@@ -130,7 +131,9 @@ CREATE TABLE IF NOT EXISTS `request` (
 
 INSERT INTO `request` (`request_id`, `member_id`, `request_type`, `authorizing_member_id`, `status`, `authorizing_authority`, `authority_user_type_id`, `request_date`, `processed_date`) VALUES
 (56356, 996386, 'CREATE_ACCOUNT', NULL, 'APPROVED', 'ADMIN', 123, '2014-10-28', '2014-10-28'),
-(5381225, 996387, 'CREATE_ACCOUNT', NULL, 'DECLINED', 'ADMIN', 123, '2014-11-01', '2014-11-01');
+(5259110, 996368, 'VIEW_ACCOUNT', 996363, 'NEW', 'EXT_IND_CUST', 322, '2014-11-02', NULL),
+(5381225, 996387, 'CREATE_ACCOUNT', NULL, 'DECLINED', 'ADMIN', 123, '2014-11-01', '2014-11-01'),
+(5810703, 58155, 'CREATE_ACCOUNT', NULL, 'NEW', 'ADMIN', 123, '2014-11-02', NULL);
 
 -- --------------------------------------------------------
 
@@ -159,13 +162,22 @@ CREATE TABLE IF NOT EXISTS `transaction` (
 --
 
 INSERT INTO `transaction` (`transaction_id`, `member_id`, `from_account`, `to_account`, `date`, `amount`, `status`, `transaction_type`, `is_critical`, `is_authorized`, `processed_date`) VALUES
-(3996744, 996363, 56352145, 56352145, '2014-11-01 16:51:42', 20, 'PENDING', 'Credit', 1, 0, NULL),
+(3261452, 996364, 56352145, 6987456, '2014-11-02 01:09:36', 90, 'PENDING', 'transfer', 1, 0, NULL),
+(3996744, 996363, 56352145, 56352145, '2014-11-01 16:51:42', 20, 'APPROVED_BANK', 'Credit', 1, 0, '2014-11-02'),
+(4076954, 996364, 56352145, 6987456, '2014-11-02 01:23:14', 50, 'PENDING', 'transfer', 1, 0, NULL),
+(4430568, 996369, 56352145, 8765433, '2014-11-02 00:58:44', 30, 'PENDING', 'transfer', 1, 0, NULL),
 (5035376, 996363, 56352145, 56352145, '2014-10-30 13:26:33', 50, 'UNDER_REVIEW', 'Debit', 0, 1, '2014-10-30'),
-(5154517, 996363, 56352145, 56352145, '2014-11-01 18:16:08', 10, 'PENDING', 'Credit', 1, 0, NULL),
-(6113428, 996363, 56352145, 56352145, '2014-11-01 18:21:01', 20, 'PENDING', 'Credit', 1, 0, NULL),
+(5143659, 996363, 56352145, 8765433, '2014-11-02 00:58:44', 30, 'APPROVED', 'transfer', 0, 1, '2014-11-02'),
+(5154517, 996363, 56352145, 56352145, '2014-11-01 18:16:08', 10, 'APPROVED_BANK', 'Credit', 1, 0, '2014-11-02'),
+(5361716, 996363, 56352145, 56352145, '2014-11-02 00:57:25', 50, 'APPROVED', 'Debit', 0, 1, '2014-11-02'),
+(5595454, 996363, 56352145, 6987456, '2014-11-02 01:16:00', 20, 'APPROVED', 'transfer', 0, 1, '2014-11-02'),
+(5804557, 996364, 56352145, 6987456, '2014-11-02 01:16:00', 20, 'PENDING', 'transfer', 1, 0, NULL),
+(5840868, 996363, 56352145, 6987456, '2014-11-02 01:09:36', 90, 'APPROVED', 'transfer', 0, 1, '2014-11-02'),
+(6113428, 996363, 56352145, 56352145, '2014-11-01 18:21:01', 20, 'APPROVED_BANK', 'Credit', 1, 0, '2014-11-02'),
 (6113812, 996363, 56352145, 56352145, '2014-11-01 16:52:05', 20, 'APPROVED', 'Debit', 0, 1, '2014-11-01'),
 (6296461, 996363, 56352145, 56352145, '2014-11-01 16:58:02', 20, 'APPROVED', 'Debit', 0, 1, '2014-11-01'),
 (6401166, 996363, 56352145, 56352145, '2014-11-01 18:21:17', 20, 'APPROVED', 'Debit', 0, 1, '2014-11-01'),
+(6429696, 996363, 56352145, 6987456, '2014-11-02 01:23:14', 50, 'APPROVED', 'transfer', 0, 1, '2014-11-02'),
 (6485964, 996363, 56352145, 56352145, '2014-11-01 16:38:13', 20, 'UNDER_REVIEW', 'Debit', 0, 1, '2014-11-01');
 
 -- --------------------------------------------------------
@@ -208,7 +220,7 @@ INSERT INTO `transaction_review` (`transaction_review_id`, `cust_member_id`, `tr
 --
 
 CREATE TABLE IF NOT EXISTS `user` (
-  `member_id` int(11) NOT NULL AUTO_INCREMENT,
+  `member_id` int(11) NOT NULL,
   `first_name` varchar(25) DEFAULT NULL,
   `last_name` varchar(25) DEFAULT NULL,
   `email_id` varchar(30) NOT NULL,
@@ -233,23 +245,27 @@ CREATE TABLE IF NOT EXISTS `user` (
   `created_date` date NOT NULL,
   `expiry_date` date NOT NULL,
   `is_active` varchar(5) NOT NULL,
+  `isEmployee` tinyint(1) DEFAULT NULL,
+  `designation` varchar(25) DEFAULT NULL,
+  `isPIIAuthorized` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`member_id`),
   UNIQUE KEY `email_id` (`email_id`),
   KEY `member_id` (`member_id`),
   KEY `user_type_idx` (`user_type_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=996388 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`member_id`, `first_name`, `last_name`, `email_id`, `contact_no`, `address_1`, `address_2`, `city`, `state`, `zip`, `ssn`, `sec_question_1`, `sec_question_2`, `sec_question_3`, `sec_answer_1`, `sec_answer_2`, `sec_answer_3`, `date_of_birth`, `age`, `isCustomer`, `user_type_id`, `created_by`, `created_date`, `expiry_date`, `is_active`) VALUES
-(996363, 'Alice', 'Parker', 'alice@smc.corp', 8890008765, 'xxxxxxx', 'yyyyyyyyy', 'zzzzz', 'AZ', 89963, 345678912, 'What is your favorite place?', 'What is your right eye power?', 'What is the name of your family doctor?', 'dallas', '0.0', 'Dr.Adam', '2014-10-17', 26, 'true', 322, 'SYSTEM', '2014-10-19', '2015-10-19', 'true'),
-(996364, 'John', 'Doe', 'john@smc.corp', 1234509876, 'xxxxxxx', 'yyyyyyy', 'zzzzz', 'NY', 23564, 789456123, 'What is your model name of your first phone?', 'What is the last 5 digits in your driving license?', 'what is name of your favorite teacher in high school?', 'XC01', '56897', 'Jennifer', '2014-09-09', 36, 'true', 366, 'SYSTEM', '2014-10-19', '2015-10-19', 'true'),
-(996368, 'Bank', 'Employee', 'bank.employee@smcorp', 1234509876, 'xxxxxxx', 'yyyyyyy', 'zzzzz', 'NY', 23564, 789456123, 'What is your model name of your first phone?', 'What is the last 5 digits in your driving license?', 'what is name of your favorite teacher in high school?', 'XC01', '56897', 'Jennifer', '2014-09-09', 36, 'true', 125, 'SYSTEM', '2014-10-19', '2015-10-19', 'true'),
-(996369, 'Bank', 'Admin', 'bank.admin@smcorp', 8890008765, 'xxxxxxx', 'yyyyyyyyy', 'zzzzz', 'AZ', 89963, 345678912, 'What is your favorite place?', 'What is your right eye power?', 'What is the name of your family doctor?', 'dallas', '0.0', 'Dr.Adam', '2014-10-17', 26, 'true', 123, 'SYSTEM', '2014-10-19', '2015-10-19', 'true'),
-(996386, 'kjhkjhj', 'hjhjhjh', 'kjjhjk@kjjh.com', 9878678676, 'bjbjhbvh', 'jjgjhjhhjhj', 'hbhjbhj', 'bj', 98788, 987878676, 'hjhjh', 'jhghjghj', 'hghjghh', 'jgghjg', 'ghjghjghjggh', 'jhghjghgj', '2014-10-28', 98, 'true', 322, 'SYSTEM', '2014-10-28', '2015-10-28', 'true'),
-(996387, 'jhjhbh', 'jhjgh', 'jhjkhj@kjk.com', 9878786999, 'hjhjh', 'jgjg', 'hggh', 'fh', 87686, 888888888, 'jghghg', 'ghgfgfg', 'hghghggh', 'hghhf', 'fghhgh', 'hjghjghjg', '2014-11-01', 79, 'true', 322, 'SYSTEM', '2014-11-01', '2015-11-01', 'true');
+INSERT INTO `user` (`member_id`, `first_name`, `last_name`, `email_id`, `contact_no`, `address_1`, `address_2`, `city`, `state`, `zip`, `ssn`, `sec_question_1`, `sec_question_2`, `sec_question_3`, `sec_answer_1`, `sec_answer_2`, `sec_answer_3`, `date_of_birth`, `age`, `isCustomer`, `user_type_id`, `created_by`, `created_date`, `expiry_date`, `is_active`, `isEmployee`, `designation`, `isPIIAuthorized`) VALUES
+(58155, 'kkjhjff', 'jhjh', 'hjhjhj@jk.com', 9999999999, 'kjhj', 'hjghjghjg', 'kmkkj', 'kj', 87888, 888888888, 'hjhjhjhjg', 'hjghjgbh', 'hghjg', 'gjhhjg', 'jghjghjghg', 'gjhghjhjgh', '2014-11-02', 75, 'true', 322, 'SYSTEM', '2014-11-02', '2015-11-02', 'true', 0, NULL, NULL),
+(996363, 'Alice', 'Parker', 'alice@smc.corp', 8890008765, 'xxxxxxx', 'yyyyyyyyy', 'zzzzz', 'AZ', 89963, 345678912, 'What is your favorite place?', 'What is your right eye power?', 'What is the name of your family doctor?', 'dallas', '0.0', 'Dr.Adam', '2014-10-17', 26, 'true', 322, 'SYSTEM', '2014-10-19', '2015-10-19', 'true', NULL, NULL, NULL),
+(996364, 'John', 'Doe', 'john@smc.corp', 1234509876, 'xxxxxxx', 'yyyyyyy', 'zzzzz', 'NY', 23564, 789456123, 'What is your model name of your first phone?', 'What is the last 5 digits in your driving license?', 'what is name of your favorite teacher in high school?', 'XC01', '56897', 'Jennifer', '2014-09-09', 36, 'true', 366, 'SYSTEM', '2014-10-19', '2015-10-19', 'true', NULL, NULL, NULL),
+(996368, 'Bank', 'Employee', 'bank.employee@smcorp', 1234509876, 'xxxxxxx', 'yyyyyyy', 'zzzzz', 'NY', 23564, 789456123, 'What is your model name of your first phone?', 'What is the last 5 digits in your driving license?', 'what is name of your favorite teacher in high school?', 'XC01', '56897', 'Jennifer', '2014-09-09', 36, 'true', 125, 'SYSTEM', '2014-10-19', '2015-10-19', 'true', NULL, NULL, NULL),
+(996369, 'Bank', 'Admin', 'bank.admin@smcorp', 8890008765, 'xxxxxxx', 'yyyyyyyyy', 'zzzzz', 'AZ', 89963, 345678912, 'What is your favorite place?', 'What is your right eye power?', 'What is the name of your family doctor?', 'dallas', '0.0', 'Dr.Adam', '2014-10-17', 26, 'true', 123, 'SYSTEM', '2014-10-19', '2015-10-19', 'true', NULL, NULL, NULL),
+(996386, 'kjhkjhj', 'hjhjhjh', 'kjjhjk@kjjh.com', 9878678676, 'bjbjhbvh', 'jjgjhjhhjhj', 'hbhjbhj', 'bj', 98788, 987878676, 'hjhjh', 'jhghjghj', 'hghjghh', 'jgghjg', 'ghjghjghjggh', 'jhghjghgj', '2014-10-28', 98, 'true', 322, 'SYSTEM', '2014-10-28', '2015-10-28', 'true', NULL, NULL, NULL),
+(996387, 'jhjhbh', 'jhjgh', 'jhjkhj@kjk.com', 9878786999, 'hjhjh', 'jgjg', 'hggh', 'fh', 87686, 888888888, 'jghghg', 'ghgfgfg', 'hghghggh', 'hghhf', 'fghhgh', 'hjghjghjg', '2014-11-01', 79, 'true', 322, 'SYSTEM', '2014-11-01', '2015-11-01', 'true', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 

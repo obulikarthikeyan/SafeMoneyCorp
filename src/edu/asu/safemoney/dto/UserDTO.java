@@ -61,7 +61,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "UserDTO.findByExpiryDate", query = "SELECT u FROM UserDTO u WHERE u.expiryDate = :expiryDate"),
     @NamedQuery(name = "UserDTO.findByIsActive", query = "SELECT u FROM UserDTO u WHERE u.isActive = :isActive"),
     @NamedQuery(name = "UserDTO.findByIsEmployee", query = "SELECT u FROM UserDTO u WHERE u.isEmployee = :isEmployee"),
-    @NamedQuery(name = "UserDTO.findByDesignation", query = "SELECT u FROM UserDTO u WHERE u.designation = :designation")})
+    @NamedQuery(name = "UserDTO.findByDesignation", query = "SELECT u FROM UserDTO u WHERE u.designation = :designation"),
+    @NamedQuery(name = "UserDTO.findByIsPIIAuthorized", query = "SELECT u FROM UserDTO u WHERE u.isPIIAuthorized = :isPIIAuthorized")})
 public class UserDTO implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -175,6 +176,8 @@ public class UserDTO implements Serializable {
     @Size(max = 25)
     @Column(name = "designation")
     private String designation;
+    @Column(name = "isPIIAuthorized")
+    private Boolean isPIIAuthorized;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "memberId")
     private List<TransactionDTO> transactionDTOList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "custMemberId")
@@ -426,6 +429,14 @@ public class UserDTO implements Serializable {
 
     public void setDesignation(String designation) {
         this.designation = designation;
+    }
+
+    public Boolean getIsPIIAuthorized() {
+        return isPIIAuthorized;
+    }
+
+    public void setIsPIIAuthorized(Boolean isPIIAuthorized) {
+        this.isPIIAuthorized = isPIIAuthorized;
     }
 
     @XmlTransient
