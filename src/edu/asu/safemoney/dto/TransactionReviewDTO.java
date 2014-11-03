@@ -42,7 +42,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "TransactionReviewDTO.findByAuthorizingMemberId", query = "SELECT t FROM TransactionReviewDTO t WHERE t.authorizingMemberId = :authorizingMemberId"),
     @NamedQuery(name = "TransactionReviewDTO.findByAuthorizingAuthorityType", query = "SELECT t FROM TransactionReviewDTO t WHERE t.authorizingAuthorityType = :authorizingAuthorityType"),
     @NamedQuery(name = "TransactionReviewDTO.findByRequestDate", query = "SELECT t FROM TransactionReviewDTO t WHERE t.requestDate = :requestDate"),
-    @NamedQuery(name = "TransactionReviewDTO.findByProcessedDate", query = "SELECT t FROM TransactionReviewDTO t WHERE t.processedDate = :processedDate")})
+    @NamedQuery(name = "TransactionReviewDTO.findByProcessedDate", query = "SELECT t FROM TransactionReviewDTO t WHERE t.processedDate = :processedDate"),
+    @NamedQuery(name = "TransactionReviewDTO.findByReviewType", query = "SELECT t FROM TransactionReviewDTO t WHERE t.reviewType = :reviewType")})
 public class TransactionReviewDTO implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -73,8 +74,9 @@ public class TransactionReviewDTO implements Serializable {
     private String transactionType;
     @Basic(optional = false)
     @NotNull
+    @Size(min = 1, max = 15)
     @Column(name = "status")
-    private int status;
+    private String status;
     @Basic(optional = false)
     @NotNull
     @Column(name = "authorizing_authority_id")
@@ -94,6 +96,11 @@ public class TransactionReviewDTO implements Serializable {
     @Column(name = "processed_date")
     @Temporal(TemporalType.DATE)
     private Date processedDate;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 15)
+    @Column(name = "review_type")
+    private String reviewType;
     @JoinColumn(name = "cust_member_id", referencedColumnName = "member_id")
     @ManyToOne(optional = false)
     private UserDTO custMemberId;
@@ -105,7 +112,7 @@ public class TransactionReviewDTO implements Serializable {
         this.transactionReviewId = transactionReviewId;
     }
 
-    public TransactionReviewDTO(Long transactionReviewId, long transactionId, long fromAccount, long toAccount, double amount, String transactionType, int status, int authorizingAuthorityId, String authorizingAuthorityType, Date requestDate) {
+    public TransactionReviewDTO(Long transactionReviewId, long transactionId, long fromAccount, long toAccount, double amount, String transactionType, String status, int authorizingAuthorityId, String authorizingAuthorityType, Date requestDate, String reviewType) {
         this.transactionReviewId = transactionReviewId;
         this.transactionId = transactionId;
         this.fromAccount = fromAccount;
@@ -116,6 +123,7 @@ public class TransactionReviewDTO implements Serializable {
         this.authorizingAuthorityId = authorizingAuthorityId;
         this.authorizingAuthorityType = authorizingAuthorityType;
         this.requestDate = requestDate;
+        this.reviewType = reviewType;
     }
 
     public Long getTransactionReviewId() {
@@ -166,11 +174,11 @@ public class TransactionReviewDTO implements Serializable {
         this.transactionType = transactionType;
     }
 
-    public int getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
@@ -212,6 +220,14 @@ public class TransactionReviewDTO implements Serializable {
 
     public void setProcessedDate(Date processedDate) {
         this.processedDate = processedDate;
+    }
+
+    public String getReviewType() {
+        return reviewType;
+    }
+
+    public void setReviewType(String reviewType) {
+        this.reviewType = reviewType;
     }
 
     public UserDTO getCustMemberId() {

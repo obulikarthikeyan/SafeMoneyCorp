@@ -8,7 +8,7 @@ public class TransactionModel {
 	
 	private long transactionId;
 	private long fromAccount;
-	private long toAccound;
+	private long toAccount;
 	
 	private Date transactionDate;
 	private double transactionAmount;
@@ -16,6 +16,14 @@ public class TransactionModel {
 	private String transactionType;
 	private boolean isCritical;
 	private boolean isAuthorized;
+	private double amount;
+	
+	public double getAmount() {
+		return amount;
+	}
+	public void setAmount(double amount) {
+		this.amount = amount;
+	}
 	public long getTransactionId() {
 		return transactionId;
 	}
@@ -28,11 +36,11 @@ public class TransactionModel {
 	public void setFromAccount(long fromAccount) {
 		this.fromAccount = fromAccount;
 	}
-	public long getToAccound() {
-		return toAccound;
+	public long getToAccount() {
+		return toAccount;
 	}
-	public void setToAccound(long toAccound) {
-		this.toAccound = toAccound;
+	public void setToAccount(long toAccount) {
+		this.toAccount = toAccount;
 	}
 	public Date getTransactionDate() {
 		return transactionDate;

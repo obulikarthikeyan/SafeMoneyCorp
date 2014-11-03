@@ -27,7 +27,7 @@
 				<form id ="loginform" name="loginForm" target="_self" method="post" action="userNameLogin" style="margin:0px" class="form-inline">
 				
 				<h4 style="position:absolute;left:505px;top:375px;color:#FFF">Please Enter your UserName</h4>
-				<input name="userName"  type="text" class="form-control" style="position:absolute;width:200px;left:505px;top:415px;z-index:2" placeholder="Username" maxlength="30"/>
+				<input name="userName" autofocus="autofocus" type="text" class="form-control" style="position:absolute;width:200px;left:505px;top:415px;z-index:2" placeholder="Username" maxlength="30"/>
 				
 				<input name="login" type="submit" value="Log In" style="position:absolute;left:725px;top:415px;z-index:4;" class = "btn btn-primary" autofocus="autofocus"/>
 				
@@ -49,6 +49,11 @@
 				if(request.getAttribute("authError") != null)
 				{%>
 				<p style="position:absolute;left:505px;top:470px;color:red;font-size:13px" class="label label-warning">* ${authError} *</p>	
+				<%}%>
+				<%
+				if(request.getAttribute("error") != null)
+				{%>
+				<p style="position:absolute;left:505px;top:470px;color:red;font-size:13px" class="label label-warning">* ${error} *</p>	
 				<%}%>
 				
 				

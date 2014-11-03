@@ -10,6 +10,7 @@ import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -100,6 +101,9 @@ public class LoginDAOImpl implements LoginDAO{
 			loginDTO.setSiteKey(user.getSiteKey());
 			loginDTO.setUserDTO(userDTO);
 			loginDTO.setMemberId(userDTO.getMemberId());
+			loginDTO.setFailedAttemptCount(0);
+			loginDTO.setIsAccountNonLocked(true);
+			loginDTO.setIsEnabled(true);
 			userDTO.setLoginDTO(loginDTO);
 			
 			session.save(userDTO);
@@ -118,6 +122,7 @@ public class LoginDAOImpl implements LoginDAO{
 	{
 		
 		UserDTO userDTO = new UserDTO();
+		userDTO.setMemberId((int) ExternalUserHelper.generateRandomNumber() / 100);
 		userDTO.setFirstName(user.getFirstName());
 		userDTO.setLastName(user.getLastName());
 		userDTO.setContactNo(user.getContactNo());
@@ -141,6 +146,8 @@ public class LoginDAOImpl implements LoginDAO{
 		userDTO.setCreatedDate(user.getCreatedDate());
 		userDTO.setExpiryDate(user.getExpiryDate());
 		userDTO.setIsActive("true");
+		userDTO.setIsEmployee(user.isEmployee());
+		userDTO.setDesignation(user.getDesignation());
 		
 		Session session = sessionFactory.getCurrentSession();
 		Query query = session.getNamedQuery("UserTypeDTO.findByUserTypeId").setInteger("userTypeId", user.getUserTypeId());
@@ -276,7 +283,67 @@ public class LoginDAOImpl implements LoginDAO{
 		Query query = session.getNamedQuery("LoginDTO.findByUserName").setString("userName", userName);
 		LoginDTO loginDTO = (LoginDTO) query.uniqueResult();
 		loginDTO.setPassword(password);
+		session.saveOrUpdate(loginDTO);
+	}
 		
+
+		
+	public boolean updateLoginFailureAttempts(String userName)
+	{
+		Session session = sessionFactory.openSession();
+		Transaction tx = session.beginTransaction();
+		Query query = session.getNamedQuery("LoginDTO.findByUserName").setString("userName", userName);
+		LoginDTO loginDTO = (LoginDTO) query.uniqueResult();
+		if(loginDTO != null)
+		{
+			int failedCount = loginDTO.getFailedAttemptCount();
+			if(failedCount >= 3)
+			{
+				loginDTO.setIsAccountNonLocked(false);
+			}
+			else
+			{
+				failedCount += 1;
+				loginDTO.setFailedAttemptCount(failedCount);
+			}
+			session.saveOrUpdate(loginDTO);
+			tx.commit();
+			session.close();
+			return true;
+		}
+		return false;
+		
+	} 
+	
+	public boolean resetFailureAttempts(String userName)
+	{
+		Session session = sessionFactory.openSession();
+		Transaction tx = session.beginTransaction();
+		Query query = session.getNamedQuery("LoginDTO.findByUserName").setString("userName", userName);
+		LoginDTO loginDTO = (LoginDTO) query.uniqueResult();
+		if(loginDTO != null)
+		{
+			loginDTO.setFailedAttemptCount(0);
+			loginDTO.setIsAccountNonLocked(true);
+			session.saveOrUpdate(loginDTO);
+			session.close();
+			tx.commit();
+			return true;
+		}
+		return false;
+	}
+	
+	public int getFailureAttemptCount(String userName)
+	{
+		Session session = sessionFactory.openSession();
+		Query query = session.getNamedQuery("LoginDTO.findByUserName").setString("userName", userName);
+		LoginDTO loginDTO = (LoginDTO) query.uniqueResult();
+		session.close();
+		if(loginDTO != null)
+		{
+			return loginDTO.getFailedAttemptCount();
+		}
+		return -1;
 	}
 	
 

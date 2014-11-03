@@ -13,7 +13,7 @@ public interface LoginService {
 	public boolean createUser(UserModel user);
 	
 	public int getMemberId(String userName);
-	
+
 	public SecurityQuestionsModel getSecurityQuestions(String userName);
 	
 	public boolean getSecurityAnswers(String userName, String userAnswer1, String userAnswer2, String userAnswer3);

@@ -1,3 +1,4 @@
+
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
@@ -146,7 +147,8 @@
 							<li><a
 								href="<%=request.getContextPath()%>/external/displayExternalUserDetails"><i
 									class="fa fa-edit fa-fw"></i> Manage Account</a></li>
-							<li><a href="#"><i class="fa fa-table fa-fw"></i> View
+							<li><a href="">
+							<i class="fa fa-table fa-fw"></i> View
 									Transaction History</a></li>
 							<li><a href="#"><i class="fa fa-tasks fa-fw"></i> Manage
 									Requests<span class="fa arrow"></span></a>
@@ -171,11 +173,11 @@
 									<li><a href="<%=request.getContextPath() %>/admin/extUserAccount">External Users</a></li>
 								</ul> <!-- /.nav-second-level --></li>
 							<li><a
-								href="#"><i
+								href="<%=request.getContextPath() %>/admin/piiAuthorization"><i
 									class="fa fa-edit fa-fw"></i> View PII</a></li>
 							<li><a href="#"><i class="fa fa-table fa-fw"></i> View
 									System Log</a></li>
-							<li><a href="#"><i class="fa fa-gear fa-fw"></i>
+							<li><a href="<%=request.getContextPath()%>/admin/viewTransactionHistoryPage"><i class="fa fa-gear fa-fw"></i>
 									View Transactions</a></li>
 							<li><a href="#"><i class="fa fa-gear fa-fw"></i>
 									Authorize Critical Transactions</a></li>		
@@ -185,12 +187,14 @@
 							<li><a href="#"><i class="fa fa-tasks fa-fw"></i> Manage External User Accounts<span class="fa arrow"></span></a>
 								<ul class="nav nav-second-level">
 									<li><a href="<%=request.getContextPath()%>/internal/sendViewRequests">Send View Request</a></li>
-									<li><a href="#">View Accounts</a></li>
+									<li><a href="<%=request.getContextPath()%>/internal/viewAccounts">View Accounts</a></li>
 								</ul> <!-- /.nav-second-level --></li>
 							<li><a href="#"><i class="fa fa-tasks fa-fw"></i> Manage External User Transactions<span class="fa arrow"></span></a>
 								<ul class="nav nav-second-level">
-									<li><a href="#">View Transaction Review Requests</a></li>
-									<li><a href="#">Authorize Transactions</a></li>
+									<li><a href="<%=request.getContextPath()%>/internal/sendViewTransactionRequests">Send View Transaction Requests</a></li>
+									<li><a href="<%=request.getContextPath()%>/internal/viewTransactionRequests">View Transactions</a></li>
+									<li><a href="#">Process Transaction Review Requests</a></li>
+									<li><a href="<%=request.getContextPath()%>/internal/manageTransactionRequest">Authorize Transactions</a></li>
 								</ul> <!-- /.nav-second-level --></li>	
 
 						</sec:authorize>
@@ -231,3 +235,4 @@
 
 </body>
 </html>
+

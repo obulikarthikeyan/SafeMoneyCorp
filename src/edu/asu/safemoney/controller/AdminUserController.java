@@ -1,3 +1,4 @@
+
 package edu.asu.safemoney.controller;
 
 import java.util.List;
@@ -5,15 +6,21 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.aop.aspectj.AspectJAdviceParameterNameDiscoverer.AmbiguousBindingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 import edu.asu.safemoney.dto.RequestDTO;
+import edu.asu.safemoney.dto.TransactionDTO;
+import edu.asu.safemoney.dto.UserDTO;
 import edu.asu.safemoney.service.AdminUserService;
+import edu.asu.safemoney.service.EmployeeUserService;
+import edu.asu.safemoney.service.ManageExternalUserAccountService;
 
 @Controller
 @SessionAttributes
@@ -21,6 +28,12 @@ public class AdminUserController {
 	
 	@Autowired
 	private AdminUserService adminUserService;
+	
+	@Autowired
+	private EmployeeUserService employeeUserService;
+	
+	@Autowired
+	private ManageExternalUserAccountService manageExternalUserAccountService;
 	
 	@RequestMapping("/admin/extUserAccount")
 	public ModelAndView getExternalUserAccountRequests()
@@ -32,11 +45,13 @@ public class AdminUserController {
 	@RequestMapping("/admin/approveExtUserAccount")
 	public ModelAndView approveExtUserAccountRequest(
 			@RequestParam("requestId") long requestId,
-			@RequestParam("requestType") String requestType) {
+			@RequestParam("requestType") String requestType, @RequestParam("adminAction") String adminAction) {
+		ModelAndView mv = new ModelAndView("/admin/extAccountManagement");
+		if(adminAction.equals("approve"))
+		{
 		boolean isApproved = adminUserService.approveExtUserRequest(requestId);
 		List<RequestDTO> requestList = adminUserService
 				.getExterUserAccountRequests();
-		ModelAndView mv = new ModelAndView("/admin/extAccountManagement");
 		mv.addObject("requestList", requestList);
 		if (requestType.equals("CREATE_ACCOUNT")) {
 			if (isApproved) {
@@ -56,6 +71,37 @@ public class AdminUserController {
 			} else {
 				mv.addObject("error",
 						"Sorry! The request could not be processed.");
+			}
+			return mv;
+		}
+		return mv;
+		}
+		else if(adminAction.equals("decline"))
+		{
+			boolean isDeclined = adminUserService.declineExtUserRequest(requestId);
+			List<RequestDTO> requestList = adminUserService
+					.getExterUserAccountRequests();
+			mv.addObject("requestList", requestList);
+			if (requestType.equals("CREATE_ACCOUNT")) {
+				if (isDeclined) {
+					mv.addObject("message",
+							"Request has been Declined");
+				} else {
+					mv.addObject("error",
+							"Sorry! The request could not be processed.");
+				}
+				return mv;
+			}
+			else if(requestType.equals("DELETE_ACCOUNT"))
+			{
+				if (isDeclined) {
+					mv.addObject("message",
+							"Request has been Declined");
+				} else {
+					mv.addObject("error",
+							"Sorry! The request could not be processed.");
+				}
+				return mv;
 			}
 			return mv;
 		}
@@ -83,6 +129,7 @@ public class AdminUserController {
 	@RequestMapping("/admin/piiAuthorization")
 	public ModelAndView getPiiAuthorizationPage()
 	{
+		
 		return new ModelAndView("/admin/viewPIIAuthorization");
 	}
 	
@@ -91,5 +138,23 @@ public class AdminUserController {
 	{
 		return new ModelAndView("/admin/authorizeTransaction");
 	}
+	
+	@RequestMapping("/admin/viewTransactionHistoryPage")
+	public ModelAndView viewTransactionHistoryPage(HttpSession session)
+	{
+		return new ModelAndView("/admin/ExternalUserTransactions");
+	}
+	
+	@RequestMapping(value="/admin/getTransactionHistoryForAdmin", method=RequestMethod.POST)
+	public ModelAndView getTransactionHistoryForAdmin(@RequestParam("memberId") int memberId, HttpServletRequest request, HttpSession session)
+	{		
+		//UserDTO customerDTO = manageExternalUserAccountService.displayUserAccount(memberId);
+		
+		List<TransactionDTO> transactionInfo = employeeUserService.getAllTransactions(memberId);
 
+		return new ModelAndView("/admin/ExternalUserTransactions").addObject("transactionInfo",transactionInfo);
+	}
+	
+	
 }
+

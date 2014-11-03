@@ -12,8 +12,6 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -61,12 +59,15 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "UserDTO.findByCreatedBy", query = "SELECT u FROM UserDTO u WHERE u.createdBy = :createdBy"),
     @NamedQuery(name = "UserDTO.findByCreatedDate", query = "SELECT u FROM UserDTO u WHERE u.createdDate = :createdDate"),
     @NamedQuery(name = "UserDTO.findByExpiryDate", query = "SELECT u FROM UserDTO u WHERE u.expiryDate = :expiryDate"),
-    @NamedQuery(name = "UserDTO.findByIsActive", query = "SELECT u FROM UserDTO u WHERE u.isActive = :isActive")})
+    @NamedQuery(name = "UserDTO.findByIsActive", query = "SELECT u FROM UserDTO u WHERE u.isActive = :isActive"),
+    @NamedQuery(name = "UserDTO.findByIsEmployee", query = "SELECT u FROM UserDTO u WHERE u.isEmployee = :isEmployee"),
+    @NamedQuery(name = "UserDTO.findByDesignation", query = "SELECT u FROM UserDTO u WHERE u.designation = :designation"),
+    @NamedQuery(name = "UserDTO.findByIsPIIAuthorized", query = "SELECT u FROM UserDTO u WHERE u.isPIIAuthorized = :isPIIAuthorized")})
 public class UserDTO implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
+    @NotNull
     @Column(name = "member_id")
     private Integer memberId;
     @Size(max = 25)
@@ -170,6 +171,13 @@ public class UserDTO implements Serializable {
     @Size(min = 1, max = 5)
     @Column(name = "is_active")
     private String isActive;
+    @Column(name = "isEmployee")
+    private Boolean isEmployee;
+    @Size(max = 25)
+    @Column(name = "designation")
+    private String designation;
+    @Column(name = "isPIIAuthorized")
+    private Boolean isPIIAuthorized;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "memberId")
     private List<TransactionDTO> transactionDTOList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "custMemberId")
@@ -405,6 +413,30 @@ public class UserDTO implements Serializable {
 
     public void setIsActive(String isActive) {
         this.isActive = isActive;
+    }
+
+    public Boolean getIsEmployee() {
+        return isEmployee;
+    }
+
+    public void setIsEmployee(Boolean isEmployee) {
+        this.isEmployee = isEmployee;
+    }
+
+    public String getDesignation() {
+        return designation;
+    }
+
+    public void setDesignation(String designation) {
+        this.designation = designation;
+    }
+
+    public Boolean getIsPIIAuthorized() {
+        return isPIIAuthorized;
+    }
+
+    public void setIsPIIAuthorized(Boolean isPIIAuthorized) {
+        this.isPIIAuthorized = isPIIAuthorized;
     }
 
     @XmlTransient

@@ -33,6 +33,7 @@ import edu.asu.safemoney.dto.RequestDTO;
 import edu.asu.safemoney.dto.UserDTO;
 import edu.asu.safemoney.dto.UserTypeDTO;
 import edu.asu.safemoney.model.SecurityQuestionsModel;
+import edu.asu.safemoney.helper.PKICertificateHelper;
 import edu.asu.safemoney.model.UserModel;
 import edu.asu.safemoney.service.LoginService;
 
@@ -70,10 +71,10 @@ public class LoginServiceImpl implements LoginService, UserDetailsService {
 			String userName = loginDTO.getUserName();
 			String password = loginDTO.getPassword();
 			System.out.println("password" + password);
-			boolean isEnabled = true;
+			boolean isEnabled = loginDTO.getIsEnabled();
 			boolean isAcctNonExpired = true;
 			boolean isCredentialsNonExpired = true;
-			boolean isAcctNonLocked = true;
+			boolean isAcctNonLocked = loginDTO.getIsAccountNonLocked();
 			if (uDTO != null) {
 				System.out.println("not null");
 				UserTypeDTO userTypeDTO = uDTO.getUserTypeId();
@@ -127,10 +128,33 @@ public class LoginServiceImpl implements LoginService, UserDetailsService {
 				userModel.setUserTypeId(366);
 				userModel.setIsCustomer("false");
 			}
+			userModel.setEmployee(false);
+			userModel.setDesignation(null);
 			isCreationSuccess = loginDAO.createUser(userModel);
 			if(isCreationSuccess)
 			{
-				
+
+				/*int memberId = loginDAO.getMemberIdByUserName(userModel.getUserName());
+				System.out.println("MemebrID: " + memberId);
+				UserDTO userDTO = loginDAO.getUserByMemberId(memberId);
+				System.out.println("UserDTO memberId " + userDTO.getMemberId());
+				//UserDTO userDTO = loginDAO.copyToUserDTO(userModel);
+				RequestDTO requestDTO = new RequestDTO();
+				requestDTO.setMemberId(userDTO);
+				requestDTO.setAuthorizingAuthority("ADMIN");
+				requestDTO.setRequestType("CREATE_ACCOUNT");
+				requestDTO.setStatus("NEW");
+				boolean isRequestSent = requestDAO.generateRequest(requestDTO);
+				if(isRequestSent)
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}*/
+				PKICertificateHelper pkiHelper = new PKICertificateHelper();
+				pkiHelper.getCertificateForUser(userModel.getUserName());
 				return true;
 			}
 			else

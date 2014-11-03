@@ -1,5 +1,4 @@
- package edu.asu.safemoney.dao;
-
+package edu.asu.safemoney.dao;
 
 import edu.asu.safemoney.dto.LoginDTO;
 import edu.asu.safemoney.dto.UserDTO;
@@ -22,6 +21,12 @@ public interface LoginDAO {
 	
 	public UserDTO copyToUserDTO(UserModel user);
 	
+	public boolean resetFailureAttempts(String userName);
+	
+	public boolean updateLoginFailureAttempts(String userName);
+	
+	public int getFailureAttemptCount(String userName);
+	
 	public SecurityQuestionsModel getSecurityAnswers(String userName);
 	
 	public SecurityQuestionsModel getSecurityQuestions(String userName);
@@ -33,7 +38,8 @@ public interface LoginDAO {
 	
 	public String getOtpTime(String userName);
 	public String getEmail(String userName);
+	
+	
 	//public String getUserTypeId(int memberId);
 	
 }
-

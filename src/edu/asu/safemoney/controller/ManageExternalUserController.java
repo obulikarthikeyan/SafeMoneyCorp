@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import edu.asu.safemoney.dto.PaymentRequestDTO;
@@ -27,6 +28,7 @@ import edu.asu.safemoney.model.AccountModel;
 import edu.asu.safemoney.model.ModifyUserModel;
 import edu.asu.safemoney.model.TransactionModel;
 import edu.asu.safemoney.model.UserModel;
+import edu.asu.safemoney.service.EmployeeUserService;
 import edu.asu.safemoney.service.ManageExternalUserAccountService;
 
 @Controller
@@ -35,6 +37,10 @@ public class ManageExternalUserController {
 
 	@Autowired
 	ManageExternalUserAccountService manageExternalUserAccountService;
+	
+
+@Autowired
+private EmployeeUserService employeeUserService;
 
 	// Takes place in the URL for ManageAccount in side menu
 	// Populate External user details in the form.
@@ -136,10 +142,10 @@ public class ManageExternalUserController {
 			System.out.println(type);
 			System.out.println(result);
 			AccountModel accountModel = manageExternalUserAccountService.getAccountDetails(memberId);
-			if (result.equals("success")) {
+			if (result.equals("Pending Approve by Bank")) {
 
 				return new ModelAndView("external/transactions").addObject(
-						"message", "Credit Transaction Successfull.").addObject("account",
+						"message", "The credit transaction is pending approved by bank").addObject("account",
 								accountModel).addObject("requestList", requestList);
 			} else if (result.equals("failure")) {
 				return new ModelAndView("external/transactions").addObject(
@@ -206,32 +212,54 @@ public class ManageExternalUserController {
 			@RequestParam("transformAmount") double amount,
 			HttpSession session)
 	{
-		int memberId = (Integer) session.getAttribute("memberId");
 		
-		String result = manageExternalUserAccountService.makeTransform(memberId, amount,toAccount);
-		AccountModel accountModel = manageExternalUserAccountService.getAccountDetails(memberId);
-		List<PaymentRequestDTO> requestList = manageExternalUserAccountService.getPaymentRequest(memberId);
-		if (result.equals("success")) {
+		int memberId = (Integer) session.getAttribute("memberId");
+		AccountModel accountModel = manageExternalUserAccountService
+				.getAccountDetails(memberId);
 
-			return new ModelAndView("external/transactions").addObject(
-					"message", "Transform Transaction Successfull.").addObject("account",
-							accountModel).addObject("requestList", requestList);
-		} else if (result.startsWith("failure")) {
-			return new ModelAndView("external/transactions").addObject(
-					"error", "Transform Transaction failed.").addObject("account",
-							accountModel).addObject("requestList", requestList);
-		} else if (result.startsWith("NOFUND")) {
-			return new ModelAndView("external/transactions")
-					.addObject("error",
-							"There is no sufficient fund in your account.").addObject("account",
-									accountModel).addObject("requestList", requestList);
-		} else if(result.startsWith("Critical")) {
-			return new ModelAndView("external/transactions")
-			.addObject("message",
-					"This is a critical transaction, please wait for authorization.").addObject("account",
-							accountModel).addObject("requestList", requestList);
+		List<PaymentRequestDTO> requestList = manageExternalUserAccountService
+				.getPaymentRequest(memberId);
+		if (manageExternalUserAccountService.findAccount(toAccount)) {
+			
+
+			String result = manageExternalUserAccountService.makeTransform(
+					memberId, amount, toAccount);
+			
+			if (result.equals("success")) {
+
+				return new ModelAndView("external/transactions")
+						.addObject("message",
+								"Transform Transaction Successfull.")
+						.addObject("account", accountModel)
+						.addObject("requestList", requestList);
+			} else if (result.startsWith("failure")) {
+				return new ModelAndView("external/transactions")
+						.addObject("error", "Transform Transaction failed.")
+						.addObject("account", accountModel)
+						.addObject("requestList", requestList);
+			} else if (result.startsWith("NOFUND")) {
+				return new ModelAndView("external/transactions")
+						.addObject("error",
+								"There is no sufficient fund in your account.")
+						.addObject("account", accountModel)
+						.addObject("requestList", requestList);
+			} else if (result.startsWith("Critical")) {
+				return new ModelAndView("external/transactions")
+						.addObject("message",
+								"This is a critical transaction, please wait for authorization.")
+						.addObject("account", accountModel)
+						.addObject("requestList", requestList);
+			}
+			return new ModelAndView("external/transactions");
 		}
-		return new ModelAndView("external/transactions");
+		
+		else
+			return new ModelAndView("external/transactions")
+		.addObject("error",
+				"The account you input does not exist!")
+		.addObject("account", accountModel)
+		.addObject("requestList", requestList);
+			
 	}
 	
 	@RequestMapping(value="/external/review", method = RequestMethod.GET)
@@ -260,31 +288,52 @@ public class ManageExternalUserController {
 	}*/
 	
 	@RequestMapping(value = "/external/authorizePaymentRequest", method = RequestMethod.POST)
-	public ModelAndView authorizePayment(@RequestParam("paymentRequestId") long paymentRequestId,HttpSession session)
+	public ModelAndView authorizePayment(@RequestParam("paymentRequestId") long paymentRequestId,@RequestParam("authorizeAction") String authorizeAction, @RequestParam("certFile") MultipartFile file, HttpSession session)
 	{
-		
-		String result = manageExternalUserAccountService.authorizePayment(paymentRequestId);
-		int memberId = (Integer) session.getAttribute("memberId");
-		AccountModel accountModel = manageExternalUserAccountService.getAccountDetails(memberId);
-		List<PaymentRequestDTO> requestList = manageExternalUserAccountService.getPaymentRequest(memberId);
-		if(result.equals("success"))
-		{
-			return new ModelAndView("external/transactions").addObject("message",
-				"Payment Authorized Successfully!").addObject("account",
-						accountModel).addObject("requestList", requestList).addObject("message", "You have authorized successfully");
-		}
-		else if(result.equals("NOFUND"))
-		{
-			return new ModelAndView("external/transactions").addObject("message",
-					"Payment Authorized Successfully!").addObject("account",
-							accountModel).addObject("requestList", requestList).addObject("error", "You don't have enough fund in your account");
+		String filePath = System.getProperty("catalina.home");
+		manageExternalUserAccountService.writeCertFile(file, filePath);
+		if (authorizeAction.equals("authorized")) {
+			String result = manageExternalUserAccountService
+					.authorizePayment(paymentRequestId);
+			int memberId = (Integer) session.getAttribute("memberId");
+			AccountModel accountModel = manageExternalUserAccountService
+					.getAccountDetails(memberId);
+			List<PaymentRequestDTO> requestList = manageExternalUserAccountService
+					.getPaymentRequest(memberId);
+			if (result.equals("success")) {
+				return new ModelAndView("external/transactions")
+						.addObject("message",
+								"Payment Authorized Successfully!")
+						.addObject("account", accountModel)
+						.addObject("requestList", requestList);
+			} else if (result.equals("NOFUND")) {
+				return new ModelAndView("external/transactions")
+						.addObject("account", accountModel)
+						.addObject("requestList", requestList)
+						.addObject("error",
+								"You don't have enough fund in your account");
+			} else {
+				return new ModelAndView("external/transactions")
+						.addObject("account", accountModel)
+						.addObject("requestList", requestList)
+						.addObject("error",
+								"Authorize failed because of" + result);
+
+			}
 		}
 		else
 		{
-			return new ModelAndView("external/transactions").addObject("message",
-					"Payment Authorized Successfully!").addObject("account",
-							accountModel).addObject("requestList", requestList).addObject("error", "Authorize failed because of"+result);
-		
+			String result = manageExternalUserAccountService.declinePayment(paymentRequestId);
+			int memberId = (Integer) session.getAttribute("memberId");
+			AccountModel accountModel = manageExternalUserAccountService
+					.getAccountDetails(memberId);
+			List<PaymentRequestDTO> requestList = manageExternalUserAccountService
+					.getPaymentRequest(memberId);
+			return new ModelAndView("external/transactions")
+			.addObject("message",
+					"You have declined this payment")
+			.addObject("account", accountModel)
+			.addObject("requestList", requestList);
 		}
 	}
 	//requestingDate
@@ -299,35 +348,52 @@ public class ManageExternalUserController {
 	public ModelAndView initiatePayment(
 			@RequestParam("toMerchantAccountNumber") long toMerchantAccount,
 			@RequestParam("amount") double amount,
-			HttpSession session)
-	{
+			@RequestParam("description") String description, HttpSession session) {
+
 		
-		
+
 		int memberId = (Integer) session.getAttribute("memberId");
-		String result = manageExternalUserAccountService.initiatePayment(memberId, toMerchantAccount, "AUTHORIZED", amount);
-		
-		AccountModel accountModel = manageExternalUserAccountService.getAccountDetails(memberId);
-		List<PaymentRequestDTO> requestList = manageExternalUserAccountService.getPaymentRequest(memberId);
-		
-		if(result.equals("success"))
-		{
-			return new ModelAndView("external/transactions").addObject("message",
-				"Payment Authorized Successfully!").addObject("account",
-						accountModel).addObject("requestList", requestList).addObject("message", "You have initiated a payment successfully");
-		}
-		else if(result.equals("NOFUND"))
-		{
-			return new ModelAndView("external/transactions").addObject("message",
-					"Payment Authorized Successfully!").addObject("account",
-							accountModel).addObject("requestList", requestList).addObject("message", "You don't have enough fund in your account");
-		}
-		else
-		{
-			return new ModelAndView("external/transactions").addObject("message",
-					"Payment Authorized Successfully!").addObject("account",
-							accountModel).addObject("requestList", requestList).addObject("message", "Authorize failed because of"+result);
-		
-		}
+
+		AccountModel accountModel = manageExternalUserAccountService
+				.getAccountDetails(memberId);
+		List<PaymentRequestDTO> requestList = manageExternalUserAccountService
+				.getPaymentRequest(memberId);
+
+		if (manageExternalUserAccountService.findAccount(toMerchantAccount)) {
+			String result = manageExternalUserAccountService.initiatePayment(
+					memberId, toMerchantAccount, amount, description);
+			if (result.equals("success")) {
+				return new ModelAndView("external/transactions")
+						.addObject("message",
+								"Payment Authorized Successfully!")
+						.addObject("account", accountModel)
+						.addObject("requestList", requestList)
+						.addObject("message",
+								"You have initiated a payment successfully");
+			} else if (result.equals("NOFUND")) {
+				return new ModelAndView("external/transactions")
+						.addObject("message",
+								"Payment Authorized Successfully!")
+						.addObject("account", accountModel)
+						.addObject("requestList", requestList)
+						.addObject("message",
+								"You don't have enough fund in your account");
+			} else {
+				return new ModelAndView("external/transactions")
+						.addObject("message",
+								"Payment Authorized Successfully!")
+						.addObject("account", accountModel)
+						.addObject("requestList", requestList)
+						.addObject("message",
+								"Authorize failed because of" + result);
+
+			}
+		} else
+			return new ModelAndView("external/transactions")
+					.addObject("error", "The account you input does not exist!")
+					.addObject("account", accountModel)
+					.addObject("requestList", requestList);
+
 	}
 	
 	//submitAuthorizedPaymentRequest
@@ -353,6 +419,68 @@ public class ManageExternalUserController {
 		
 		}
 	}
+	
+	@RequestMapping(value="/external/modifyTransaction", method=RequestMethod.POST)
+	public ModelAndView modifyTransaction(@ModelAttribute("modifyTransactionForm") TransactionModel transactionModel, HttpSession session)
+	{	
+		int memberId = (Integer) session.getAttribute("memberId");
+		boolean isReviewSubmitted = manageExternalUserAccountService.sendTransactionModificationRequest(transactionModel, memberId);
+		List<TransactionDTO> approvedTransactionList = manageExternalUserAccountService.getApprovedTransactionListForUser(memberId);
+		if(isReviewSubmitted)
+		{
+			return new ModelAndView("external/transactionReview").addObject("transactionList", approvedTransactionList).addObject("review","true");
+		}
+		else
+		{
+			return new ModelAndView("external/transactionReview").addObject("submitError", "Review could not be submitted");
+		}
+		
+	}
+	
+	@RequestMapping(value="/external/deleteTransaction", method=RequestMethod.POST)
+	public ModelAndView deleteTransaction(@RequestParam("transactionID") long transactionId, HttpSession session)
+	{	
+		int memberId = (Integer) session.getAttribute("memberId");
+		boolean isDeleted = manageExternalUserAccountService.sendTransactionDeletionRequest(transactionId, memberId);
+		List<TransactionDTO> approvedTransactionList = manageExternalUserAccountService.getApprovedTransactionListForUser(memberId);
+		if(isDeleted)
+		{
+			return new ModelAndView("external/transactionReview").addObject("transactionList", approvedTransactionList).addObject("review","true");
+		}
+		else
+		{
+			return new ModelAndView("external/transactionReview").addObject("submitError", "Review could not be submitted");
+		}
+		
+	}
+	
+	@RequestMapping(value = "/external/viewTransactionHistoryPage", method = RequestMethod.GET)
+	public ModelAndView getTransactionHistoryPage(HttpSession session){
+	int memberId = (Integer) session.getAttribute("memberId");
+	UserDTO customerDTO = manageExternalUserAccountService.displayUserAccount(memberId);
+	List<TransactionDTO> transactionInfo = employeeUserService.getAllTransactions(memberId);
+	return new ModelAndView("/external/transactionHistory").addObject("transactionInfo",transactionInfo);
+	}
 
+	@RequestMapping(value="/external/createNewReq", method=RequestMethod.POST)
+	public ModelAndView doNewTransaction(
+	@ModelAttribute("createNewReq") TransactionModel transactionModel, HttpSession session){
+	int memberId= (int) session.getAttribute("memberId");
+	System.out.println("memberId is : " +memberId);
+	System.out.println("Transaction amount is:" + transactionModel.getTransactionAmount());
+	System.out.println("Transaction type is:" + transactionModel.getTransactionType());
+	System.out.println("Transaction date is:" + transactionModel.getTransactionDate());
+	boolean isCreated= manageExternalUserAccountService.createRequest(transactionModel, memberId);
+	UserDTO userDTO= manageExternalUserAccountService.displayUserAccount(memberId);
+	ModelAndView mv = new ModelAndView("external/transactionReview").addObject("userDTO", userDTO);
+	if(isCreated)
+	{
+	return mv.addObject("message", "Profile Updated Successfully");
+	}
+	else
+	{
+	return mv.addObject("error", "Update Failed!");
+	}
+	}
 }
 
