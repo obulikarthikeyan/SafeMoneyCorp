@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 03, 2014 at 02:44 AM
+-- Generation Time: Nov 03, 2014 at 03:00 AM
 -- Server version: 5.5.32
 -- PHP Version: 5.4.19
 
@@ -57,7 +57,7 @@ INSERT INTO `account` (`account_no`, `member_id`, `amount`, `is_active`) VALUES
 CREATE TABLE IF NOT EXISTS `login` (
   `member_id` int(11) NOT NULL,
   `user_name` varchar(15) NOT NULL,
-  `password` varchar(15) NOT NULL,
+  `password` varchar(80) NOT NULL,
   `site_key` varchar(20) NOT NULL,
   `isAccountNonLocked` tinyint(1) NOT NULL,
   `isEnabled` tinyint(1) NOT NULL,

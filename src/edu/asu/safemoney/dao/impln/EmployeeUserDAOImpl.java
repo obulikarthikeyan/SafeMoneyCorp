@@ -68,12 +68,15 @@ public class EmployeeUserDAOImpl implements EmployeeUserDAO{
 		Session session = sessionFactory.getCurrentSession();
 
 		Query query = session.getNamedQuery("TransactionDTO.findByStatus")
-				.setString("status", "PENDING");
+				.setString("status", "PENDING_BANK");
 		List requests = query.list();
 		if (requests != null) {
 			for (Object request : requests) {
 				TransactionDTO transactionRequestDTO = (TransactionDTO) request;
-				transactionRequest.add(transactionRequestDTO);
+				if(!transactionRequestDTO.getIsCritical())
+				{
+					transactionRequest.add(transactionRequestDTO);
+				}
 			}
 			System.out.println("Found some transactions");
 		}

@@ -126,7 +126,7 @@
 												</div>
 												<div class="form-group">
 												
-													<label>Date of Birth</label>
+													
 													<input id="dateOfBirth" class="form-control datepicker"
 														placeholder="Date of Birth" name="dateOfBirth" tabindex="12" >
 														<script type="text/javascript">
