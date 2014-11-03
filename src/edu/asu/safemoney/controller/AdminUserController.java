@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
+import edu.asu.safemoney.dto.PaymentRequestDTO;
 import edu.asu.safemoney.dto.RequestDTO;
 import edu.asu.safemoney.dto.TransactionDTO;
 import edu.asu.safemoney.dto.UserDTO;
@@ -154,7 +155,90 @@ public class AdminUserController {
 
 		return new ModelAndView("/admin/ExternalUserTransactions").addObject("transactionInfo",transactionInfo);
 	}
+	//authorizeCriticalTransactions
 	
+	@RequestMapping("/admin/authorizeCriticalTransactions")
+	public ModelAndView authorizeCriticalTransactions(HttpSession session)
+	{
+
+		List<TransactionDTO> transactionList = adminUserService
+				.getTransactionRequest();
+		
+		return new ModelAndView("/admin/authorizeTransaction").addObject(
+						"transactionRequestList", transactionList);
+		
+	}
 	
+	@RequestMapping(value="/admin/authorizePaymentRequest", method=RequestMethod.POST)
+	public ModelAndView processTransaction(@RequestParam("transactionRequestId") long transactionRequestId,@RequestParam("manageTransactionAction") String manageAction,HttpSession session) 
+	{
+		
+String processResult = null;
+		
+		if(manageAction.equals("approved"))
+		{
+			boolean myresult =employeeUserService.updateTransactionRequest( transactionRequestId, "APPROVED_BANK");
+			
+			TransactionDTO transactiontDTO = employeeUserService.getTransactionDTOById(transactionRequestId);
+			
+			int toMemberId = employeeUserService.getMemberIdByAccount(transactiontDTO.getToAccount());
+			int fromMemberId = employeeUserService.getMemberIdByAccount(transactiontDTO.getFromAccount());
+			
+			//transactiontDTO.getf
+			boolean myresult2 = false;
+			String type = transactiontDTO.getTransactionType();
+			if(type.equals("Debit"))
+			{
+				
+				myresult2=true;
+			}
+			else
+			{	
+				myresult2=employeeUserService.makeCredit(toMemberId,transactiontDTO.getAmount());
+			}
+			
+			if(myresult&&myresult2)
+				processResult="You have successfully approved one transaction";
+			else
+				processResult="Failed";
+			
+			
+			
+		}
+		else if(manageAction.equals("declined"))
+		{
+			boolean myresult =employeeUserService.updateTransactionRequest( transactionRequestId, "DECLINED_BANK");
+			
+			TransactionDTO transactiontDTO = employeeUserService.getTransactionDTOById(transactionRequestId);
+			
+			int fromMemberId = employeeUserService.getMemberIdByAccount(transactiontDTO.getFromAccount());
+			boolean myresult2=false;
+			
+			//transactiontDTO.getf
+			String type = transactiontDTO.getTransactionType();
+			if(type.equals("Debit"))
+			{
+				myresult2=employeeUserService.makeCredit(fromMemberId,transactiontDTO.getAmount());
+			}
+			else
+			{	
+				myresult2 = employeeUserService.makeCredit(fromMemberId,transactiontDTO.getAmount());
+			}
+			
+			if(myresult&&myresult2)
+				processResult="You have successfully declined one transaction";
+			else
+				processResult="Failed";
+			
+		}
+		
+		
+		List<TransactionDTO> transactionList = adminUserService
+				.getTransactionRequest();
+		System.out.println(processResult);
+		return new ModelAndView("/admin/authorizeTransaction")
+		.addObject(
+				"transactionRequestList", transactionList).addObject("message",processResult);
+	}
 }
 

@@ -179,7 +179,7 @@
 									System Log</a></li>
 							<li><a href="<%=request.getContextPath()%>/admin/viewTransactionHistoryPage"><i class="fa fa-gear fa-fw"></i>
 									View Transactions</a></li>
-							<li><a href="#"><i class="fa fa-gear fa-fw"></i>
+							<li><a href="<%=request.getContextPath()%>/admin/authorizeCriticalTransactions"><i class="fa fa-gear fa-fw"></i>
 									Authorize Critical Transactions</a></li>		
 
 						</sec:authorize>

@@ -13,6 +13,7 @@ import edu.asu.safemoney.dao.ManageExternalUserAccountDAO;
 import edu.asu.safemoney.dao.RequestDAO;
 import edu.asu.safemoney.dto.AccountDTO;
 import edu.asu.safemoney.dto.RequestDTO;
+import edu.asu.safemoney.dto.TransactionDTO;
 import edu.asu.safemoney.dto.UserDTO;
 import edu.asu.safemoney.helper.ExternalUserHelper;
 import edu.asu.safemoney.service.AdminUserService;
@@ -28,6 +29,9 @@ public class AdminUserServiceImpl implements AdminUserService {
 	
 	@Autowired
 	private ManageExternalUserAccountDAO extUserAccountDAO;
+	
+	@Autowired
+	private AdminUserDAO employeeUserDAO;
 	
 	@Transactional
 	@Override
@@ -125,7 +129,21 @@ public class AdminUserServiceImpl implements AdminUserService {
 			
 		}
 		return false;
-	} 
+	}
+
+	
+	@Transactional
+	@Override
+	public List<TransactionDTO> getTransactionRequest() {
+		
+		// TODO Auto-generated method stub
+		List<TransactionDTO> requestList = employeeUserDAO.getTransactionRequest();
+		/*for(RequestDTO rDTO : requestList)
+		{
+			System.out.println("Request Name: " + rDTO.getRequestType());
+		}*/
+		return requestList;
+	}
 	
 
 	

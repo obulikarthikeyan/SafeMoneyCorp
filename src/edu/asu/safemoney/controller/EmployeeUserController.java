@@ -132,11 +132,11 @@ public class EmployeeUserController {
 			
 			if(myresult&&myresult2)
 			{
-				processResult="You have successfully approved one payment request";
+				processResult="You have successfully declined one payment request";
 			}
 			else
 			{
-				processResult = "Approve payment request failed";
+				processResult = "declined payment request failed";
 			}
 		}
 		
@@ -165,9 +165,20 @@ public class EmployeeUserController {
 			TransactionDTO transactiontDTO = employeeUserService.getTransactionDTOById(transactionRequestId);
 			
 			int toMemberId = employeeUserService.getMemberIdByAccount(transactiontDTO.getToAccount());
+			int fromMemberId = employeeUserService.getMemberIdByAccount(transactiontDTO.getFromAccount());
 			
 			//transactiontDTO.getf
-			boolean myresult2 = employeeUserService.makeCredit(toMemberId,transactiontDTO.getAmount());
+			boolean myresult2 = false;
+			String type = transactiontDTO.getTransactionType();
+			if(type.equals("Debit"))
+			{
+				
+				myresult2=true;
+			}
+			else
+			{	
+				myresult2=employeeUserService.makeCredit(toMemberId,transactiontDTO.getAmount());
+			}
 			
 			if(myresult&&myresult2)
 				processResult="You have successfully approved one transaction";
@@ -184,9 +195,18 @@ public class EmployeeUserController {
 			TransactionDTO transactiontDTO = employeeUserService.getTransactionDTOById(transactionRequestId);
 			
 			int fromMemberId = employeeUserService.getMemberIdByAccount(transactiontDTO.getFromAccount());
+			boolean myresult2=false;
 			
 			//transactiontDTO.getf
-			boolean myresult2 = employeeUserService.makeCredit(fromMemberId,transactiontDTO.getAmount());
+			String type = transactiontDTO.getTransactionType();
+			if(type.equals("Debit"))
+			{
+				myresult2 = employeeUserService.makeCredit(fromMemberId,transactiontDTO.getAmount());
+			}
+			else
+			{	
+				myresult2 = employeeUserService.makeCredit(fromMemberId,transactiontDTO.getAmount());
+			}
 			
 			if(myresult&&myresult2)
 				processResult="You have successfully declined one transaction";

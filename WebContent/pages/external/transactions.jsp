@@ -126,7 +126,7 @@
 
 									<div class="panel panel-default">
 										<div class="panel-heading">
-											<strong>REQUESTS FOR ADMIN</strong>
+											<strong>REQUESTS</strong>
 										</div>
 
 										<div class="panel-body">
@@ -136,7 +136,7 @@
 													<thead>
 														<tr>
 															<th>Payment Request ID</th>
-															<th>Requesting Member ID</th>
+															<th>Payment Descriotion</th>
 															<th>Requesting Merchant</th>
 															<th>Requesting Amount</th>
 															<th>Requesting Date</th>
@@ -151,7 +151,7 @@
 																<tr>
 																	<c:if test="${request.status == 'PENDING_AUTH' }">
 																	<td>${request.paymentId }</td>
-																	<td>${request.merchantAccountId }</td>
+																	<td>${request.description }</td>
 																	<td>${request.merchantLastName } ${request.merchantFirstName }</td>
 																	<td>${request.amount }</td>
 																	<td>${request.date }</td>
@@ -171,6 +171,7 @@
 																								var requestingAmount = '${request.amount}';
 																								var requestingDate = '${request.date}';
 																								var paymentRequestId = '${request.paymentId}';
+																								var paymentDescription = '${request.description}';
 																						
 
 																								$(
@@ -193,6 +194,10 @@
 																										'#paymentRequestId')
 																										.val(
 																												paymentRequestId);
+																								$(
+																								'#requestingDescription')
+																								.text(
+																										paymentDescription);
 																							});
 																		</script>
 																	</c:if>
@@ -244,6 +249,10 @@
 													<tr>
 														<td><label>Request Date</label></td>
 														<td id="requestingDate"></td>
+													</tr>
+													<tr>
+														<td><label>Description</label></td>
+														<td id="requestingDescription"></td>
 													</tr>
 													<tr>
 														<td><label>Select the certificate file to upload</label></td>
@@ -313,7 +322,7 @@
 												<thead>
 													<tr>
 														<th>Payment Request ID</th>
-														<th>Authorizer ID</th>
+														<th>Payment Description</th>
 														<th>Authorizer Account Number</th>
 														<th>Authorized Amount</th>
 														<th>Quthorized Date</th>
@@ -328,9 +337,9 @@
 															<tr>
 																<c:if test="${request.status == 'AUTHORIZED' }">
 																	<td>${request.paymentId }</td>
-																	<td>${request.authorizerMemberId }</td>
+																	<td>${request.description }</td>
 																	<td>${request.authorizerAccountId }
-											
+																	
 																	<td>${request.amount }</td>
 																	<td>${request.date }</td>
 																	<td><strong>${request.status }</strong></td>
@@ -348,6 +357,7 @@
 																							var authorizedAmount = '${request.amount}';
 																							var authorizedDate = '${request.date}';
 																							var paymentRequestId = '${request.paymentId}';
+																							var aaadescription =   '${request.description}';
 
 																							$(
 																									'#authorizerAccountId')
@@ -366,6 +376,10 @@
 																									'#paymentRequestId2')
 																									.val(
 																											paymentRequestId);
+																							$(
+																							'#authorizedDescription')
+																							.text(
+																									aaadescription);
 																						});
 																	</script>
 																</c:if>
@@ -413,6 +427,11 @@
 													<tr>
 														<td><label>Authorized Date</label></td>
 														<td id="authorizedDate"></td>
+													</tr>
+													
+													<tr>
+														<td><label>Description</label></td>
+														<td id="authorizedDescription"></td>
 													</tr>
 													
 												</tbody>

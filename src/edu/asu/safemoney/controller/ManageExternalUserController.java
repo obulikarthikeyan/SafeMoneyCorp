@@ -139,13 +139,12 @@ private EmployeeUserService employeeUserService;
 		if (type == 1) {
 			String result = manageExternalUserAccountService
 					.makeCreditTransaction(memberId, amount,memberId,"Credit");
-			System.out.println(type);
-			System.out.println(result);
+			
 			AccountModel accountModel = manageExternalUserAccountService.getAccountDetails(memberId);
 			if (result.equals("Pending Approve by Bank")) {
 
 				return new ModelAndView("external/transactions").addObject(
-						"message", "The credit transaction is pending approved by bank").addObject("account",
+						"message", "The credit transaction is pending approved by bank, if approved, the money will be credited to your account").addObject("account",
 								accountModel).addObject("requestList", requestList);
 			} else if (result.equals("failure")) {
 				return new ModelAndView("external/transactions").addObject(
@@ -160,12 +159,12 @@ private EmployeeUserService employeeUserService;
 			} else if (result.equals("CriticalDebit")){
 				return new ModelAndView("external/transactions")
 				.addObject("message",
-						"This is a critical debit, please wait for authorization").addObject("account",
+						"Greater than 2000 is critical debit, please wait for authorization from Admin").addObject("account",
 								accountModel).addObject("requestList", requestList);
 			} else if (result.equals("CriticalCredit")){
 				return new ModelAndView("external/transactions")
 				.addObject("message",
-						"This is a critical Credit, please wait for authorization").addObject("account",
+						"This is a critical Credit, please wait for authorization, if approved, the money will be credited to your account").addObject("account",
 								accountModel).addObject("requestList", requestList);
 			}
 		} else if (type == 2) {
@@ -192,14 +191,9 @@ private EmployeeUserService employeeUserService;
 			} else if (result.equals("CriticalDebit")){
 				return new ModelAndView("external/transactions")
 				.addObject("message",
-						"This is a critical debit, please wait for authorization").addObject("account",
+						"This is a critical debit, please wait for authorization, if not approved, the money will be refund to your account").addObject("account",
 								accountModel).addObject("requestList", requestList);
-			} else if (result.equals("CriticalCredit")){
-				return new ModelAndView("external/transactions")
-				.addObject("message",
-						"This is a critical credit, please wait for authorization").addObject("account",
-								accountModel).addObject("requestList", requestList);
-			}
+			} 
 		}
 		 return null;
 		
@@ -214,22 +208,23 @@ private EmployeeUserService employeeUserService;
 	{
 		
 		int memberId = (Integer) session.getAttribute("memberId");
-		AccountModel accountModel = manageExternalUserAccountService
-				.getAccountDetails(memberId);
-
-		List<PaymentRequestDTO> requestList = manageExternalUserAccountService
-				.getPaymentRequest(memberId);
+		
 		if (manageExternalUserAccountService.findAccount(toAccount)) {
 			
 
 			String result = manageExternalUserAccountService.makeTransform(
 					memberId, amount, toAccount);
+			AccountModel accountModel = manageExternalUserAccountService
+					.getAccountDetails(memberId);
+
+			List<PaymentRequestDTO> requestList = manageExternalUserAccountService
+					.getPaymentRequest(memberId);
 			
 			if (result.equals("success")) {
 
 				return new ModelAndView("external/transactions")
 						.addObject("message",
-								"Transform Transaction Successfull.")
+								"Transfer need to be approve by employee, if not approved, the money will be refunded")
 						.addObject("account", accountModel)
 						.addObject("requestList", requestList);
 			} else if (result.startsWith("failure")) {
@@ -246,7 +241,7 @@ private EmployeeUserService employeeUserService;
 			} else if (result.startsWith("Critical")) {
 				return new ModelAndView("external/transactions")
 						.addObject("message",
-								"This is a critical transaction, please wait for authorization.")
+								"Greater than 2000 is Critical, Transfer need to be approve by admin, if not approved, the money will be refunded")
 						.addObject("account", accountModel)
 						.addObject("requestList", requestList);
 			}
@@ -254,11 +249,18 @@ private EmployeeUserService employeeUserService;
 		}
 		
 		else
+		{
+			AccountModel accountModel = manageExternalUserAccountService
+		.getAccountDetails(memberId);
+
+List<PaymentRequestDTO> requestList = manageExternalUserAccountService
+		.getPaymentRequest(memberId);
 			return new ModelAndView("external/transactions")
 		.addObject("error",
 				"The account you input does not exist!")
 		.addObject("account", accountModel)
 		.addObject("requestList", requestList);
+		}
 			
 	}
 	
@@ -354,14 +356,15 @@ private EmployeeUserService employeeUserService;
 
 		int memberId = (Integer) session.getAttribute("memberId");
 
-		AccountModel accountModel = manageExternalUserAccountService
-				.getAccountDetails(memberId);
-		List<PaymentRequestDTO> requestList = manageExternalUserAccountService
-				.getPaymentRequest(memberId);
+		
 
 		if (manageExternalUserAccountService.findAccount(toMerchantAccount)) {
 			String result = manageExternalUserAccountService.initiatePayment(
 					memberId, toMerchantAccount, amount, description);
+			AccountModel accountModel = manageExternalUserAccountService
+					.getAccountDetails(memberId);
+			List<PaymentRequestDTO> requestList = manageExternalUserAccountService
+					.getPaymentRequest(memberId);
 			if (result.equals("success")) {
 				return new ModelAndView("external/transactions")
 						.addObject("message",
@@ -389,10 +392,16 @@ private EmployeeUserService employeeUserService;
 
 			}
 		} else
+		{
+			AccountModel accountModel = manageExternalUserAccountService
+					.getAccountDetails(memberId);
+			List<PaymentRequestDTO> requestList = manageExternalUserAccountService
+					.getPaymentRequest(memberId);
 			return new ModelAndView("external/transactions")
 					.addObject("error", "The account you input does not exist!")
 					.addObject("account", accountModel)
 					.addObject("requestList", requestList);
+		}
 
 	}
 	
