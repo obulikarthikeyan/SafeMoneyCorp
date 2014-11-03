@@ -454,4 +454,63 @@ public class ManageExternalUserAccountDAOImpl implements ManageExternalUserAccou
 		}
 		return false;
 	}
+	
+	@Override
+	public List<UserDTO> getPIIAuthorizedUserAccountsDTO()
+	{
+		Session session= sessionFactory.getCurrentSession();
+		Query query= session.createQuery("FROM UserDTO r WHERE r.isPIIAuthorized = :isPIIAuthorized AND r.isEmployee = :isEmployee");
+		query.setBoolean("isPIIAuthorized", true);
+		query.setBoolean("isEmployee", false);
+		List<UserDTO> userDTOList = (List<UserDTO>)query.list();
+		return userDTOList;
+	}
+	
+	@Override
+	public List<UserDTO> getMembersListForDisplay()
+	{
+		Session session= sessionFactory.getCurrentSession();
+		Query query= session.createQuery("FROM UserDTO r WHERE r.isEmployee = :isEmployee");
+		query.setBoolean("isEmployee", false);
+		List<UserDTO> memberList = (List<UserDTO>)query.list();
+		return memberList;
+	}
+	
+	@Override
+	public List<RequestDTO> getViewAccountRequestsForCustomer(int memberId){
+		Session session= sessionFactory.getCurrentSession();		
+		Query query= session.createQuery("FROM RequestDTO r WHERE r.authorizingMemberId = :memberId AND r.requestType = :requestType");
+		query.setInteger("memberId", memberId);
+		query.setString("requestType", "VIEW_ACCOUNT");
+		List<RequestDTO> accountsRequests =(List<RequestDTO>)query.list();
+		return accountsRequests;
+	}
+	
+	@Override
+	public boolean authorizeViewAccountRequest(long requestId)
+	{
+		Session session= sessionFactory.getCurrentSession();
+		Query query = session.getNamedQuery("RequestDTO.findByRequestId").setLong("requestId", requestId);
+		RequestDTO approveRequestDTO = (RequestDTO) query.uniqueResult();
+		if(approveRequestDTO == null)
+		{
+			return false;
+		}
+		approveRequestDTO.setStatus("APPROVED");
+		return true;
+	}
+	
+	@Override
+	public boolean declineViewAccountRequest(long requestId)
+	{
+		Session session= sessionFactory.getCurrentSession();
+		Query query = session.getNamedQuery("RequestDTO.findByRequestId").setLong("requestId", requestId);
+		RequestDTO approveRequestDTO = (RequestDTO) query.uniqueResult();
+		if(approveRequestDTO == null)
+		{
+			return false;
+		}
+		approveRequestDTO.setStatus("DECLINED");
+		return true;
+	}
 }

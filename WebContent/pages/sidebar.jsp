@@ -147,13 +147,13 @@
 							<li><a
 								href="<%=request.getContextPath()%>/external/displayExternalUserDetails"><i
 									class="fa fa-edit fa-fw"></i> Manage Account</a></li>
-							<li><a href="">
+							<li><a href="<%=request.getContextPath()%>/external/viewTransactionHistoryPage">
 							<i class="fa fa-table fa-fw"></i> View
 									Transaction History</a></li>
 							<li><a href="#"><i class="fa fa-tasks fa-fw"></i> Manage
 									Requests<span class="fa arrow"></span></a>
 								<ul class="nav nav-second-level">
-									<li><a href="#">View Bank Requests</a></li>
+									<li><a href="<%=request.getContextPath()%>/external/viewAccountApproveRequests">Approve View Account Requests</a></li>
 									<li><a href="#">Authorize Requests</a></li>
 								</ul> <!-- /.nav-second-level --></li>
 							<li><a href="<%=request.getContextPath()%>/external/review"><i class="fa fa-gear fa-fw"></i>
@@ -184,6 +184,7 @@
 
 						</sec:authorize>
 						<sec:authorize access="hasRole('INT_BANK_EMP')">
+							<li><a href="<%=request.getContextPath()%>/internal/getMemberIdLog"><i class="fa fa-tasks fa-fw"></i> Member Id Log<span class="fa arrow"></span></a>
 							<li><a href="#"><i class="fa fa-tasks fa-fw"></i> Manage External User Accounts<span class="fa arrow"></span></a>
 								<ul class="nav nav-second-level">
 									<li><a href="<%=request.getContextPath()%>/internal/sendViewRequests">Send View Request</a></li>

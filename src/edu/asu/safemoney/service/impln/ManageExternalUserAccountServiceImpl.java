@@ -640,5 +640,42 @@ public class ManageExternalUserAccountServiceImpl implements
 		
 	}
 
+	@Transactional
+	@Override
+	public List<UserDTO> getPIIAuthorizedUserAccounts(){
+		List<UserDTO> userAccountList = manageExternalUserAccountDAO.getPIIAuthorizedUserAccountsDTO();
+		return userAccountList;
+	}
 	
+	@Transactional
+	@Override
+	public List<UserDTO> getMemberList(){
+		List<UserDTO> memberList = manageExternalUserAccountDAO.getMembersListForDisplay();
+		return memberList;
+	}
+	
+	@Transactional
+	@Override
+	public List<RequestDTO> getViewAccountRequests(int memberId){
+		List<RequestDTO> viewAccountRequests =  manageExternalUserAccountDAO.getViewAccountRequestsForCustomer(memberId);
+		return viewAccountRequests;
+	}
+	
+	@Transactional
+	@Override
+	public boolean authorizeViewAccountRequest(long requestId)
+	{
+		boolean isAuthorized = manageExternalUserAccountDAO.authorizeViewAccountRequest(requestId);
+		
+		return isAuthorized;
+	}
+	
+	@Transactional
+	@Override
+	public boolean declineViewAccountRequest(long requestId)
+	{
+		boolean isAuthorized = manageExternalUserAccountDAO.declineViewAccountRequest(requestId);
+		
+		return isAuthorized;
+	}
 }

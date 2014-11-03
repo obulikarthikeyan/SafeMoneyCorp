@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import edu.asu.safemoney.dto.PaymentRequestDTO;
+import edu.asu.safemoney.dto.RequestDTO;
 import edu.asu.safemoney.dto.TransactionDTO;
 import edu.asu.safemoney.dto.UserDTO;
 import edu.asu.safemoney.model.AccountModel;
@@ -464,23 +465,60 @@ private EmployeeUserService employeeUserService;
 
 	@RequestMapping(value="/external/createNewReq", method=RequestMethod.POST)
 	public ModelAndView doNewTransaction(
-	@ModelAttribute("createNewReq") TransactionModel transactionModel, HttpSession session){
-	int memberId= (int) session.getAttribute("memberId");
-	System.out.println("memberId is : " +memberId);
-	System.out.println("Transaction amount is:" + transactionModel.getTransactionAmount());
-	System.out.println("Transaction type is:" + transactionModel.getTransactionType());
-	System.out.println("Transaction date is:" + transactionModel.getTransactionDate());
-	boolean isCreated= manageExternalUserAccountService.createRequest(transactionModel, memberId);
-	UserDTO userDTO= manageExternalUserAccountService.displayUserAccount(memberId);
-	ModelAndView mv = new ModelAndView("external/transactionReview").addObject("userDTO", userDTO);
-	if(isCreated)
+	@ModelAttribute("createNewReq") TransactionModel transactionModel, HttpSession session)
 	{
-	return mv.addObject("message", "Profile Updated Successfully");
+		int memberId= (int) session.getAttribute("memberId");
+		System.out.println("memberId is : " +memberId);
+		System.out.println("Transaction amount is:" + transactionModel.getTransactionAmount());
+		System.out.println("Transaction type is:" + transactionModel.getTransactionType());
+		System.out.println("Transaction date is:" + transactionModel.getTransactionDate());
+		boolean isCreated= manageExternalUserAccountService.createRequest(transactionModel, memberId);
+		UserDTO userDTO= manageExternalUserAccountService.displayUserAccount(memberId);
+		ModelAndView mv = new ModelAndView("external/transactionReview").addObject("userDTO", userDTO);
+		if(isCreated)
+		{
+		return mv.addObject("message", "Profile Updated Successfully");
+		}
+		else
+		{
+		return mv.addObject("error", "Update Failed!");
+		}
 	}
-	else
+	
+	/*
+	 * To load page from where External user can see and approve the 
+	 * View Account requests from the emp
+	 */
+	@RequestMapping("/external/viewAccountApproveRequests")
+	public ModelAndView viewAccountApproveRequests(HttpSession session)
 	{
-	return mv.addObject("error", "Update Failed!");
+		int memberId= (int) session.getAttribute("memberId");
+		List<RequestDTO> viewAccountRequestList = manageExternalUserAccountService.getViewAccountRequests(memberId); 
+		return new ModelAndView("/external/viewAccountApproveRequests").addObject("viewAccountRequestList",viewAccountRequestList);
 	}
+	
+	/*
+	 * To approve the view account request by customer or merchant on button click
+	 */
+	@RequestMapping(value = "/external/approveViewUserAccounts", method=RequestMethod.POST)
+	public ModelAndView approveViewAccountApproveRequests(@RequestParam("requestId") long requestId,HttpSession session)
+	{
+		int memberId= (int) session.getAttribute("memberId");
+		boolean isAuthorized = manageExternalUserAccountService.authorizeViewAccountRequest(requestId);
+		List<RequestDTO> viewAccountRequestList = manageExternalUserAccountService.getViewAccountRequests(memberId);		
+		return new ModelAndView("/external/viewAccountApproveRequests").addObject("isAuthorized",isAuthorized).addObject("viewAccountRequestList", viewAccountRequestList);
+	}
+	
+	/*
+	 * To decline the view account request by customer or merchant on button click
+	 */
+	@RequestMapping(value = "/external/declineViewUserAccounts", method=RequestMethod.POST)
+	public ModelAndView declineViewAccountApproveRequests(@RequestParam("requestId") long requestId,HttpSession session)
+	{
+		int memberId= (int) session.getAttribute("memberId");
+		boolean isAuthorized = manageExternalUserAccountService.declineViewAccountRequest(requestId);
+		List<RequestDTO> viewAccountRequestList = manageExternalUserAccountService.getViewAccountRequests(memberId);		
+		return new ModelAndView("/external/viewAccountApproveRequests").addObject("isAuthorized",isAuthorized).addObject("viewAccountRequestList", viewAccountRequestList);
 	}
 }
 

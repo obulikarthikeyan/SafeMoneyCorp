@@ -129,8 +129,8 @@ public class AdminUserController {
 	@RequestMapping("/admin/piiAuthorization")
 	public ModelAndView getPiiAuthorizationPage()
 	{
-		
-		return new ModelAndView("/admin/viewPIIAuthorization");
+		List<UserDTO> userPII = manageExternalUserAccountService.getPIIAuthorizedUserAccounts();
+		return new ModelAndView("/admin/viewPIIAuthorization").addObject("userPII", userPII);
 	}
 	
 	@RequestMapping("/admin/transactionAuthorizationPage")

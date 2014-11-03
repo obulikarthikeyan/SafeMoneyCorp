@@ -411,5 +411,12 @@ public class EmployeeUserController {
 		return new ModelAndView("/internal/customerTransactionAccount").addObject("transactionInfo",transactionInfo);
 	}
 	
+	@RequestMapping(value="/internal/getMemberIdLog")
+	public ModelAndView getMemberIdList(HttpSession session)
+	{
+		List<UserDTO> memberInfo = manageExternalUserAccountService.getMemberList();
+		return new ModelAndView("/internal/memberIdLog").addObject("memberInfo", memberInfo);
+	}
+	
 
 }
