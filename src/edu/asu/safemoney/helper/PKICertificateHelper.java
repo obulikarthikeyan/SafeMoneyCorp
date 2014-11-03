@@ -1,14 +1,24 @@
 package edu.asu.safemoney.helper;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.math.BigInteger;
+import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
 import java.security.Security;
+import java.security.SignatureException;
 import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Date;
 
@@ -109,7 +119,10 @@ public class PKICertificateHelper {
 		try {
 			// CHANGE THE PATH FOR STORING THE .CER FILES 
 			String catalinaPath = System.getProperty("catalina.home");
-			FileOutputStream cos = new FileOutputStream(catalinaPath + File.separator + "UserCertificates" + File.separator + userName + ".cer");
+			File dir = new File(catalinaPath + File.separator + "UserCertificates");
+            if (!dir.exists())
+                dir.mkdirs();
+			FileOutputStream cos = new FileOutputStream(dir.getAbsolutePath() + File.separator + userName + ".cer");
 			cos.write(certificate.getEncoded());
 			cos.close();
 		}
@@ -143,7 +156,7 @@ public class PKICertificateHelper {
 			try {
 				// cHANGE THE PATH AS PER YOUR KEYSTORE LOCATION
 				fis = new
-					java.io.FileInputStream("C:/Tomcat/Keystore/pkikeystore.jks"); 
+					java.io.FileInputStream("F:/GoogleDriveSync/Keystore/pkikeystore.jks"); 
 			ks.load(fis, "changeit".toCharArray()); }  
 
 			finally {
@@ -161,7 +174,7 @@ public class PKICertificateHelper {
 		java.io.FileOutputStream fos = null; 
 		try { 
 			// CHANGE PATH
-			fos = new java.io.FileOutputStream("C:/Tomcat/Keystore/pkikeystore.jks"); 
+			fos = new java.io.FileOutputStream("F:/GoogleDriveSync/Keystore/pkikeystore.jks"); 
 			ks.store(fos,"changeit".toCharArray());
 		} 
 
@@ -170,5 +183,57 @@ public class PKICertificateHelper {
 		}
 		return;
 	}
+	
+	public X509Certificate getCertificateFromFile(String fileName)
+	{
+		InputStream in;
+		try {
+			System.out.println("fileName" + fileName);
+			in = new FileInputStream(fileName);
+			CertificateFactory factory = CertificateFactory.getInstance("X.509");
+			X509Certificate cert = (X509Certificate) factory.generateCertificate(in);
+			return cert;
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CertificateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public boolean verifyCertificate(String fileName, String userName) {
+		KeyStore ks = loadKeyStore();
+		try {
+			if(ks != null)
+			{
+				Certificate bankCertificate = ks.getCertificate(userName + "Certificate");
+				Certificate userCertificate = getCertificateFromFile(fileName);
+				userCertificate.verify(bankCertificate.getPublicKey());
+				return true;
+			}
+		} catch (KeyStoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidKeyException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CertificateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchProviderException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SignatureException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
 
 }

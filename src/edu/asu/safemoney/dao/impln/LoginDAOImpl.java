@@ -122,7 +122,7 @@ public class LoginDAOImpl implements LoginDAO{
 	{
 		
 		UserDTO userDTO = new UserDTO();
-		userDTO.setMemberId((int) ExternalUserHelper.generateRandomNumber() / 100);
+		userDTO.setMemberId((int) ExternalUserHelper.generateRandomNumber());
 		userDTO.setFirstName(user.getFirstName());
 		userDTO.setLastName(user.getLastName());
 		userDTO.setContactNo(user.getContactNo());

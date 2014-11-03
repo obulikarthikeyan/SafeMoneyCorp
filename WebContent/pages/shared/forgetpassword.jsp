@@ -7,7 +7,30 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>SafeMoneyCorp - Forget Password</title>
-<link href="css/bootstrap.css" rel="stylesheet" media="screen">  
+<link href="<%=request.getContextPath()%>/css/bootstrap.min.css"
+	rel="stylesheet">
+
+<!-- MetisMenu CSS -->
+<link
+	href="<%=request.getContextPath()%>/css/plugins/metisMenu/metisMenu.min.css"
+	rel="stylesheet">
+
+<!-- Timeline CSS -->
+<link href="<%=request.getContextPath()%>/css/plugins/timeline.css"
+	rel="stylesheet">
+
+<!-- Custom CSS -->
+<link href="<%=request.getContextPath()%>/css/sb-admin-2.css"
+	rel="stylesheet">
+
+<!-- Morris Charts CSS -->
+<link href="<%=request.getContextPath()%>/css/plugins/morris.css"
+	rel="stylesheet">
+
+<!-- Custom Fonts -->
+<link
+	href="<%=request.getContextPath()%>/font-awesome-4.1.0/css/font-awesome.min.css"
+	rel="stylesheet" type="text/css">
 
 <style>
     body {
@@ -20,32 +43,32 @@
 
 
 
-<body>
-<jsp:include page="/pages/sidebar.jsp"></jsp:include>
+<body style="background:url('http://localhost:8080/SafeMoneyCorp/images/background.jpg')">
+ <%-- <jsp:include page="/pages/sidebar.jsp"></jsp:include>  --%>
 <div id="page-wrapper">
-
 <br>
-<br><h4>Forget Password</h4>
+<br><h3>Forget Password</h3>
 <br>
 <form class="form-horizontal" role="form" action="secQuestionValidation" method="post"  style="padding-left: 2%; padding-top: 2%;"> 
 	<!-- <form class="form-horizontal" role="form" action="LoginController" method="post"> -->
   
   
   <div class="form-group">
-    <label for="Q1" class="col-sm-2 control-label">${secQuestions.question1 }</label>
-    <div class="col-sm-10">
-      <input type="input" id="answer1" class="form-control"  name="answer1">
-    </div>
+  
+    <label for="Q1" class="control-label">${secQuestions.question1 }</label>
+    
+      <input type="text" id="answer1" class="form-control"  name="answer1">
+  
     <br/>
-     <label for="Q2" class="col-sm-2 control-label">${secQuestions.question2 }</label>
-     <div class="col-sm-10">
-      <input type="input" class="form-control"  id="answer2" name="answer2">
-    </div>
+     <label for="Q2" class="control-label">${secQuestions.question2 }</label>
+    
+      <input type="text" class="form-control"  id="answer2" name="answer2">
+ 
     <br/>
-    <label for="Q3" class="col-sm-2 control-label">${secQuestions.question3 }</label>
-     <div class="col-sm-10">
-      <input type="input" class="form-control" id="answer3" name="answer3">
-    </div>
+    <label for="Q3" class="control-label">${secQuestions.question3 }</label>
+    
+      <input type="text" class="form-control" id="answer3" name="answer3">
+  
   </div>
   <div class="form-group">
     <div class="col-sm-offset-2 col-sm-10">
@@ -53,8 +76,10 @@
     </div>
   </div>
   <div class="form-group">
-    <div class="col-sm-offset-2 col-sm-10">
-      <button type="submit" class="btn btn-default">Generate OTP</button>
+    <div class="">
+    <br>
+      <input type="submit" class="btn btn-primary" value="Generate OTP"/>
+  
     </div>
   </div>
 </form>

@@ -1,5 +1,6 @@
 package edu.asu.safemoney.controller;
 
+import java.io.File;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -9,6 +10,8 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.WebDataBinder;
@@ -24,6 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 import edu.asu.safemoney.dto.PaymentRequestDTO;
 import edu.asu.safemoney.dto.TransactionDTO;
 import edu.asu.safemoney.dto.UserDTO;
+import edu.asu.safemoney.helper.PKICertificateHelper;
 import edu.asu.safemoney.model.AccountModel;
 import edu.asu.safemoney.model.ModifyUserModel;
 import edu.asu.safemoney.model.TransactionModel;
@@ -291,7 +295,28 @@ private EmployeeUserService employeeUserService;
 	public ModelAndView authorizePayment(@RequestParam("paymentRequestId") long paymentRequestId,@RequestParam("authorizeAction") String authorizeAction, @RequestParam("certFile") MultipartFile file, HttpSession session)
 	{
 		String filePath = System.getProperty("catalina.home");
-		manageExternalUserAccountService.writeCertFile(file, filePath);
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if(auth != null)
+		{
+			int memberId = (Integer) session.getAttribute("memberId");
+			AccountModel accountModel = manageExternalUserAccountService
+					.getAccountDetails(memberId);
+			List<PaymentRequestDTO> requestList = manageExternalUserAccountService
+					.getPaymentRequest(memberId);
+			File userCertFile = manageExternalUserAccountService.writeCertFile(file, filePath, auth.getName());
+			if(userCertFile != null)
+			{
+				PKICertificateHelper pkiHelper = new PKICertificateHelper();
+				pkiHelper.verifyCertificate(userCertFile.getAbsolutePath(), auth.getName());
+				return new ModelAndView("external/transactions").addObject("account", accountModel)
+						.addObject("requestList", requestList).addObject("error", "Certificate Verification Failed");
+			}
+			else
+			{
+				return new ModelAndView("external/transactions").addObject("account", accountModel)
+						.addObject("requestList", requestList).addObject("error", "File Upload Failed");
+			}
+		}
 		if (authorizeAction.equals("authorized")) {
 			String result = manageExternalUserAccountService
 					.authorizePayment(paymentRequestId);

@@ -74,10 +74,11 @@
 													var contactNo = '${request.memberId.contactNo}';
 													var emailId = '${request.memberId.emailId}';
 													var isCustomer = '${request.memberId.isCustomer}';
+													var isEmployee = '${request.memberId.isEmployee}';
 													var requestId = '${request.requestId}';
 													var requestType = '${request.requestType}';
 													var type = 'Customer';
-													if(isCustomer == 'false')
+													if(isCustomer == 'false' && isEmployee == false)
 														type = 'Merchant';
 														
 												   	 $('#firstName').text(firstName);

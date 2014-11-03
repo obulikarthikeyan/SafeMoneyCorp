@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
+import edu.asu.safemoney.model.SecurityQuestionsModel;
 import edu.asu.safemoney.model.UserModel;
 import edu.asu.safemoney.service.LoginService;
 
@@ -81,6 +82,21 @@ public class LoginController {
 		}
 		
 	}
+	
+	@RequestMapping(value="/shared/forgetpassword", method = RequestMethod.GET)
+	public ModelAndView forgetPassword(HttpSession session) {
+		String userName = (String)session.getAttribute("userName");
+		if(userName != null)
+		{
+			SecurityQuestionsModel secQuestions = loginService.getSecurityQuestions(userName);
+			if(secQuestions != null)
+			{
+				return new ModelAndView("shared/forgetpassword").addObject("secQuestions", secQuestions);
+			}
+		}
+		return new ModelAndView("shared/forgetpassword").addObject("error", "Invalid UserName");
+	}
+		
 	
 	
 	@RequestMapping(value="/logout", method = RequestMethod.GET)

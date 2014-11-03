@@ -48,11 +48,7 @@
 						<table style="width: 70%; height: 60%">
 
 							<tbody>
-								<tr>
-									<td><b>Member ID</b></td>
-									<td>${userDTO.memberId }</td>
-
-								</tr>
+								
 								<tr>
 									<td><b>First Name</b></td>
 									<td>${userDTO.firstName }</td>

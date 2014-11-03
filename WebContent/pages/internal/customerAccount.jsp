@@ -46,10 +46,10 @@
 											</tr>
 											<tr>
 												<td>Type</td>
-												<c:if test="${customerInfo.isCustomer == 'true' }">
+												<c:if test="${customerInfo.isCustomer == 'true'">
 												<td>Customer</td>
 												</c:if>
-												<c:if test="${customerInfo.isCustomer != 'true' }">
+												<c:if test="${customerInfo.isCustomer != 'true' && customerInfo.isEmployee == false}}">
 												<td>Merchant</td>
 												</c:if>
 											</tr>

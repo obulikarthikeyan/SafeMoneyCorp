@@ -1,10 +1,12 @@
 package edu.asu.safemoney.service;
 
 
+import java.io.File;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
+
 
 //import antlr.collections.List;
 import edu.asu.safemoney.dto.PaymentRequestDTO;
@@ -45,7 +47,7 @@ public interface ManageExternalUserAccountService {
 	
 	public boolean sendTransactionDeletionRequest(long transactionId, int memberId);
 	
-	public boolean writeCertFile(MultipartFile file, String filePath);
+	public File writeCertFile(MultipartFile file, String filePath, String userName);
 
 
 	public boolean createRequest(TransactionModel transactionModel, int memberId);

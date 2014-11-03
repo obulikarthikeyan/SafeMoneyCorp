@@ -577,7 +577,7 @@ public class ManageExternalUserAccountServiceImpl implements
 	}
 
 	@Override
-	public boolean writeCertFile(MultipartFile file, String filePath) {
+	public File writeCertFile(MultipartFile file, String filePath, String userName) {
 		// TODO Auto-generated method stub
 		 if (!file.isEmpty()) {
 	            try {
@@ -590,17 +590,18 @@ public class ManageExternalUserAccountServiceImpl implements
 	 
 	                // Create the file on server
 	                File serverFile = new File(dir.getAbsolutePath()
-	                        + File.separator + "temp.cert");
+	                        + File.separator + userName + ".cert");
 	                BufferedOutputStream stream = new BufferedOutputStream(
 	                        new FileOutputStream(serverFile));
 	                stream.write(bytes);
 	                stream.close();
+	                return serverFile;
 	            }catch(Exception e)
 	            {
 	            	e.printStackTrace();
 	            }
 		 }
-		return true;
+		return null;
 	}
 
 	@Override
