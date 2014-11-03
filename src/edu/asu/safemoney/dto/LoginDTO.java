@@ -38,7 +38,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "LoginDTO.findByIsAccountNonLocked", query = "SELECT l FROM LoginDTO l WHERE l.isAccountNonLocked = :isAccountNonLocked"),
     @NamedQuery(name = "LoginDTO.findByIsEnabled", query = "SELECT l FROM LoginDTO l WHERE l.isEnabled = :isEnabled"),
     @NamedQuery(name = "LoginDTO.findByFailedAttemptCount", query = "SELECT l FROM LoginDTO l WHERE l.failedAttemptCount = :failedAttemptCount"),
-    @NamedQuery(name = "LoginDTO.findByLastLoginDate", query = "SELECT l FROM LoginDTO l WHERE l.lastLoginDate = :lastLoginDate")})
+    @NamedQuery(name = "LoginDTO.findByLastLoginDate", query = "SELECT l FROM LoginDTO l WHERE l.lastLoginDate = :lastLoginDate"),
+    @NamedQuery(name = "LoginDTO.findByOtp", query = "SELECT l FROM LoginDTO l WHERE l.otp = :otp"),
+    @NamedQuery(name = "LoginDTO.findByOtpDate", query = "SELECT l FROM LoginDTO l WHERE l.otpDate = :otpDate")})
 public class LoginDTO implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -61,15 +63,26 @@ public class LoginDTO implements Serializable {
     @Size(min = 1, max = 20)
     @Column(name = "site_key")
     private String siteKey;
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "isAccountNonLocked")
-    private Boolean isAccountNonLocked;
+    private boolean isAccountNonLocked;
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "isEnabled")
-    private Integer isEnabled;
+    private boolean isEnabled;
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "failedAttemptCount")
-    private Integer failedAttemptCount;
+    private int failedAttemptCount;
     @Column(name = "lastLoginDate")
     @Temporal(TemporalType.DATE)
     private Date lastLoginDate;
+    @Column(name = "otp")
+    private long otp;
+    @Column(name = "otp_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date otpDate;
     @JoinColumn(name = "member_id", referencedColumnName = "member_id", insertable = false, updatable = false)
     @OneToOne(optional = false)
     private UserDTO userDTO;
@@ -81,11 +94,14 @@ public class LoginDTO implements Serializable {
         this.memberId = memberId;
     }
 
-    public LoginDTO(Integer memberId, String userName, String password, String siteKey) {
+    public LoginDTO(Integer memberId, String userName, String password, String siteKey, boolean isAccountNonLocked, boolean isEnabled, int failedAttemptCount) {
         this.memberId = memberId;
         this.userName = userName;
         this.password = password;
         this.siteKey = siteKey;
+        this.isAccountNonLocked = isAccountNonLocked;
+        this.isEnabled = isEnabled;
+        this.failedAttemptCount = failedAttemptCount;
     }
 
     public Integer getMemberId() {
@@ -120,27 +136,27 @@ public class LoginDTO implements Serializable {
         this.siteKey = siteKey;
     }
 
-    public Boolean getIsAccountNonLocked() {
+    public boolean getIsAccountNonLocked() {
         return isAccountNonLocked;
     }
 
-    public void setIsAccountNonLocked(Boolean isAccountNonLocked) {
+    public void setIsAccountNonLocked(boolean isAccountNonLocked) {
         this.isAccountNonLocked = isAccountNonLocked;
     }
 
-    public Integer getIsEnabled() {
+    public boolean getIsEnabled() {
         return isEnabled;
     }
 
-    public void setIsEnabled(Integer isEnabled) {
+    public void setIsEnabled(boolean isEnabled) {
         this.isEnabled = isEnabled;
     }
 
-    public Integer getFailedAttemptCount() {
+    public int getFailedAttemptCount() {
         return failedAttemptCount;
     }
 
-    public void setFailedAttemptCount(Integer failedAttemptCount) {
+    public void setFailedAttemptCount(int failedAttemptCount) {
         this.failedAttemptCount = failedAttemptCount;
     }
 
@@ -150,6 +166,22 @@ public class LoginDTO implements Serializable {
 
     public void setLastLoginDate(Date lastLoginDate) {
         this.lastLoginDate = lastLoginDate;
+    }
+
+    public long getOtp() {
+        return otp;
+    }
+
+    public void setOtp(long otp) {
+        this.otp = otp;
+    }
+
+    public Date getOtpDate() {
+        return otpDate;
+    }
+
+    public void setOtpDate(Date otpDate) {
+        this.otpDate = otpDate;
     }
 
     public UserDTO getUserDTO() {
