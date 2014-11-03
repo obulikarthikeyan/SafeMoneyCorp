@@ -1,3 +1,4 @@
+
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
@@ -172,7 +173,7 @@
 									<li><a href="<%=request.getContextPath() %>/admin/extUserAccount">External Users</a></li>
 								</ul> <!-- /.nav-second-level --></li>
 							<li><a
-								href="#"><i
+								href="<%=request.getContextPath() %>/admin/piiAuthorization"><i
 									class="fa fa-edit fa-fw"></i> View PII</a></li>
 							<li><a href="#"><i class="fa fa-table fa-fw"></i> View
 									System Log</a></li>
@@ -234,3 +235,4 @@
 
 </body>
 </html>
+
