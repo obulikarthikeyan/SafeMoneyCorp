@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -154,13 +156,17 @@ public class LoginController {
 	}
 	
 	@RequestMapping(value="/userSignUp", method = RequestMethod.POST)
-	public ModelAndView doUserSignUp(@ModelAttribute("signUpForm") UserModel userModel)
+	public ModelAndView doUserSignUp(@ModelAttribute("signUpForm") @Valid UserModel userModel, BindingResult result)
 	{
 		System.out.println("date = " + userModel.getDateOfBirth());
+		if(result.hasErrors())
+		{
+			return new ModelAndView("shared/signup").addObject("signUpForm", userModel);
+		}
 		boolean isSuccess = loginService.createUser(userModel);
 		if(!isSuccess)
 		{
-			return new ModelAndView("shared/signup").addObject("signUpForm", userModel);
+			return new ModelAndView("shared/signup").addObject("signUpForm", userModel).addObject("nameOrEmail", "true");
 		}
 		else
 		{

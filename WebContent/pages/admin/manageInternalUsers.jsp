@@ -34,9 +34,8 @@
 					<!-- Nav tabs -->
 					<ul class="nav nav-pills">
 						<li class="active"><a href="#Create" data-toggle="tab">Create Account</a></li>
-						<li><a href="#Modify" data-toggle="tab">Modify</a>
-						</li>
-						<li><a href="#Delete" data-toggle="tab">Delete</a></li>				
+						<li><a href="#update" data-toggle="tab">Modify/Delete</a>
+						</li>			
 					</ul>
 
 
@@ -270,73 +269,83 @@
 							<br>
 							
 						</div>
+						
+						
+						<div class="tab-pane fade" id="update">
+							
+							<div class="col-lg-12">
+
+						<div class="table-responsive">
+							<table class="table" style="width: 120%">
+								<tbody>
+									<c:if test="${not empty requestList}">
+										<c:forEach var="request" items="${requestList}" varStatus="status">
+											<tr>
+												<td>Member ID</td>
+												<td>${request.requestId }</td>
+											</tr>
+											<tr>
+												<td>Name</td>
+												<td>${request.memberId.memberId }</td>
+											</tr>
+											<tr>
+												<td>Designation</td>
+												<td>${request.requestType }</td>
+											</tr>
+											<tr>
+												<td>Email ID</td>
+												<td>${request.requestDate }</td>
+											</tr>
+											<tr>
+												
+												<c:if test="${request.status == 'NEW' }">
+													<td><button id="viewButton${request.requestId}" class="btn btn-success" 
+											data-toggle="modal" data-target="#viewUser">View</button></td>
+												<script type="text/javascript">
+													$('#viewButton${request.requestId}').click(function(){
+													var firstName = '${request.memberId.firstName}';
+													var lastName = '${request.memberId.lastName}';
+													var contactNo = '${request.memberId.contactNo}';
+													var emailId = '${request.memberId.emailId}';
+													var isCustomer = '${request.memberId.isCustomer}';
+													var isEmployee = '${request.memberId.isEmployee}';
+													var requestId = '${request.requestId}';
+													var requestType = '${request.requestType}';
+													var type = 'Customer';
+													if(isCustomer == 'false' && isEmployee == false)
+														type = 'Merchant';
+														
+												   	 $('#firstName').text(firstName);
+												   	 $('#lastName').text(lastName);
+												   	 $('#contactNo').text(contactNo);
+												   	 $('#emailId').text(emailId);
+												   	 $('#type').text(type);
+												   	 $('#requestId').val(requestId);
+												   	 $('#requestType1').text(requestType);
+												   	 $('#requestType').val(requestType);
+													});
+												</script>
+												</c:if>
+											</tr>
+										</c:forEach>
+									</c:if>
+								</tbody>
+							</table>
+						</div>
+									
+
+						</div>
+					</div>
+						
 
 					</div>
 				</div>
 				<!-- /.panel-body -->
+				
 			</div>
 			<!-- /.panel -->
 		</div>
-	</div>
-	<script type="text/javascript">
-	$.validator.addMethod('amount', function( val, element ) {
-	    var regexp = new RegExp("^[1-9][0-9]*[.]?[0-9]*$");
-
-	    if (!regexp.test(val)) {
-	       return false;
-	    }
-	    return true;
-	}, "Please Enter a valid Amount");
-	
-	$.validator.addMethod('account', function( val, element ) {
-	    var regexp = new RegExp("^[0-9][0-9]*$");
-
-	    if (!regexp.test(val)) {
-	       return false;
-	    }
-	    return true;
-	}, "Please Enter a valid Account Number");
-	
-	$("#creditDebit").validate({
-		rules: {
-			creditDebitAmount: {
-				required: true,
-				amount: true
-			}
-		}
-	}),
-	$("#Transform").validate({
-		rules: {
-			
-			transformAmount:{
-				required: true,
-				amount:true
-			},
-			toAccountNumber:
-			{
-				required: true,
-				account:true
-			}
-		}
-	}),
-	$("#initiatePayment").validate({
-		rules: {
-			amount:{
-				required: true,
-				amount:true
-			},
-			description:
-			{
-				required: true
-			},
-			toMerchantAccountNumber:
-			{
-				required: true,
-				account:true
-			}
-		}
-	})
-	</script>
+	</div>	
 	
 </body>
 </html>

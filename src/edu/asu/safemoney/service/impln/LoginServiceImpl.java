@@ -268,7 +268,7 @@ public class LoginServiceImpl implements LoginService, UserDetailsService {
 			System.out.println("Answer 3 correct");
 		}
 		
-		if(count>=1)
+		if(count>=2)
 		{
 			System.out.println("in service");
 			//SendMail sendOtpMail = new SendMail();
@@ -310,7 +310,6 @@ public class LoginServiceImpl implements LoginService, UserDetailsService {
 		//LoginDTO trd = new LoginDTO();
 		
 				protected PasswordAuthentication getPasswordAuthentication() {
-					//return new PasswordAuthentication("donotreplysbsbank@gmail.com","obuli123");
 					return new PasswordAuthentication("priyank4some1@gmail.com","redhathatred");
 				}
 			});

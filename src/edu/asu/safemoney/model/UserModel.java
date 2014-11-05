@@ -2,10 +2,19 @@ package edu.asu.safemoney.model;
 
 import java.util.Date;
 
+import javax.annotation.Nonnull;
+import javax.annotation.RegEx;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.Pattern;
+
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 
 public class UserModel {
 
+	@Nonnull
+	@NotEmpty
+	@Pattern(regexp = "[a-z-A-Z]*", message = "First name has invalid characters")
 	String firstName;
 	
 	String lastName;

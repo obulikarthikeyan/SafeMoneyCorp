@@ -77,11 +77,11 @@
 
 
 					<div class="panel-body">
-					<form id="signUpForm" role="form" method="POST" action="userSignUp">
+					<form:form id="signUpForm" role="form" method="POST" commandName="signUpForm" action="userSignUp">
 						<fieldset>
 						<div class="row">
 									<div class="col-md-10 col-md-offset-1">
-										<c:if test="${signUpForm != null }">
+										<c:if test="${nameOrEmail == 'true' }">
 											<div style="color:red">
 												Please Enter a different UserName or Email ID.
 											</div>
@@ -105,7 +105,8 @@
 										<div class="col-md-5">
 												<div class="form-group" style="color:red">
 													<input class="form-control" placeholder="First Name" maxlength="25" id="firstName"
-														name="firstName" tabindex="3" value="${signUpForm.firstName }">
+														name="firstName" tabindex="3" value="${signUpForm.firstName }" />
+														<form:errors path="firstName" />
 												</div>
 
 
@@ -247,7 +248,7 @@
 
 												<!-- Change this to a button or input when using this as a form -->
 												<input type="submit"
-													class="btn btn-lg btn-success btn-block" tabindex="25" value="Sign Up"/  	>
+													class="btn btn-lg btn-success btn-block" tabindex="25" value="Sign Up"/>
 
 											</div>
 										</div>
@@ -286,7 +287,7 @@
 									</div>
 						</div>
 						</fieldset>
-						</form>
+						</form:form>
 					</div>
 								
 				</div>
@@ -489,7 +490,7 @@
 		}
 			
 		}
-	})
+	});
 	</script>
 	
 	<!-- jQuery Version 1.11.0 -->
