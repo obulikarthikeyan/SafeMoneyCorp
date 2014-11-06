@@ -3,9 +3,8 @@ package edu.asu.safemoney.service;
 import java.util.List;
 
 import edu.asu.safemoney.dto.RequestDTO;
-
 import edu.asu.safemoney.dto.TransactionDTO;
-
+import edu.asu.safemoney.model.ModifyUserModel;
 import edu.asu.safemoney.model.UserModel;
 
 public interface AdminUserService {
@@ -23,5 +22,7 @@ public interface AdminUserService {
 	public List<TransactionDTO> getTransactionRequest();
 
 	public boolean createEmployee(UserModel userModel);
+	
+	public ModifyUserModel getEmployee(int memberId);
 
 }

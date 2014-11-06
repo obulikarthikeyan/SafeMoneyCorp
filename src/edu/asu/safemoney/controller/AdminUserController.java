@@ -19,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 import edu.asu.safemoney.dto.RequestDTO;
 import edu.asu.safemoney.dto.TransactionDTO;
 import edu.asu.safemoney.dto.UserDTO;
+import edu.asu.safemoney.model.ModifyUserModel;
 import edu.asu.safemoney.model.UserModel;
 import edu.asu.safemoney.service.AdminUserService;
 import edu.asu.safemoney.service.EmployeeUserService;
@@ -44,6 +45,15 @@ public class AdminUserController {
 		return new ModelAndView("/admin/extAccountManagement").addObject("requestList", requestList);
 
 	}
+	
+	@RequestMapping(value="/admin/getEmp", method=RequestMethod.POST)
+	public ModelAndView getEmployee(@RequestParam("memberId") int memberId){
+		System.out.println("member Id: " + memberId);
+		ModifyUserModel employeeDetails= adminUserService.getEmployee(memberId);
+		System.out.println("Address 1 of the employee ********* " + employeeDetails.getAddress1());
+		return new ModelAndView("admin/manageInternalUsers").addObject("employeeDetails", employeeDetails);
+	}
+	
 	
 	@RequestMapping("/admin/approveExtUserAccount")
 	public ModelAndView approveExtUserAccountRequest(
