@@ -195,7 +195,7 @@ public class EmployeeUserServiceImpl implements EmployeeUserService{
 	
 	@Transactional
 	@Override
-	public boolean getViewRequestList(int requestId)
+	public boolean getViewRequestList(long requestId)
 	{
 		return false;
 
@@ -203,13 +203,13 @@ public class EmployeeUserServiceImpl implements EmployeeUserService{
 	
 	@Transactional
 	@Override
-	public boolean authorizeCreditTransaction(int requestId){
+	public boolean authorizeCreditTransaction(long requestId){
 		return false;
 	}
 	
 	@Transactional
 	@Override
-	public boolean authorizePaymentTransaction(int requsetId){
+	public boolean authorizePaymentTransaction(long requsetId){
 		return false;
 	}
 
@@ -274,7 +274,7 @@ public class EmployeeUserServiceImpl implements EmployeeUserService{
 	
 	@Transactional
 	@Override
-	public int getCustomerId (int requestId){
+	public int getCustomerId (long requestId){
 		RequestDTO myRequest = requestDAO.getRequestByRequestId(requestId);
 		int customerId = myRequest.getAuthorizingMemberId();
 		return customerId;
@@ -325,7 +325,8 @@ public class EmployeeUserServiceImpl implements EmployeeUserService{
 		
 	}
 
-	
+	@Override
+	@Transactional	
 	public long getAccountNo(int memberId)
 	{
 		long accountNo = employeeUserDAO.returnCustomerAccountNo(memberId);

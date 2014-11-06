@@ -506,7 +506,31 @@ public class ManageExternalUserAccountDAOImpl implements ManageExternalUserAccou
 	}
 	
 	@Override
+	public List<RequestDTO> getViewTransactionsRequestsForCustomer(int memberId){
+		Session session= sessionFactory.getCurrentSession();		
+		Query query= session.createQuery("FROM RequestDTO r WHERE r.authorizingMemberId = :memberId AND r.requestType = :requestType");
+		query.setInteger("memberId", memberId);
+		query.setString("requestType", "VIEW_TRANSACTION");
+		List<RequestDTO> accountsRequests =(List<RequestDTO>)query.list();
+		return accountsRequests;
+	}
+	
+	@Override
 	public boolean authorizeViewAccountRequest(long requestId)
+	{
+		Session session= sessionFactory.getCurrentSession();
+		Query query = session.getNamedQuery("RequestDTO.findByRequestId").setLong("requestId", requestId);
+		RequestDTO approveRequestDTO = (RequestDTO) query.uniqueResult();
+		if(approveRequestDTO == null)
+		{
+			return false;
+		}
+		approveRequestDTO.setStatus("APPROVED");
+		return true;
+	}
+	
+	@Override
+	public boolean authorizeViewTransactionsRequest(long requestId)
 	{
 		Session session= sessionFactory.getCurrentSession();
 		Query query = session.getNamedQuery("RequestDTO.findByRequestId").setLong("requestId", requestId);
@@ -533,4 +557,18 @@ public class ManageExternalUserAccountDAOImpl implements ManageExternalUserAccou
 		return true;
 	}
 	
+
+	@Override
+	public boolean declineViewTransactionsRequest(long requestId)
+	{
+		Session session= sessionFactory.getCurrentSession();
+		Query query = session.getNamedQuery("RequestDTO.findByRequestId").setLong("requestId", requestId);
+		RequestDTO approveRequestDTO = (RequestDTO) query.uniqueResult();
+		if(approveRequestDTO == null)
+		{
+			return false;
+		}
+		approveRequestDTO.setStatus("DECLINED");
+		return true;
+	}
 }

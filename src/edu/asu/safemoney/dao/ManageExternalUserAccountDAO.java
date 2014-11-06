@@ -54,8 +54,13 @@ public interface ManageExternalUserAccountDAO {
 	
 	public List<RequestDTO> getViewAccountRequestsForCustomer(int memberId);
 	
+	public List<RequestDTO> getViewTransactionsRequestsForCustomer(int memberId);
+	
 	public boolean authorizeViewAccountRequest(long requestId);
 	
+	public boolean authorizeViewTransactionsRequest(long requestId);
+	
 	public boolean declineViewAccountRequest(long requestId);
+	public boolean declineViewTransactionsRequest(long requestId);
 	
 }

@@ -1,8 +1,13 @@
+<<<<<<< HEAD
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+=======
+<<<<<<< HEAD
+>>>>>>> branch 'master' of https://github.com/obulikarthikeyan/SafeMoneyCorp
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -321,6 +326,7 @@
 											aria-hidden="true">&times;</button>
 										<h4 class="modal-title" id="myModalLabel">Request Details</h4>
 									</div>
+
 
 									<form:form id="processPaymentRequest" role="form" method="POST" commandName="processPaymentRequest"
 										action="processPaymentRequest">

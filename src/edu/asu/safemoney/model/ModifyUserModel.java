@@ -1,21 +1,50 @@
 package edu.asu.safemoney.model;
 
+import javax.annotation.Nonnull;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
+
 public class ModifyUserModel {
 
-String emailId;
+	@NotEmpty @Email
+	String emailId;
 	
+	@Nonnull @Min(0) @Size(min=10)
+	@Digits(integer = 10, fraction = 0)
 	long contactNo;
 	
+	@Nonnull
+	@NotEmpty @Size(max=50)
+	@Pattern(regexp = "[a-z-A-Z]*", message = "Address has invalid characters")
 	String address1;
 	
+	@Nonnull
+	@NotEmpty @Size(max=50)
+	@Pattern(regexp = "[a-z-A-Z]*", message = "Address has invalid characters")
 	String address2;
 	
+	@Nonnull
+	@NotEmpty @Size(max=15)
+	@Pattern(regexp = "[a-z-A-Z]*", message = "City has invalid characters")
 	String city;
 	
+	@Nonnull
+	@NotEmpty @Size(min=2,max=2)
+	@Pattern(regexp = "[a-z-A-Z]*", message = "State has invalid characters")
 	String state;
 	
+	@Nonnull @Min(0) @Size(min=5)
+	@Digits(integer = 5, fraction = 0)
 	long zip;
 	
+	@Nonnull @Min(0)
+	@Digits(integer = 11, fraction = 0)
 	int memberId;
 	
 	public int getMemberId() {

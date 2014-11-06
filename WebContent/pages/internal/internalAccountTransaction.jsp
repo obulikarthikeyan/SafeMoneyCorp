@@ -1,7 +1,7 @@
-
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -56,10 +56,10 @@
 												<td>Merchant</td>
 												</c:if>
 												<c:if test="${request.status == 'APPROVED' }">
-													<td><form method="POST" action="viewUserTransactions">
+													<td><form:form id="viewsUserTransactions" commandName="viewsUserTransactions" method="POST" action="viewUserTransactions">
 													<input type="hidden" value="${request.requestId }" name="requestId">
 													<button id="viewButton${request.requestId}" class="btn btn-success" data-toggle="modal" data-target="#viewUser" type="submit">View</button>
-													</form></td>													
+													</form:form></td>													
 												</c:if>
 
 											</tr>

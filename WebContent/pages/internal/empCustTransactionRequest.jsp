@@ -1,6 +1,6 @@
-
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -26,7 +26,7 @@
 				<div class="panel-body">
 					<div class="row">
 						<div class="form-group" >
-							<form id ="sendRequestForm" name="sendRequestForm" target="_self" method="post" action="requestTransaction" style="margin:5%" class="form-inline">
+							<form:form id ="sendRequestForm" commandName="sendRequestForm" name="sendRequestForm" target="_self" method="post" action="requestTransaction" style="margin:5%" class="form-inline">
 								<ul class="list-unstyled">
 									<li><br></li>
 									<li>					
@@ -53,7 +53,7 @@
 									<li><br></li>
 									<li><input name="submitRequest" type="submit" value="Submit" class = "btn btn-primary" autofocus="autofocus"/></li>
 									</ul>		
-							</form>
+							</form:form>
 						</div>
 					</div>
 							<div class="table-responsive row" style="margin:5%">

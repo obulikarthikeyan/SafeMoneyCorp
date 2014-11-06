@@ -56,9 +56,12 @@ public interface ManageExternalUserAccountService {
 	public List<UserDTO> getPIIAuthorizedUserAccounts();
 	public List<UserDTO> getMemberList();
 	public List<RequestDTO> getViewAccountRequests(int memberId);
+	public List<RequestDTO> getViewTransactionsRequests(int memberId);
 	
 	public boolean authorizeViewAccountRequest(long requestId);
+	public boolean authorizeViewTransactionsRequest(long requestId);
 	public boolean declineViewAccountRequest(long requestId);
+	public boolean declineViewTransactionsRequest(long requestId);
 	
 	public File writeCertFile(MultipartFile file, String filePath, String userName);
 }

@@ -6,7 +6,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-
 import org.springframework.aop.aspectj.AspectJAdviceParameterNameDiscoverer.AmbiguousBindingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,12 +16,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
-
 import edu.asu.safemoney.dto.RequestDTO;
 import edu.asu.safemoney.dto.TransactionDTO;
 import edu.asu.safemoney.dto.UserDTO;
 import edu.asu.safemoney.model.AdminAuthorizePaymentRequest;
 import edu.asu.safemoney.model.EmpProcessPaymentModel;
+import edu.asu.safemoney.model.RequestModel;
+import edu.asu.safemoney.model.ModifyUserModel;
 import edu.asu.safemoney.model.UserModel;
 import edu.asu.safemoney.service.AdminUserService;
 import edu.asu.safemoney.service.EmployeeUserService;
@@ -48,6 +48,15 @@ public class AdminUserController {
 		return new ModelAndView("/admin/extAccountManagement").addObject("requestList", requestList);
 
 	}
+	
+	@RequestMapping(value="/admin/getEmp", method=RequestMethod.POST)
+	public ModelAndView getEmployee(@RequestParam("memberId") int memberId){
+		System.out.println("member Id: " + memberId);
+		ModifyUserModel employeeDetails= adminUserService.getEmployee(memberId);
+		System.out.println("Address 1 of the employee ********* " + employeeDetails.getAddress1());
+		return new ModelAndView("admin/manageInternalUsers").addObject("employeeDetails", employeeDetails);
+	}
+	
 	
 	@RequestMapping("/admin/approveExtUserAccount")
 	public ModelAndView approveExtUserAccountRequest(
@@ -153,13 +162,20 @@ public class AdminUserController {
 	}
 	
 	@RequestMapping(value="/admin/getTransactionHistoryForAdmin", method=RequestMethod.POST)
-	public ModelAndView getTransactionHistoryForAdmin(@RequestParam("memberId") int memberId, HttpServletRequest request, HttpSession session)
+	public ModelAndView getTransactionHistoryForAdmin(@ModelAttribute("sendRequestForm") @Valid RequestModel requestModel, BindingResult result, HttpServletRequest request, HttpSession session)
 	{		
 		//UserDTO customerDTO = manageExternalUserAccountService.displayUserAccount(memberId);
+		if(result.hasErrors())
+		{
+			return new ModelAndView("/admin/ExternalUserTransactions").addObject("error","Invalid Request");	
+		}
+		else
+		{
+			List<TransactionDTO> transactionInfo = employeeUserService.getAllTransactions(requestModel.getMemberId());
+			return new ModelAndView("/admin/ExternalUserTransactions").addObject("transactionInfo",transactionInfo);				
+		}
 		
-		List<TransactionDTO> transactionInfo = employeeUserService.getAllTransactions(memberId);
 
-		return new ModelAndView("/admin/ExternalUserTransactions").addObject("transactionInfo",transactionInfo);
 	}
 	
 	@RequestMapping("/admin/employeeRegistration")
@@ -307,9 +323,11 @@ public class AdminUserController {
 		List<TransactionDTO> transactionList = adminUserService
 				.getTransactionRequest();
 		System.out.println(processResult);
+
 		return new ModelAndView("/admin/authorizeTransaction").addObject(
 				"transactionRequestList", transactionList).addObject("message",
 				processResult);
+
 	}
 }
 
