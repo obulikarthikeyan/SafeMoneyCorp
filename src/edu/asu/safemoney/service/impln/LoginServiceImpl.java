@@ -17,6 +17,7 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -27,6 +28,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import edu.asu.safemoney.controller.GlobalExceptionHandlerController;
 import edu.asu.safemoney.dao.LoginDAO;
 import edu.asu.safemoney.dao.RequestDAO;
 import edu.asu.safemoney.dto.LoginDTO;
@@ -41,6 +43,9 @@ import edu.asu.safemoney.service.LoginService;
 @Service
 public class LoginServiceImpl implements LoginService, UserDetailsService {
 
+
+	public static final Logger logger = Logger.getLogger(LoginServiceImpl.class);
+	
 	@Autowired
 	private LoginDAO loginDAO;
 	
@@ -310,15 +315,11 @@ public class LoginServiceImpl implements LoginService, UserDetailsService {
 		//LoginDTO trd = new LoginDTO();
 		
 				protected PasswordAuthentication getPasswordAuthentication() {
-					return new PasswordAuthentication("priyank4some1@gmail.com","redhathatred");
-				}
+					//return new PasswordAuthentication("donotreplysbsbank@gmail.com","obuli123");
+					return new PasswordAuthentication("donotreplysbsbank@gmail.com","obuli123");
+				}	
 			});
- 
-		
-		
-		
-		
-		try {
+try {
 			
 			String e_mail = loginDAO.getEmail(userName);
 			System.out.println("email in send mail via logindao"+ e_mail);
@@ -332,6 +333,7 @@ public class LoginServiceImpl implements LoginService, UserDetailsService {
 			message.setSubject("Your OTP Code : "+ otpCode);
 			message.setText("Thank you for banking with us!: Your Security and Privacy is Our Priority");
  
+			
 			Transport.send(message);
 			
 			System.out.println("Done3");
@@ -341,7 +343,6 @@ public class LoginServiceImpl implements LoginService, UserDetailsService {
 			throw new RuntimeException(e);
 		}
 	}
-	
 	
 	
 }

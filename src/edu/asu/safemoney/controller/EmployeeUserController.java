@@ -10,17 +10,21 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
+
 import edu.asu.safemoney.dto.AccountDTO;
 import edu.asu.safemoney.dto.PaymentRequestDTO;
 import edu.asu.safemoney.dao.EmployeeUserDAO;
@@ -29,6 +33,7 @@ import edu.asu.safemoney.dao.EmployeeUserDAO;
 
 import edu.asu.safemoney.dto.RequestDTO;
 import edu.asu.safemoney.dto.TransactionDTO;
+import edu.asu.safemoney.dto.TransactionReviewDTO;
 import edu.asu.safemoney.dto.UserDTO;
 import edu.asu.safemoney.model.*;
 import edu.asu.safemoney.service.EmployeeUserService;
@@ -438,6 +443,51 @@ public class EmployeeUserController {
 	{
 		List<UserDTO> memberInfo = manageExternalUserAccountService.getMemberList();
 		return new ModelAndView("/internal/memberIdLog").addObject("memberInfo", memberInfo);
+	}
+	
+	@RequestMapping(value="/internal/transactionReview", method= RequestMethod.GET)
+	public ModelAndView getReviewList()
+	{
+		List<TransactionReviewDTO> reviewList = employeeUserService.getTransactionReviewList();
+		if(reviewList != null)
+		{
+			return new ModelAndView("/internal/processTransactionReview").addObject("reviewList", reviewList);
+		}else
+		{
+			return new ModelAndView("/internal/processTransactionReview").addObject("error", "No Requests found");
+		}
+	}
+	
+	@RequestMapping(value="/internal/processTransReview", method= RequestMethod.POST)
+	public ModelAndView processTransactionReview(@ModelAttribute("processTransReview") @Valid TransactionReviewModel reviewModel, BindingResult result, HttpSession session)
+	{
+		List<TransactionReviewDTO> reviewList = employeeUserService.getTransactionReviewList();
+		int memberId = (Integer) session.getAttribute("memberId");
+		if(result.hasErrors())
+		{
+			return new ModelAndView("/internal/processTransactionReview").addObject("reviewList", reviewList).addObject("error", "Invalid Input");
+		}
+		else
+		{
+			if(reviewModel.getProcessTxnReview().equals("approved"))
+			{
+				boolean isSuccess = employeeUserService.approveTransactionReview(reviewModel.getTransactionReviewId(), memberId);
+				reviewList = employeeUserService.getTransactionReviewList();
+				if(isSuccess)
+				{
+					return new ModelAndView("/internal/processTransactionReview").addObject("reviewList", reviewList).addObject("message", "Processed Successfully");
+				}
+			}else if(reviewModel.getProcessTxnReview().equals("declined"))
+			{
+				boolean isDeclined = employeeUserService.declineTransactionReview(reviewModel.getTransactionReviewId(), memberId);
+				reviewList = employeeUserService.getTransactionReviewList();
+				if(isDeclined)
+				{
+					return new ModelAndView("/internal/processTransactionReview").addObject("reviewList", reviewList).addObject("message", "Processed Successfully");
+				}
+			}
+		}
+		return new ModelAndView("/internal/processTransactionReview").addObject("reviewList", reviewList).addObject("error", "Error: Process Failed");
 	}
 	
 

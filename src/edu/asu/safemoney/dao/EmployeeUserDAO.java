@@ -1,9 +1,11 @@
 package edu.asu.safemoney.dao;
 
 import java.util.List;
+
 import edu.asu.safemoney.dto.PaymentRequestDTO;
 import edu.asu.safemoney.dto.RequestDTO;
 import edu.asu.safemoney.dto.TransactionDTO;
+import edu.asu.safemoney.dto.TransactionReviewDTO;
 
 public interface EmployeeUserDAO {
 	public List<PaymentRequestDTO> getPaymentRequest();
@@ -19,5 +21,13 @@ public interface EmployeeUserDAO {
 	public long returnCustomerAccountNo(int memberId);
 	public List<RequestDTO> displayEmployeeUserTransactionDAO(int memberId);
 	public List<TransactionDTO> getTransactionListForCustomer(int memberId);
+	
+	public List<TransactionReviewDTO> getTransactionReviewRequests();
+	
+	public TransactionReviewDTO getTransactionReviewDTO(long transactionReviewId);
+	
+	public boolean updateTransaction(TransactionDTO txnDTO);
+	
+	public boolean updateTransactionReviewDTO(TransactionReviewDTO reviewDTO);
 
 }

@@ -1,5 +1,5 @@
 
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <!DOCTYPE html>
@@ -334,7 +334,7 @@
 		"[atleast 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character in [@#$%&]]");
 	
 	$.validator.addMethod('questionField', function( val, element ) {
-	    var regexp = new RegExp("^[a-zA-Z0-9,._;-?]+$");
+	    var regexp = new RegExp("^[a-zA-Z0-9,._;- ?]+$");
 
 	    if (!regexp.test(val)) {
 	       return false;

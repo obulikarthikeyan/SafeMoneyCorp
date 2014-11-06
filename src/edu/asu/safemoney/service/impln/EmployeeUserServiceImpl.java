@@ -23,6 +23,7 @@ import edu.asu.safemoney.dto.AccountDTO;
 import edu.asu.safemoney.dto.PaymentRequestDTO;
 import edu.asu.safemoney.dto.RequestDTO;
 import edu.asu.safemoney.dto.TransactionDTO;
+import edu.asu.safemoney.dto.TransactionReviewDTO;
 import edu.asu.safemoney.dto.UserDTO;
 import edu.asu.safemoney.dto.UserTypeDTO;
 import edu.asu.safemoney.helper.ExternalUserHelper;
@@ -41,6 +42,9 @@ public class EmployeeUserServiceImpl implements EmployeeUserService{
 	
 	@Autowired
 	private AdminUserService adminUserService;
+	
+	@Autowired
+	private ManageExternalUserAccountService extUserService;
 	
 	
 	@Transactional
@@ -324,5 +328,83 @@ public class EmployeeUserServiceImpl implements EmployeeUserService{
 	{
 		long accountNo = employeeUserDAO.returnCustomerAccountNo(memberId);
 		return accountNo;
+	}
+
+	@Override
+	@Transactional
+	public List<TransactionReviewDTO> getTransactionReviewList() {
+		// TODO Auto-generated method stub
+		List<TransactionReviewDTO> reviewList = employeeUserDAO.getTransactionReviewRequests();
+		List<TransactionReviewDTO> revList = new ArrayList<TransactionReviewDTO>();
+		if(reviewList != null)
+		{
+			for(TransactionReviewDTO review : reviewList)
+			{
+				if(review.getTransactionType().equals("transfer"))
+				{
+					revList.add(review);
+				}
+			}
+		}
+		return revList;
+	}
+	
+	@Transactional
+	public boolean approveTransactionReview(long transactionReviewId, int memberId)
+	{
+		double oldAmount;
+		double newAmount;
+		TransactionReviewDTO reviewDTO = employeeUserDAO.getTransactionReviewDTO(transactionReviewId);
+		if(reviewDTO != null)
+		{
+			TransactionDTO txnDTO = manageExternalUserAccountDAO.getTransactionDTO(reviewDTO.getTransactionId());
+			if(txnDTO != null)
+			{
+				oldAmount = txnDTO.getAmount();
+				newAmount = reviewDTO.getAmount();
+				if(oldAmount < newAmount)
+				{
+					String result = extUserService.makeDebitTransaction(reviewDTO.getCustMemberId().getMemberId(), newAmount-oldAmount, reviewDTO.getCustMemberId().getMemberId(), "Debit");
+					if(result.equals("success"))
+					{
+						txnDTO.setAmount(newAmount);
+						txnDTO.setStatus("PENDING_BANK");
+						reviewDTO.setStatus("APPROVED");
+						reviewDTO.setAuthorizingMemberId(memberId);
+						reviewDTO.setProcessedDate(new Date());
+						boolean isUpadted = employeeUserDAO.updateTransaction(txnDTO);
+						boolean isChanged = employeeUserDAO.updateTransactionReviewDTO(reviewDTO);
+						if(isChanged && isUpadted)
+						{
+							return true;
+						}
+					}
+					
+				}
+			}
+		}
+		return false;
+	}
+
+	@Override
+	@Transactional
+	public boolean declineTransactionReview(long transactionReviewId,
+			int memberId) {
+		// TODO Auto-generated method stub
+		TransactionReviewDTO reviewDTO = employeeUserDAO.getTransactionReviewDTO(transactionReviewId);
+		if(reviewDTO != null)
+		{
+			System.out.println("New ");
+			reviewDTO.setStatus("DECLINED");
+			reviewDTO.setProcessedDate(new Date());
+			reviewDTO.setAuthorizingMemberId(memberId);
+			boolean isDeclined = employeeUserDAO.updateTransactionReviewDTO(reviewDTO);
+			if(isDeclined)
+			{
+				System.out.println("Declined");
+				return true;
+			}
+		}
+		return false;
 	}
 }

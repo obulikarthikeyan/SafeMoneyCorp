@@ -24,6 +24,7 @@ import java.util.Date;
 
 import javax.security.auth.x500.X500Principal;
 
+import org.apache.log4j.Logger;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v1CertificateBuilder;
@@ -32,7 +33,12 @@ import org.bouncycastle.cert.jcajce.JcaX509v1CertificateBuilder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
+
+import edu.asu.safemoney.service.impln.LoginServiceImpl;
 public class PKICertificateHelper {
+	
+
+	public static final Logger logger = Logger.getLogger(PKICertificateHelper.class);
 
 	public static java.security.cert.X509Certificate generateCert(KeyStore.PrivateKeyEntry priKey, KeyPair kP, String userName) {
 
@@ -122,6 +128,7 @@ public class PKICertificateHelper {
 			File dir = new File(catalinaPath + File.separator + "UserCertificates");
             if (!dir.exists())
                 dir.mkdirs();
+            logger.debug("PKI file" + dir.getAbsolutePath());
 			FileOutputStream cos = new FileOutputStream(dir.getAbsolutePath() + File.separator + userName + ".cer");
 			cos.write(certificate.getEncoded());
 			cos.close();

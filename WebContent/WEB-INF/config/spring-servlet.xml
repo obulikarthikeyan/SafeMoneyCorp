@@ -34,7 +34,13 @@
 
 <bean id = "defaultProvider" class = "edu.asu.safemoney.helper.DefaultAuthenticationProvider">
 	<property name="userDetailsService" ref="loginService" />
+	<property name="passwordEncoder" ref="bcryptEncoder"></property>
 </bean>
+
+<bean id = "bcryptEncoder" class = "org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
+<constructor-arg name="strength" value="10"></constructor-arg>
+</bean>	
+
 <bean id = "loginService" class = "edu.asu.safemoney.service.impln.LoginServiceImpl">
 	</bean>	
 	<bean id = "transactionManager" class = "org.springframework.orm.hibernate4.HibernateTransactionManager">

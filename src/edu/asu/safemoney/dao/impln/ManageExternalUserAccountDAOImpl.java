@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 
 import edu.asu.safemoney.dao.ManageExternalUserAccountDAO;
 import edu.asu.safemoney.dto.AccountDTO;
+import edu.asu.safemoney.dto.LoginDTO;
 import edu.asu.safemoney.dto.PaymentRequestDTO;
 import edu.asu.safemoney.dto.RequestDTO;
 import edu.asu.safemoney.dto.TransactionDTO;
@@ -211,11 +212,12 @@ public class ManageExternalUserAccountDAOImpl implements ManageExternalUserAccou
 		// TODO Auto-generated method stub
 		try {
 			Session session = sessionFactory.getCurrentSession();
-			Query query = session.getNamedQuery("UserDTO.findByMemberId")
+			Query query = session.getNamedQuery("LoginDTO.findByMemberId")
 					.setInteger("memberId", memberId);
-			UserDTO userDTO = (UserDTO) query.uniqueResult();
-			if (userDTO != null) {
-				session.delete(userDTO);
+			LoginDTO loginDTO = (LoginDTO) query.uniqueResult();
+			if (loginDTO != null && loginDTO.getIsEnabled()) {
+				loginDTO.setIsEnabled(false);
+				session.saveOrUpdate(loginDTO);
 				return true;
 			}
 		} catch (Exception e) {
@@ -512,5 +514,41 @@ public class ManageExternalUserAccountDAOImpl implements ManageExternalUserAccou
 		}
 		approveRequestDTO.setStatus("DECLINED");
 		return true;
+	}
+	@Override
+	public boolean isTransactionExists(long transactionId) {
+		// TODO Auto-generated method stub
+		Session session = sessionFactory.getCurrentSession();
+		Query query = session.getNamedQuery("TransactionDTO.findByTransactionId").setLong("transactionId", transactionId);
+		try
+		{
+			TransactionDTO tDTO = (TransactionDTO) query.uniqueResult();
+			if(tDTO != null)
+			{
+				return true;
+			}
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+		return false;
+	}
+	
+	public boolean updateIsEnabled(int memberId, boolean isEnabled)
+	{
+		Session session = sessionFactory.getCurrentSession();
+		try
+		{
+			Query query = session.getNamedQuery("LoginDTO.findByMemberId").setInteger("memberId", memberId);
+			LoginDTO loginDTO = (LoginDTO)  query.uniqueResult();
+			loginDTO.setIsEnabled(isEnabled);
+			session.saveOrUpdate(loginDTO);
+			return true;
+		}
+		catch(Exception e)
+		{
+			return false;
+		}
 	}
 }

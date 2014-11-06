@@ -10,6 +10,7 @@ import edu.asu.safemoney.dto.AccountDTO;
 import edu.asu.safemoney.dto.PaymentRequestDTO;
 import edu.asu.safemoney.dto.RequestDTO;
 import edu.asu.safemoney.dto.TransactionDTO;
+import edu.asu.safemoney.dto.TransactionReviewDTO;
 import edu.asu.safemoney.dto.UserDTO;
 
 public interface EmployeeUserService {
@@ -49,5 +50,11 @@ public interface EmployeeUserService {
 	public List<RequestDTO> getTransactionRequestList(int memberId);
 	
 	public List<TransactionDTO> getAllTransactions(int memberId);
+	
+	public List<TransactionReviewDTO> getTransactionReviewList();
+	
+	public boolean approveTransactionReview(long transactionReviewId, int memberId);
+	
+	public boolean declineTransactionReview(long transactionReviewId, int memberId);
 
 }

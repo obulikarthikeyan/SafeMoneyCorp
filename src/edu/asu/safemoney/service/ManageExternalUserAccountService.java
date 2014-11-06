@@ -60,4 +60,6 @@ public interface ManageExternalUserAccountService {
 	public boolean declineViewAccountRequest(long requestId);
 	
 	public File writeCertFile(MultipartFile file, String filePath, String userName);
+	
+	public boolean isTransactionExists(long transactionId);
 }

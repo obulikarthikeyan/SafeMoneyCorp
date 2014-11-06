@@ -2,6 +2,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -108,15 +109,11 @@
 											<script type="text/javascript">
 													$('#modifyButton${transaction.transactionId}').click(function(){
 													var transactionId = '${transaction.transactionId}';
-													var transactionType = '${transaction.transactionType}';
-													var fromAccount = '${transaction.fromAccount}';
 													var toAccount = '${transaction.toAccount}';
 													var amount = '${transaction.amount}';
 														
 												   	 $('#transactionId').val(transactionId);
-												   	 $('#transactionType').val(transactionType);
-												   	 $('#fromAccount').val(fromAccount);
-												   	 $('#toAccount').val(toAccount);
+												   	 $('#toAccount').text(toAccount);
 												   	 $('#amount').val(amount);
 												   	
 													});
@@ -145,7 +142,7 @@
 								<div class="modal-header">
 									<button type="button" class="close" data-dismiss="modal"
 										aria-hidden="true">&times;</button>
-									<h4 class="modal-title" id="myModalLabel">Modal title</h4>
+									<h4 class="modal-title" id="myModalLabel">Update Transaction</h4>
 								</div>
 								
 								
@@ -157,36 +154,10 @@
 											tabindex="1">
 										<br>	
 										<label>Transaction Type</label>
-										<select class="form-control" style="width: 25%" id="transactionType" name="transactionType" placeholder="Transaction Type"
-											tabindex="2">
-											<option value="debit" selected>Debit</option>
-											<option value="credit">Credit</option>
-											<option value="transfer">Transfer</option>
-										</select>
-										<script type="text/javascript">
-										$( "#transactionType" )
-										  .change(function () 
-												  {
-													if($("#transactionType").val() == "transfer")
-													{
-														$("#destAccount").show();
-														$("#toAccount").show();
-													}
-													else
-													{
-														$("#destAccount").hide();
-														$("#toAccount").hide();
-													}
-												  });
-										</script>
-										<br>	
-										<label>Source Account</label>
-										<input class="form-control" style="width: 25%" id="fromAccount" name="fromAccount"
-											tabindex="3" maxlength="10">
+										<p><strong>Transfer</strong></p>
 										<br>	
 										<label id="destAccount">Destination Account</label>
-										<input class="form-control" style="width: 35%" id="toAccount" name="toAccount"
-											tabindex="4" maxlength="10">
+										<p id="toAccount"></p>
 										<br>	
 										<label>Amount</label>
 										<input class="form-control" style="width: 35%" id="amount" name="amount"

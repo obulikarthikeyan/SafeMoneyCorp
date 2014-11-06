@@ -103,7 +103,7 @@ public class LoginDAOImpl implements LoginDAO{
 			loginDTO.setMemberId(userDTO.getMemberId());
 			loginDTO.setFailedAttemptCount(0);
 			loginDTO.setIsAccountNonLocked(true);
-			loginDTO.setIsEnabled(true);
+			loginDTO.setIsEnabled(false);
 			userDTO.setLoginDTO(loginDTO);
 			
 			session.save(userDTO);

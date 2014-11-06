@@ -142,7 +142,7 @@
 								<ul class="nav nav-second-level">
 									<li><a href="<%=request.getContextPath()%>/internal/sendViewTransactionRequests">Send View Transaction Requests</a></li>
 									<li><a href="<%=request.getContextPath()%>/internal/viewTransactionRequests">View Transactions</a></li>
-									<li><a href="#">Process Transaction Review Requests</a></li>
+									<li><a href="<%=request.getContextPath()%>/internal/transactionReview">Process Transaction Review Requests</a></li>
 									<li><a href="<%=request.getContextPath()%>/internal/manageTransactionRequest">Authorize Transactions</a></li>
 								</ul> <!-- /.nav-second-level --></li>	
 

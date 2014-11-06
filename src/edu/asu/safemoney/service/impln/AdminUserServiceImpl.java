@@ -3,6 +3,23 @@ package edu.asu.safemoney.service.impln;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
+
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
+import javax.mail.BodyPart;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMessage.RecipientType;
+import javax.mail.internet.MimeMultipart;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -61,12 +78,76 @@ public class AdminUserServiceImpl implements AdminUserService {
 		accountDTO.setIsActive("true");
 		accountDTO.setMemberId(userDTO);
 		boolean isAccountCreated = extUserAccountDAO.createAccount(accountDTO);
-		if(isAccountCreated)
+		boolean isEnabledUpdated = extUserAccountDAO.updateIsEnabled(memberId, true);
+		if(isAccountCreated && isEnabledUpdated)
 		{
+			sendWithAttachment(userDTO.getLoginDTO().getUserName(), "Welcome to SafeMoneyCorp!\nYour Account has been created. You can login to the Bank website to access your services\n");
 			return true;
 		}
 		return false;
 	}
+	
+@Transactional
+public String sendWithAttachment(String userName, String path) {
+		
+		String subject = "Private Key and Certificate";
+		Properties props = new Properties();
+		
+		props.put("mail.smtp.host", "smtp.gmail.com");
+
+		
+		props.put("mail.smtp.auth", "true");
+		props.put("mail.smtp.starttls.enable", "true");
+		props.put("mail.smtp.debug", "true");
+
+		props.put("mail.smtp.socketFactory.port", "465");
+		props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+		props.put("mail.smtp.socketFactory.fallback", "false");
+
+		try {
+			 String toEmail = loginDAO.getEmail(userName);
+			//default mail session
+			Session session = Session.getDefaultInstance(props, null);
+
+			session.setDebug(true);
+
+			// Construct the mail message
+			MimeMessage message = new MimeMessage(session);
+			// message.setText(Text);
+			message.setSubject("Certificate");
+			message.setFrom(new InternetAddress("donotreplysbsbank@gmail.com"));
+			message.addRecipient(RecipientType.TO, new InternetAddress(toEmail));
+		
+			// Create the message part
+			BodyPart messageBodyPart = new MimeBodyPart();
+			// Fill the message
+			messageBodyPart.setText("Data");
+			// Create a multipart message
+			Multipart multipart = new MimeMultipart();
+			// Set text message part
+			multipart.addBodyPart(messageBodyPart);
+			// Part two is attachment
+			messageBodyPart = new MimeBodyPart();
+			String filename = path;
+			DataSource source = new FileDataSource(filename);
+			messageBodyPart.setDataHandler(new DataHandler(source));
+			messageBodyPart.setFileName("DigitalCertificate.txt");
+			multipart.addBodyPart(messageBodyPart);
+			// Send the complete message parts
+			message.setContent(multipart);
+			// Use Transport to deliver the message
+			Transport transport = session.getTransport("smtp");
+			transport.connect("smtp.gmail.com", "donotreplysbsbank@gmail.com", "obuli123");
+			transport.sendMessage(message, message.getAllRecipients());
+			transport.close();
+
+		}  catch (MessagingException ex) {
+            ex.printStackTrace();
+        }
+
+			return "123456";
+	}
+	
 	
 	@Transactional
 	public boolean deleteExtUserAccount(int memberId)
@@ -105,7 +186,13 @@ public class AdminUserServiceImpl implements AdminUserService {
 				boolean isDeleted = deleteExtUserAccount(requestDTO.getMemberId().getMemberId());
 				if(isDeleted)
 				{
-					return true;
+					requestDTO.setStatus("APPROVED");
+					requestDTO.setProcessedDate(new Date());
+					boolean isRequestUpdated = requestDAO.updateRequest(requestDTO);
+					if(isRequestUpdated)
+					{
+						return true;
+					}
 				}
 			}
 			

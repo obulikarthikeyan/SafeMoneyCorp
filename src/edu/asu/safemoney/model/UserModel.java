@@ -6,6 +6,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.RegEx;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -13,7 +14,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class UserModel {
 
 	@Nonnull
-	@NotEmpty
 	@Pattern(regexp = "[a-z-A-Z]*", message = "First name has invalid characters")
 	String firstName;
 	

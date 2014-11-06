@@ -2,7 +2,6 @@ package edu.asu.safemoney.dao.impln;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-
 import java.util.List;
 
 import org.hibernate.Query;
@@ -17,6 +16,7 @@ import edu.asu.safemoney.dao.ManageExternalUserAccountDAO;
 import edu.asu.safemoney.dto.AccountDTO;
 import edu.asu.safemoney.dto.PaymentRequestDTO;
 import edu.asu.safemoney.dto.TransactionDTO;
+import edu.asu.safemoney.dto.TransactionReviewDTO;
 import edu.asu.safemoney.dto.UserDTO;
 import edu.asu.safemoney.dto.UserTypeDTO;
 import edu.asu.safemoney.model.AccountModel;
@@ -173,5 +173,56 @@ public class EmployeeUserDAOImpl implements EmployeeUserDAO{
 		query.setInteger("memberId", memberId);
 		List<TransactionDTO> transactionList = (List<TransactionDTO>)query.list();
 		return transactionList;
+	}
+
+	@Override
+	public List<TransactionReviewDTO> getTransactionReviewRequests() {
+		// TODO Auto-generated method stub
+		Session session = sessionFactory.getCurrentSession();
+		Query query = session.getNamedQuery("TransactionReviewDTO.findByStatus").setString("status", "PENDING_BANK");
+		List<TransactionReviewDTO> reviewList = (List<TransactionReviewDTO>) query.list();
+		System.out.println("review" + reviewList.get(0).getAmount());
+		return reviewList;
+	}
+
+	@Override
+	public TransactionReviewDTO getTransactionReviewDTO(long transactionReviewId) {
+		// TODO Auto-generated method stub
+		
+		Session session = sessionFactory.getCurrentSession();
+		Query query = session.getNamedQuery("TransactionReviewDTO.findByTransactionReviewId").setLong("transactionReviewId", transactionReviewId);
+		TransactionReviewDTO reviewDTO = (TransactionReviewDTO) query.uniqueResult();
+		return reviewDTO;
+	}
+
+	@Override
+	public boolean updateTransaction(TransactionDTO txnDTO) {
+		// TODO Auto-generated method stub
+		try
+		{
+		Session session = sessionFactory.getCurrentSession();
+		session.saveOrUpdate(txnDTO);
+		return true;
+		}
+		catch(Exception e)
+		{
+			
+		}
+		return false;
+	}
+
+	@Override
+	public boolean updateTransactionReviewDTO(TransactionReviewDTO reviewDTO) {
+		// TODO Auto-generated method stub
+		try
+		{
+		Session session = sessionFactory.getCurrentSession();
+		session.saveOrUpdate(reviewDTO);
+		return true;
+		}
+		catch(Exception e)
+		{
+		}
+		return false;
 	}
 }

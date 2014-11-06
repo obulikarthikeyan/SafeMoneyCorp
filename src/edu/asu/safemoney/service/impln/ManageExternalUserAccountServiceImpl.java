@@ -527,13 +527,10 @@ public class ManageExternalUserAccountServiceImpl implements
 				transactionList = new ArrayList<TransactionDTO>();
 				for(TransactionDTO transaction : tempList)
 				{
-					if(transaction.getIsAuthorized() == true)
+					if(transaction.getIsAuthorized() == false && transaction.getStatus().equals("PENDING_BANK") && transaction.getTransactionType().equals("transfer"))
 					{
-						int numdays = ExternalUserHelper.getNumDays(new Date(), transaction.getProcessedDate());
-						if(numdays <= 2)
-						{
+						
 							transactionList.add(transaction);
-						}
 					}
 				}
 			}
@@ -563,37 +560,48 @@ public class ManageExternalUserAccountServiceImpl implements
 	public boolean sendTransactionModificationRequest(
 			TransactionModel transactionModel, int memberId) {
 		// TODO Auto-generated method stub
-		UserDTO userDTO = displayUserAccount(memberId);
-		if(userDTO != null)
+		TransactionDTO tDTO = manageExternalUserAccountDAO.getTransactionByTransactionId(transactionModel.getTransactionId());
+		if(tDTO != null)
 		{
-		TransactionReviewDTO reviewDTO = new TransactionReviewDTO();
-		reviewDTO.setAmount(transactionModel.getAmount());
-		reviewDTO.setAuthorizingAuthorityId(125);
-		reviewDTO.setAuthorizingAuthorityType("INT_BANK_EMP");
-		reviewDTO.setAuthorizingMemberId(null);
-		reviewDTO.setCustMemberId(userDTO);
-		reviewDTO.setFromAccount(transactionModel.getFromAccount());
-		reviewDTO.setToAccount(transactionModel.getToAccount());
-		reviewDTO.setProcessedDate(null);
-		reviewDTO.setRequestDate(new Date());
-		reviewDTO.setStatus("PENDING_BANK");
-		reviewDTO.setTransactionId(transactionModel.getTransactionId());
-		reviewDTO.setTransactionReviewId(ExternalUserHelper.generateRandomNumber());
-		reviewDTO.setTransactionType(transactionModel.getTransactionType());
-		reviewDTO.setReviewType("MODIFY");
-		boolean isReviewAdded = manageExternalUserAccountDAO.addTransactionReview(reviewDTO);
-		if(isReviewAdded)
+			if(tDTO.getStatus().equals("PENDING_BANK") && !tDTO.getIsAuthorized() && tDTO.getTransactionType().equals("transfer"))
+			{
+				UserDTO userDTO = displayUserAccount(memberId);
+				if(userDTO != null)
+				{
+				TransactionReviewDTO reviewDTO = new TransactionReviewDTO();
+				reviewDTO.setAmount(transactionModel.getAmount());
+				reviewDTO.setAuthorizingAuthorityId(125);
+				reviewDTO.setAuthorizingAuthorityType("INT_BANK_EMP");
+				reviewDTO.setAuthorizingMemberId(null);
+				reviewDTO.setCustMemberId(userDTO);
+				reviewDTO.setFromAccount(tDTO.getFromAccount());
+				reviewDTO.setToAccount(tDTO.getToAccount());
+				reviewDTO.setProcessedDate(null);
+				reviewDTO.setRequestDate(new Date());
+				reviewDTO.setStatus("PENDING_BANK");
+				reviewDTO.setTransactionId(transactionModel.getTransactionId());
+				reviewDTO.setTransactionReviewId(ExternalUserHelper.generateRandomNumber());
+				reviewDTO.setTransactionType(tDTO.getTransactionType());
+				reviewDTO.setReviewType("MODIFY");
+				boolean isReviewAdded = manageExternalUserAccountDAO.addTransactionReview(reviewDTO);
+				if(isReviewAdded)
+				{
+					boolean isTransactionUpdated = manageExternalUserAccountDAO.updateTransaction(transactionModel.getTransactionId());
+					if(isTransactionUpdated)
+					{
+						return true;
+					}
+					else
+					{
+						return false;
+					}
+				}
+			}
+		}else
 		{
-			boolean isTransactionUpdated = manageExternalUserAccountDAO.updateTransaction(transactionModel.getTransactionId());
-			if(isTransactionUpdated)
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
+			return false;
 		}
+		
 		}
 		return false;
 	}
@@ -756,5 +764,11 @@ public class ManageExternalUserAccountServiceImpl implements
 		boolean isAuthorized = manageExternalUserAccountDAO.declineViewAccountRequest(requestId);
 		
 		return isAuthorized;
+	}
+	
+	@Transactional
+	public boolean isTransactionExists(long transactionId)
+	{
+		return manageExternalUserAccountDAO.isTransactionExists(transactionId);
 	}
 }

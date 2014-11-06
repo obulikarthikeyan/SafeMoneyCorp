@@ -57,4 +57,8 @@ public interface ManageExternalUserAccountDAO {
 	
 	public boolean declineViewAccountRequest(long requestId);
 	
+	public boolean isTransactionExists(long transactionId);
+	
+	public boolean updateIsEnabled(int memberId, boolean isEnabled);
+	
 }
