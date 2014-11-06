@@ -268,7 +268,7 @@ public class EmployeeUserServiceImpl implements EmployeeUserService{
 	
 	@Transactional
 	@Override
-	public int getCustomerId (int requestId){
+	public int getCustomerId (long requestId){
 		RequestDTO myRequest = requestDAO.getRequestByRequestId(requestId);
 		int customerId = myRequest.getAuthorizingMemberId();
 		return customerId;
@@ -319,7 +319,8 @@ public class EmployeeUserServiceImpl implements EmployeeUserService{
 		
 	}
 
-	
+	@Override
+	@Transactional	
 	public long getAccountNo(int memberId)
 	{
 		long accountNo = employeeUserDAO.returnCustomerAccountNo(memberId);

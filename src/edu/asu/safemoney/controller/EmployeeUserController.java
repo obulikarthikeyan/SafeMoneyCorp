@@ -10,17 +10,21 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
+
 import edu.asu.safemoney.dto.AccountDTO;
 import edu.asu.safemoney.dto.PaymentRequestDTO;
 import edu.asu.safemoney.dao.EmployeeUserDAO;
@@ -228,52 +232,102 @@ public class EmployeeUserController {
 				"transactionRequestList", transactionList).addObject("message",processResult);
 	}
 	
-	
-		
 	/*
 	 * Actually sends the View Account request from the employee
 	 * to customer
 	 */
 	@RequestMapping(value="/internal/requestTransactionAccess", method=RequestMethod.POST)
-	public ModelAndView sendViewRequests(@RequestParam("memberId") int memberId, HttpServletRequest request, HttpSession session)
+	public ModelAndView sendViewRequests(@ModelAttribute("sendRequestForm") @Valid RequestModel requestModel, BindingResult result, HttpServletRequest request, HttpSession session)
 	{
-		boolean isUserNameAvailable = false;
-		int currentEmployeeId = (Integer)session.getAttribute("memberId");
-		int internalUserId = memberId;
-
-		//UserDTO currentEmployeeDTO = manageExternalUserAccountService.displayUserAccount(currentEmployeeId);	
-		List<RequestDTO> requestList = null; 
-		if (memberId<0)
+		if(result.hasErrors())
 		{
-			logger.error("The member Id cannot be negative");
-			isUserNameAvailable=false;
+			return new ModelAndView("/internal/EmpRequestCustView").addObject("error","Invalid Request");
 		}
 		else
 		{
-			isUserNameAvailable=true;
-		}
-		
-		if(isUserNameAvailable)
-		{		
+			boolean isUserNameAvailable = false;
+			int currentEmployeeId = (Integer)session.getAttribute("memberId");
+			int internalUserId = requestModel.getMemberId();
+	
+			//UserDTO currentEmployeeDTO = manageExternalUserAccountService.displayUserAccount(currentEmployeeId);	
+			List<RequestDTO> requestList = null; 
+			if (requestModel.getMemberId()<0)
+			{
+				logger.error("The member Id cannot be negative");
+				isUserNameAvailable=false;
+			}
+			else
+			{
+				isUserNameAvailable=true;
+			}
 			
-			isRequestSent = employeeUserService.sendExtUserViewRequests(internalUserId, currentEmployeeId);
-			requestList = employeeUserService.getRequestList(currentEmployeeId);
-		}
-		else
-		{
+			if(isUserNameAvailable)
+			{		
+				
+				isRequestSent = employeeUserService.sendExtUserViewRequests(internalUserId, currentEmployeeId);
+				requestList = employeeUserService.getRequestList(currentEmployeeId);
+			}
+			else
+			{
+				
+				return new ModelAndView("/internal/EmpRequestCustView").addObject("error","Invalid Member Id").addObject("requestList",requestList);
+			}
 			
-			return new ModelAndView("/internal/EmpRequestCustView").addObject("error","Invalid Member Id").addObject("requestList",requestList);
-		}
-		
-		if(isRequestSent)
-		{
-			return new ModelAndView("/internal/EmpRequestCustView").addObject("message","Request Sent to User").addObject("requestList",requestList);
-		}
-		else
-		{
-			return new ModelAndView("/internal/EmpRequestCustView").addObject("error","Request Failed").addObject("requestList",requestList);
+			if(isRequestSent)
+			{
+				return new ModelAndView("/internal/EmpRequestCustView").addObject("message","Request Sent to User").addObject("requestList",requestList);
+			}
+			else
+			{
+				return new ModelAndView("/internal/EmpRequestCustView").addObject("error","Request Failed").addObject("requestList",requestList);
+			}
 		}
 	}
+		
+//	/*
+//	 * Actually sends the View Account request from the employee
+//	 * to customer
+//	 */
+//	@RequestMapping(value="/internal/requestTransactionAccess", method=RequestMethod.POST)
+//	public ModelAndView sendViewRequests(@RequestParam("memberId") int memberId, HttpServletRequest request, HttpSession session)
+//	{
+//		boolean isUserNameAvailable = false;
+//		int currentEmployeeId = (Integer)session.getAttribute("memberId");
+//		int internalUserId = memberId;
+//
+//		//UserDTO currentEmployeeDTO = manageExternalUserAccountService.displayUserAccount(currentEmployeeId);	
+//		List<RequestDTO> requestList = null; 
+//		if (memberId<0)
+//		{
+//			logger.error("The member Id cannot be negative");
+//			isUserNameAvailable=false;
+//		}
+//		else
+//		{
+//			isUserNameAvailable=true;
+//		}
+//		
+//		if(isUserNameAvailable)
+//		{		
+//			
+//			isRequestSent = employeeUserService.sendExtUserViewRequests(internalUserId, currentEmployeeId);
+//			requestList = employeeUserService.getRequestList(currentEmployeeId);
+//		}
+//		else
+//		{
+//			
+//			return new ModelAndView("/internal/EmpRequestCustView").addObject("error","Invalid Member Id").addObject("requestList",requestList);
+//		}
+//		
+//		if(isRequestSent)
+//		{
+//			return new ModelAndView("/internal/EmpRequestCustView").addObject("message","Request Sent to User").addObject("requestList",requestList);
+//		}
+//		else
+//		{
+//			return new ModelAndView("/internal/EmpRequestCustView").addObject("error","Request Failed").addObject("requestList",requestList);
+//		}
+//	}
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -308,14 +362,31 @@ public class EmployeeUserController {
 	}
 	
 	@RequestMapping(value = "/internal/viewUserAccounts", method = RequestMethod.POST)
-	public ModelAndView sendRequestId(@RequestParam("requestId") int requestId, HttpServletRequest request, HttpSession session)
+	public ModelAndView sendRequestId(@ModelAttribute("viewsUserAccounts") @Valid RequestModel requestModel, BindingResult result, HttpServletRequest request, HttpSession session)
 	{
-		int customerId = employeeUserService.getCustomerId(requestId);
+		if(result.hasErrors())
+		{
+			return new ModelAndView("/internal/customerAccount").addObject("error","Invalid Request");
+		}
+		else
+		{
+		int customerId = employeeUserService.getCustomerId(requestModel.getRequestId());
 		UserDTO customerDTO = manageExternalUserAccountService.displayUserAccount(customerId);
 //		long accountNo = customerDTO.getAccountDTOList().get(0).getAccountNo();
 		long accountNo = employeeUserService.getAccountNo(customerId);
 		return new ModelAndView("/internal/customerAccount").addObject("customerInfo",customerDTO).addObject("accountNo",accountNo);
+		}
 	}
+	
+//	@RequestMapping(value = "/internal/viewUserAccounts", method = RequestMethod.POST)
+//	public ModelAndView sendRequestId(@RequestParam("requestId") long requestId, HttpServletRequest request, HttpSession session)
+//	{
+//		int customerId = employeeUserService.getCustomerId(requestId);
+//		UserDTO customerDTO = manageExternalUserAccountService.displayUserAccount(customerId);
+////		long accountNo = customerDTO.getAccountDTOList().get(0).getAccountNo();
+//		long accountNo = employeeUserService.getAccountNo(customerId);
+//		return new ModelAndView("/internal/customerAccount").addObject("customerInfo",customerDTO).addObject("accountNo",accountNo);
+//	}
 	
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
@@ -353,43 +424,51 @@ public class EmployeeUserController {
 	 * To reload page once transactions have been submitted to show the updated list of requests
 	 */
 	@RequestMapping(value="/internal/requestTransaction", method=RequestMethod.POST)
-	public ModelAndView sendTransactionRequests(@RequestParam("memberId") int memberId, HttpServletRequest request, HttpSession session)
+	public ModelAndView sendTransactionRequests(@ModelAttribute("sendRequestForm") @Valid RequestModel requestModel, BindingResult result, HttpServletRequest request, HttpSession session)
 	{
-		boolean isUserNameAvailable = false;
-		int currentEmployeeId = (Integer)session.getAttribute("memberId");
-		int internalUserId = memberId;
-
-		//UserDTO currentEmployeeDTO = manageExternalUserAccountService.displayUserAccount(currentEmployeeId);	
-		List<RequestDTO> transactionRequestList = null; 
-		if (memberId<0)
+		if(result.hasErrors())
 		{
-			logger.error("The member Id cannot be negative");
-			isUserNameAvailable=false;
-		}
-		else
-		{
-			isUserNameAvailable=true;
-		}
-		
-		if(isUserNameAvailable)
-		{		
-			
-			isRequestSent = employeeUserService.sendExtUserTransactionViewRequests(internalUserId, currentEmployeeId);
-			transactionRequestList = employeeUserService.getTransactionRequestList(currentEmployeeId);
+			return new ModelAndView("/internal/empCustTransactionRequest").addObject("error","Invalid Request");
 		}
 		else
 		{
 			
-			return new ModelAndView("/internal/empCustTransactionRequest").addObject("error","Invalid Member Id").addObject("transactionRequestList",transactionRequestList);
-		}
-		
-		if(isRequestSent)
-		{
-			return new ModelAndView("/internal/empCustTransactionRequest").addObject("message","Request Sent to User").addObject("transactionRequestList",transactionRequestList);
-		}
-		else
-		{
-			return new ModelAndView("/internal/empCustTransactionRequest").addObject("error","Request Failed").addObject("transactionRequestList",transactionRequestList);
+			boolean isUserNameAvailable = false;
+			int currentEmployeeId = (Integer)session.getAttribute("memberId");
+			int internalUserId = requestModel.getMemberId();
+	
+			//UserDTO currentEmployeeDTO = manageExternalUserAccountService.displayUserAccount(currentEmployeeId);	
+			List<RequestDTO> transactionRequestList = null; 
+			if (requestModel.getMemberId()<0)
+			{
+				logger.error("The member Id cannot be negative");
+				isUserNameAvailable=false;
+			}
+			else
+			{
+				isUserNameAvailable=true;
+			}
+			
+			if(isUserNameAvailable)
+			{		
+				
+				isRequestSent = employeeUserService.sendExtUserTransactionViewRequests(internalUserId, currentEmployeeId);
+				transactionRequestList = employeeUserService.getTransactionRequestList(currentEmployeeId);
+			}
+			else
+			{
+				
+				return new ModelAndView("/internal/empCustTransactionRequest").addObject("error","Invalid Member Id").addObject("transactionRequestList",transactionRequestList);
+			}
+			
+			if(isRequestSent)
+			{
+				return new ModelAndView("/internal/empCustTransactionRequest").addObject("message","Request Sent to User").addObject("transactionRequestList",transactionRequestList);
+			}
+			else
+			{
+				return new ModelAndView("/internal/empCustTransactionRequest").addObject("error","Request Failed").addObject("transactionRequestList",transactionRequestList);
+			}
 		}
 	}
 	
@@ -423,15 +502,34 @@ public class EmployeeUserController {
 	}
 	
 	@RequestMapping(value = "/internal/viewUserTransactions", method = RequestMethod.POST)
-	public ModelAndView showTransactionsPage(@RequestParam("requestId") int requestId, HttpServletRequest request, HttpSession session)
+	public ModelAndView showTransactionsPage(@ModelAttribute("viewsUserTransactions") @Valid RequestModel requestModel, BindingResult result, HttpServletRequest request, HttpSession session)
 	{
-		int customerId = employeeUserService.getCustomerId(requestId);
-		UserDTO customerDTO = manageExternalUserAccountService.displayUserAccount(customerId);
-		
-		List<TransactionDTO> transactionInfo = employeeUserService.getAllTransactions(customerId);
+		if(result.hasErrors())
+		{
+			return new ModelAndView("/internal/customerTransactionAccount").addObject("error", "Invalid Request");
+		}
+		else
+		{
+			int customerId = employeeUserService.getCustomerId(requestModel.getRequestId());
+			UserDTO customerDTO = manageExternalUserAccountService.displayUserAccount(customerId);
+			
+			List<TransactionDTO> transactionInfo = employeeUserService.getAllTransactions(customerId);
 
-		return new ModelAndView("/internal/customerTransactionAccount").addObject("transactionInfo",transactionInfo);
+			return new ModelAndView("/internal/customerTransactionAccount").addObject("transactionInfo",transactionInfo);
+		}
+
 	}
+	
+//	@RequestMapping(value = "/internal/viewUserTransactions", method = RequestMethod.POST)
+//	public ModelAndView showTransactionsPage(@RequestParam("requestId") int requestId, HttpServletRequest request, HttpSession session)
+//	{
+//		int customerId = employeeUserService.getCustomerId(requestId);
+//		UserDTO customerDTO = manageExternalUserAccountService.displayUserAccount(customerId);
+//		
+//		List<TransactionDTO> transactionInfo = employeeUserService.getAllTransactions(customerId);
+//
+//		return new ModelAndView("/internal/customerTransactionAccount").addObject("transactionInfo",transactionInfo);
+//	}
 	
 	@RequestMapping(value="/internal/getMemberIdLog")
 	public ModelAndView getMemberIdList(HttpSession session)

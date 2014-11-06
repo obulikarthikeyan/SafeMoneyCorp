@@ -42,7 +42,7 @@ public interface EmployeeUserService {
 	
 	public List<RequestDTO> getTransactionList(int memberId);
 	
-	public int getCustomerId (int requestId);
+	public int getCustomerId (long requestId);
 	
 	public long getAccountNo(int memberId);
 	

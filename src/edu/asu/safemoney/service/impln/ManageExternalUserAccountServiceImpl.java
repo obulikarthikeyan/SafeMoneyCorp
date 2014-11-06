@@ -740,11 +740,29 @@ public class ManageExternalUserAccountServiceImpl implements
 		return viewAccountRequests;
 	}
 	
+
+	
+	@Transactional
+	@Override
+	public List<RequestDTO> getViewTransactionsRequests(int memberId){
+		List<RequestDTO> viewTransactionRequests =  manageExternalUserAccountDAO.getViewTransactionsRequestsForCustomer(memberId);
+		return viewTransactionRequests;
+	}
+	
 	@Transactional
 	@Override
 	public boolean authorizeViewAccountRequest(long requestId)
 	{
 		boolean isAuthorized = manageExternalUserAccountDAO.authorizeViewAccountRequest(requestId);
+		
+		return isAuthorized;
+	}
+	
+	@Transactional
+	@Override
+	public boolean authorizeViewTransactionsRequest(long requestId)
+	{
+		boolean isAuthorized = manageExternalUserAccountDAO.authorizeViewTransactionsRequest(requestId);
 		
 		return isAuthorized;
 	}
@@ -757,4 +775,14 @@ public class ManageExternalUserAccountServiceImpl implements
 		
 		return isAuthorized;
 	}
+	
+	@Transactional
+	@Override
+	public boolean declineViewTransactionsRequest(long requestId)
+	{
+		boolean isAuthorized = manageExternalUserAccountDAO.declineViewAccountRequest(requestId);
+		
+		return isAuthorized;
+	}
+
 }

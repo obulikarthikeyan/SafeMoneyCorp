@@ -5,66 +5,132 @@ import java.util.Date;
 import javax.annotation.Nonnull;
 import javax.annotation.RegEx;
 import javax.validation.constraints.Digits;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 
 public class UserModel {
 
 	@Nonnull
-	@NotEmpty
+	@NotEmpty @Size(max=25)
 	@Pattern(regexp = "[a-z-A-Z]*", message = "First name has invalid characters")
 	String firstName;
-	
+
+	@Nonnull
+	@NotEmpty @Size(max=25)
+	@Pattern(regexp = "[a-z-A-Z]*", message = "Second name has invalid characters")	
 	String lastName;
 	
+	@Nonnull
+	@NotEmpty @Email
+	@Pattern(regexp = "[a-z-A-Z]*", message = "First name has invalid characters")	
 	String emailId;
 	
+	@Nonnull @Min(0) @Size(min=10)
+	@Digits(integer = 10, fraction = 0)
 	long contactNo;
 	
+	@Nonnull
+	@NotEmpty @Size(max=50)
+	@Pattern(regexp = "[a-z-A-Z]*", message = "Address has invalid characters")
 	String address1;
 	
+	@Nonnull
+	@NotEmpty @Size(max=50)
+	@Pattern(regexp = "[a-z-A-Z]*", message = "Address has invalid characters")
 	String address2;
 	
+	@Nonnull
+	@NotEmpty @Size(max=15)
+	@Pattern(regexp = "[a-z-A-Z]*", message = "City has invalid characters")
 	String city;
 	
+	@Nonnull
+	@NotEmpty @Size(min=2,max=2)
+	@Pattern(regexp = "[a-z-A-Z]*", message = "State has invalid characters")
 	String state;
 	
+	@Nonnull @Min(0) @Size(min=5)
+	@Digits(integer = 5, fraction = 0)
 	long zip;
 	
+	@DateTimeFormat(pattern="MM/dd/yyyy")
+    @NotNull @Past
 	Date dateOfBirth;
 	
+	@Nonnull @Min(0) @Size(min=1, max=3)
+	@Digits(integer = 3, fraction = 0)
 	int age;
-	
+
+	@Nonnull @Min(0) @Size(min=10, max=10)
+	@Digits(integer = 9, fraction = 0)
 	long ssn;
 	
 	String userType;
-	
+
+	@Nonnull
+	@NotEmpty @Size(min=5,max=15)
+	@Pattern(regexp = "[a-z-A-Z0-9]*", message = "Username only allows numbers and alphabets")
 	String userName;
-	
+
+	@Nonnull
+	@NotEmpty @Size(max=15)
+	@Pattern(regexp = "[a-z-A-Z0-9]*", message = "Invalid characters")
 	String password;
-	
+
+	@Nonnull
+	@NotEmpty @Size(max=200)
+	@Pattern(regexp = "[a-z-A-Z0-9]*", message = "Invalid Security question")	
 	String secQuestion1;
-	
+
+	@Nonnull
+	@NotEmpty @Size(max=200)
+	@Pattern(regexp = "[a-z-A-Z0-9]*", message = "Invalid Security question")	
 	String secQuestion2;
-	
+
+	@Nonnull
+	@NotEmpty @Size(max=200)
+	@Pattern(regexp = "[a-z-A-Z0-9]*", message = "Invalid Security question")	
 	String secQuestion3;
 	
+	@Nonnull
+	@NotEmpty @Size(max=25)
+	@Pattern(regexp = "[a-z-A-Z0-9]*", message = "Invalid Security answer")	
 	String secAnswer1;
-	
+
+	@Nonnull
+	@NotEmpty @Size(max=25)
+	@Pattern(regexp = "[a-z-A-Z0-9]*", message = "Invalid Security answer")	
 	String secAnswer2;
-	
+
+	@Nonnull
+	@NotEmpty @Size(max=25)
+	@Pattern(regexp = "[a-z-A-Z0-9]*", message = "Invalid Security answer")	
 	String secAnswer3;
 	
+	@Nonnull
+	@NotEmpty @Size(min=5,max=25)
+	@Pattern(regexp = "[a-z-A-Z]*", message = "Invalid Security answer")
 	String siteKey;
+	
 	
 	int userTypeMapId;
 	
 	String createdBy;
 	
+	@DateTimeFormat(pattern="MM/dd/yyyy")
+    @NotNull @Past	
 	Date createdDate;
-	
+
+	@DateTimeFormat(pattern="MM/dd/yyyy")
+    @NotNull 
 	Date expiryDate;
 	
 	String isActive;
@@ -75,6 +141,9 @@ public class UserModel {
 	
 	boolean isEmployee;
 	
+	@Nonnull
+	@NotEmpty
+	@Pattern(regexp = "[a-z-A-Z]*", message = "Invalid Designation")	
 	String designation;
 
 	public boolean isEmployee() {

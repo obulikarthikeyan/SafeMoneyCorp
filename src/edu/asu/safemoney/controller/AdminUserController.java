@@ -5,10 +5,12 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.springframework.aop.aspectj.AspectJAdviceParameterNameDiscoverer.AmbiguousBindingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 import edu.asu.safemoney.dto.RequestDTO;
 import edu.asu.safemoney.dto.TransactionDTO;
 import edu.asu.safemoney.dto.UserDTO;
+import edu.asu.safemoney.model.RequestModel;
 import edu.asu.safemoney.model.UserModel;
 import edu.asu.safemoney.service.AdminUserService;
 import edu.asu.safemoney.service.EmployeeUserService;
@@ -149,13 +152,20 @@ public class AdminUserController {
 	}
 	
 	@RequestMapping(value="/admin/getTransactionHistoryForAdmin", method=RequestMethod.POST)
-	public ModelAndView getTransactionHistoryForAdmin(@RequestParam("memberId") int memberId, HttpServletRequest request, HttpSession session)
+	public ModelAndView getTransactionHistoryForAdmin(@ModelAttribute("sendRequestForm") @Valid RequestModel requestModel, BindingResult result, HttpServletRequest request, HttpSession session)
 	{		
 		//UserDTO customerDTO = manageExternalUserAccountService.displayUserAccount(memberId);
+		if(result.hasErrors())
+		{
+			return new ModelAndView("/admin/ExternalUserTransactions").addObject("error","Invalid Request");	
+		}
+		else
+		{
+			List<TransactionDTO> transactionInfo = employeeUserService.getAllTransactions(requestModel.getMemberId());
+			return new ModelAndView("/admin/ExternalUserTransactions").addObject("transactionInfo",transactionInfo);				
+		}
 		
-		List<TransactionDTO> transactionInfo = employeeUserService.getAllTransactions(memberId);
 
-		return new ModelAndView("/admin/ExternalUserTransactions").addObject("transactionInfo",transactionInfo);
 	}
 	
 	@RequestMapping("/admin/employeeRegistration")
