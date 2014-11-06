@@ -36,6 +36,7 @@ public interface ManageExternalUserAccountService {
 	public List<TransactionDTO> getApprovedTransactionListForUser(int memberId);
 
 	public boolean findAccount(long accountNumber);
+	public boolean findIsEnabled(long accountNumber);
 
 	public List<TransactionDTO> getTransactionListForCustomer(int memberId);
 	//public TransactionDTO displayTransactionList(int memberId);

@@ -1,3 +1,5 @@
+
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -139,7 +141,7 @@
 										<h4 class="modal-title" id="myModalLabel">Request Details</h4>
 									</div>
 
-									<form id="authorizePaymentRequest" role="form" method="POST"
+									<form:form id="authorizePaymentRequest" role="form" method="POST" commandName="authorizePaymentRequest"
 										action="authorizePaymentRequest">
 										<input type="hidden" id="transactionRequestId" name="transactionRequestId" /> 
 										<div class="modal-body">
@@ -172,7 +174,7 @@
 
 
 										</div>
-									</form>
+									</form:form>
 								</div>
 							</div>
 						</div>

@@ -1,3 +1,4 @@
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
@@ -169,7 +170,7 @@
 										<h4 class="modal-title" id="myModalLabel">Request Details</h4>
 									</div>
 
-									<form id="authorizePaymentRequest" role="form" method="POST"
+									<form:form id="authorizePaymentRequest" role="form" method="POST" commandName="authorizePaymentRequest"
 										action="authorizePaymentRequest">
 										<input type="hidden" id="transactionRequestId" name="transactionRequestId" /> 
 										<div class="modal-body">
@@ -202,7 +203,7 @@
 
 
 										</div>
-									</form>
+									</form:form>
 								</div>
 							</div>
 						</div>
@@ -321,7 +322,7 @@
 										<h4 class="modal-title" id="myModalLabel">Request Details</h4>
 									</div>
 
-									<form id="processPaymentRequest" role="form" method="POST"
+									<form:form id="processPaymentRequest" role="form" method="POST" commandName="processPaymentRequest"
 										action="processPaymentRequest">
 										<input type="hidden" id="paymentRequestId2" name="paymentRequestId2" /> 
 										<div class="modal-body">
@@ -357,7 +358,7 @@
 
 
 										</div>
-									</form>
+									</form:form>
 								</div>
 							</div>
 						</div>

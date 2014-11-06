@@ -29,8 +29,8 @@ public interface EmployeeUserService {
 	public List<TransactionDTO> getTransactionRequest();
 
 	
-	public boolean updatePaymentRequest(long paymentRequestId,String status);
-	public boolean updateTransactionRequest(long transactionRequestId, String status);
+	public String updatePaymentRequest(long paymentRequestId,String status);
+	public String updateTransactionRequest(long transactionRequestId, String status);
 	public boolean makeCredit(int memberID, double amount);
 	public boolean makeDebit(int memberID, double amount);
 	public PaymentRequestDTO getPaymentDTOById(long paymentRequestId);

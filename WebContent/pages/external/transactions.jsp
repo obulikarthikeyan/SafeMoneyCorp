@@ -1,3 +1,5 @@
+
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
@@ -54,26 +56,26 @@
 					<!-- Tab panes -->
 					<div class="tab-content">
 						<div class="tab-pane fade" id="Credit_Debit">
-							<form id="creditDebit" role="form" method="POST"
+							<form:form id="creditDebit" role="form" method="POST" commandName="creditDebit"
 								action="creditDebit">
 								<div class="form-group">
 									<br>
 									
 									<br> <label>Transaction Type:</label> <label
-										class="radio-inline"> <input type="radio"
-										name="optionsRadiosInline" id="optionsRadiosInline1" value="1"
+										class="radio-inline"> 
+										<input type="radio" name="optionsRadiosInline" id="optionsRadiosInline1" value="1"
 										checked>Credit
-									</label> <label class="radio-inline"> <input type="radio"
-										name="optionsRadiosInline" id="optionsRadiosInline2" value="2">Debit
+									</label> <label class="radio-inline"> 
+									<input type="radio" name="optionsRadiosInline" id="optionsRadiosInline2" value="2">Debit
 									</label>
 
 								</div>
 
 								<div class="form-group">
 
-									<label>Enter Amount: $ </label> <label> <input
-										id="creditDebitAmount" name="creditDebitAmount"
-										class="form-control" maxlength="8" placeholder="Amount">
+									<label>Enter Amount: $ </label> <label> 
+									<input id="creditDebitAmount" name="creditDebitAmount" class="form-control" maxlength="8" placeholder="Amount">
+									<%-- <form:errors path="creditDebitAmount" /> --%>
 
 								</div>
 								<p>
@@ -86,16 +88,20 @@
 																	<button type="button" class="btn btn-danger">Danger</button>
 																	<button type="button" class="btn btn-link">Link</button-->
 								</p>
-							</form>
+							</form:form>
 
 
 						</div>
 						<div class="tab-pane fade" id="Transfer">
-						<form id="Transform" role="form" method="POST" action="transfer">
+						<form:form id="Transform" role="form" method="POST" commandName="Transform" action="transfer">
 							<br> <br> <label>To Account: </label> 
-							<input id="toAccountNumber" name="toAccountNumber" class="form-control" placeholder="Account No."> <br>
+							<input id="toAccountNumber" name="toAccountNumber" class="form-control" placeholder="Account No.">
+							<form:errors path="toAccountNumber" /> 
+							<br>
 							<br> <label>Enter Amount: </label> 
-							<input id="transformAmount" name="transformAmount" class="form-control" placeholder="Amount"> <br>
+							<input id="transformAmount" name="transformAmount" class="form-control" placeholder="Amount">
+							<form:errors path="transformAmount" />  
+							<br>
 							<p>
 
 								<button type="submit" class="btn btn-success">Submit</button>
@@ -106,7 +112,7 @@
 																	<button type="button" class="btn btn-danger">Danger</button>
 																	<button type="button" class="btn btn-link">Link</button-->
 							</p>
-						</form>
+						</form:form>
 						</div>
 
 
@@ -224,7 +230,7 @@
 										<h4 class="modal-title" id="myModalLabel">Request Details</h4>
 									</div>
 
-									<form id="authorizePaymentRequest" role="form" method="POST"
+									<form:form id="authorizePaymentRequest" role="form" method="POST" commandName="authorizePaymentRequest"
 										action="authorizePaymentRequest" enctype="multipart/form-data">
 										<input type="hidden" id="paymentRequestId" name="paymentRequestId" /> 
 										<div class="modal-body">
@@ -268,22 +274,26 @@
 												
 
 										</div>
-									</form>
+									</form:form>
 								</div>
 							</div>
 						</div>
 
 
 						<div class="tab-pane fade" id="Initiate">
-							<form id="initiatePayment" role="form" method="POST" action="initiatePayment">
+							<form:form id="initiatePayment" role="form" method="POST" commandName="initiatePayment" action="initiatePayment">
 								<br> <label>To Account Number: </label> 
-								<input id="toMerchantAccountNumber" name="toMerchantAccountNumber" class="form-control" placeholder="Account No."> <br>
+								<input id="toMerchantAccountNumber" name="toMerchantAccountNumber" class="form-control" placeholder="Account No.">
+								<form:errors path="toMerchantAccountNumber" /> 
+								<br>
 								<label>Amount: </label> 
 								<input id="amount" name="amount" class="form-control" placeholder="Amount"> <br> 
+								<form:errors path="amount" /> 
 								<label>Description:
 								</label>
 
 								<textarea id="description" name="description" class="form-control" rows="3"></textarea>
+								<form:errors path="description" /> 
 								<br>
 								<p>
 									<button type="submit" class="btn btn-success">Initiate
@@ -296,7 +306,7 @@
 																	<button type="button" class="btn btn-danger">Danger</button>
 																	<button type="button" class="btn btn-link">Link</button-->
 								</p>
-							</form>
+							</form:form>
 						</div>
 
 						<div class="tab-pane fade" id="Submit">
@@ -406,7 +416,7 @@
 										<h4 class="modal-title" id="myModalLabel">Request Details</h4>
 									</div>
 
-									<form id="submitAuthorizedPaymentRequest" role="form" method="POST"
+									<form:form id="submitAuthorizedPaymentRequest" role="form" method="POST" commandName="submitAuthorizedPaymentRequest"
 										action="submitAuthorizedPaymentRequest">
 										<input type="hidden" id="paymentRequestId2" name="paymentRequestId2" /> 
 										<div class="modal-body">
@@ -443,7 +453,7 @@
 												data-dismiss="modal">Close</button>
 
 										</div>
-									</form>
+									</form:form>
 								</div>
 							</div>
 						</div>
@@ -517,7 +527,7 @@
 			<!-- /.panel -->
 		</div>
 	</div>
-	<script type="text/javascript">
+	<  script type="text/javascript">
 	$.validator.addMethod('amount', function( val, element ) {
 	    var regexp = new RegExp("^[1-9][0-9]*[.]?[0-9]*$");
 

@@ -2,9 +2,11 @@ package edu.asu.safemoney.model;
 
 import java.util.Date;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.RegEx;
 import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 import org.hibernate.validator.constraints.NotEmpty;
@@ -17,55 +19,115 @@ public class UserModel {
 	@Pattern(regexp = "[a-z-A-Z]*", message = "First name has invalid characters")
 	String firstName;
 	
+	@Nonnull
+	@NotEmpty
+	@Pattern(regexp = "[a-z-A-Z]*", message = "Last name has invalid characters")
 	String lastName;
+	
 	
 	String emailId;
 	
+	
+	@NotNull
+	@Digits(fraction =0, integer =12)
+	@Nonnegative
 	long contactNo;
 	
+	@Nonnull
+	@NotEmpty
+	@Pattern(regexp = "[a-z-A-Z]*", message = "Address1 has invalid characters")
 	String address1;
 	
+	@Nonnull
+	@NotEmpty
+	@Pattern(regexp = "[a-z-A-Z]*", message = "Address2 has invalid characters")
 	String address2;
 	
+	@Nonnull
+	@NotEmpty
+	@Pattern(regexp = "[a-z-A-Z]*", message = "City has invalid characters")
 	String city;
 	
+	@Nonnull
+	@NotEmpty
+	@Pattern(regexp = "[a-z-A-Z]*", message = "State has invalid characters")
 	String state;
 	
+	
+	@NotNull
+	@Digits(fraction =0, integer =12)
+	@Nonnegative
 	long zip;
 	
+	
 	Date dateOfBirth;
+	
 	
 	int age;
 	
 	long ssn;
 	
+	@Nonnull
+	@NotEmpty
+	@Pattern(regexp = "[a-z-A-Z]*", message = "Last name has invalid characters")
 	String userType;
 	
+	@Nonnull
+	@NotEmpty
+	@Pattern(regexp = "[a-z-A-Z]*", message = "Last name has invalid characters")
 	String userName;
 	
+	@Nonnull
+	@NotEmpty
+	@Pattern(regexp = "[a-z-A-Z]*", message = "Last name has invalid characters")
 	String password;
 	
+	@Nonnull
+	@NotEmpty
+	@Pattern(regexp = "[a-z-A-Z]*", message = "Last name has invalid characters")
 	String secQuestion1;
 	
+	@Nonnull
+	@NotEmpty
+	@Pattern(regexp = "[a-z-A-Z]*", message = "Last name has invalid characters")
 	String secQuestion2;
 	
+	@Nonnull
+	@NotEmpty
+	@Pattern(regexp = "[a-z-A-Z]*", message = "Last name has invalid characters")
 	String secQuestion3;
 	
+	@Nonnull
+	@NotEmpty
+	@Pattern(regexp = "[a-z-A-Z]*", message = "Last name has invalid characters")
 	String secAnswer1;
 	
+	@Nonnull
+	@NotEmpty
+	@Pattern(regexp = "[a-z-A-Z]*", message = "Last name has invalid characters")
 	String secAnswer2;
 	
+	@Nonnull
+	@NotEmpty
+	@Pattern(regexp = "[a-z-A-Z]*", message = "Last name has invalid characters")
 	String secAnswer3;
 	
+	@Nonnull
+	@NotEmpty
+	@Pattern(regexp = "[a-z-A-Z]*", message = "Last name has invalid characters")
 	String siteKey;
 	
 	int userTypeMapId;
 	
+	@Nonnull
+	@NotEmpty
+	@Pattern(regexp = "[a-z-A-Z]*", message = "Last name has invalid characters")
 	String createdBy;
 	
 	Date createdDate;
 	
 	Date expiryDate;
+	
 	
 	String isActive;
 	

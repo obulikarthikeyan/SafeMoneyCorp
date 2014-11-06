@@ -10,17 +10,21 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
+
 import edu.asu.safemoney.dto.AccountDTO;
 import edu.asu.safemoney.dto.PaymentRequestDTO;
 import edu.asu.safemoney.dao.EmployeeUserDAO;
@@ -102,69 +106,126 @@ public class EmployeeUserController {
 	
 	
 	@RequestMapping(value="/internal/processPaymentRequest", method=RequestMethod.POST)
-	public ModelAndView processPayment(@RequestParam("paymentRequestId2") long paymentRequestId,@RequestParam("managePaymentAction") String manageAction,HttpSession session) 
-	{
-		
+	public ModelAndView processPayment(
+			@ModelAttribute("processPaymentRequest") @Valid EmpProcessPaymentModel empProcessPaymentModel,
+			BindingResult validateResult,
+			HttpSession session) {
+		// ////////////////////////modified by fei
 		String processResult = null;
-		
-		if(manageAction.equals("approved"))
-		{
-			boolean myresult =employeeUserService.updatePaymentRequest( paymentRequestId, "APPROVED_BANK");
+
+		long paymentRequestId = empProcessPaymentModel.getPaymentRequestId2();
+		String manageAction = empProcessPaymentModel.getManagePaymentAction();
+			if(validateResult.hasErrors())
+			{
+				List<PaymentRequestDTO> paymentList = employeeUserService
+						.getPaymentRequest();
+				List<TransactionDTO> transactionList = employeeUserService
+						.getTransactionRequest();
+
+				return new ModelAndView("/internal/EmpManageExtTransactions")
+						.addObject("paymentRequestList", paymentList)
+						.addObject("transactionRequestList", transactionList)
+						.addObject("error", "Invalid input(s) detected in the process payment section");
+			}
+		if (manageAction.equals("approved")) {
+			String myresult = employeeUserService.updatePaymentRequest(
+					paymentRequestId, "APPROVED_BANK");
 			//
-			PaymentRequestDTO paymentDTO = employeeUserService.getPaymentDTOById(paymentRequestId);
+			if(myresult.equals("NOTFOUND"))
+			{
+				List<PaymentRequestDTO> paymentList = employeeUserService
+						.getPaymentRequest();
+				List<TransactionDTO> transactionList = employeeUserService
+						.getTransactionRequest();
+
+				return new ModelAndView("/internal/EmpManageExtTransactions")
+						.addObject("paymentRequestList", paymentList)
+						.addObject("transactionRequestList", transactionList)
+						.addObject("error", "Invalid request Id Input");
+			}
+			PaymentRequestDTO paymentDTO = employeeUserService
+					.getPaymentDTOById(paymentRequestId);
 			//
 			UserDTO metchantDTO = paymentDTO.getMerchantMemberId();
-			
-			boolean myresult2 = employeeUserService.makeCredit(metchantDTO.getMemberId(),paymentDTO.getAmount());
-			
-			if(myresult&&myresult2)
-			{
-				processResult="You have successfully approved one payment request";
-			}
-			else
-			{
+
+			boolean myresult2 = employeeUserService.makeCredit(
+					metchantDTO.getMemberId(), paymentDTO.getAmount());
+
+			if ((myresult.equals("success")) && myresult2) {
+				processResult = "You have successfully approved one payment request";
+			} else {
 				processResult = "Approve payment request failed";
 			}
-		}
-		else if(manageAction.equals("declined"))
-		{
-			boolean myresult =employeeUserService.updatePaymentRequest( paymentRequestId, "DECLINED_BANK");
-			PaymentRequestDTO paymentDTO = employeeUserService.getPaymentDTOById(paymentRequestId);
-			
-			boolean myresult2 = employeeUserService.makeCredit(paymentDTO.getAuthorizerMemberId(),paymentDTO.getAmount());
-			
-			if(myresult&&myresult2)
-			{
-				processResult="You have successfully declined one payment request";
-			}
-			else
-			{
+		} else if (manageAction.equals("declined")) {
+			String myresult = employeeUserService.updatePaymentRequest(
+					paymentRequestId, "DECLINED_BANK");
+			PaymentRequestDTO paymentDTO = employeeUserService
+					.getPaymentDTOById(paymentRequestId);
+
+			boolean myresult2 = employeeUserService.makeCredit(
+					paymentDTO.getAuthorizerMemberId(), paymentDTO.getAmount());
+
+			if ((myresult.equals("success")) && myresult2) {
+				processResult = "You have successfully declined one payment request";
+			} else {
 				processResult = "declined payment request failed";
 			}
 		}
-		
+		else
+		{
+			processResult = "Invalid manage action input";
+		}
+
 		List<PaymentRequestDTO> paymentList = employeeUserService
 				.getPaymentRequest();
 		List<TransactionDTO> transactionList = employeeUserService
 				.getTransactionRequest();
-		
+
 		return new ModelAndView("/internal/EmpManageExtTransactions")
-		.addObject("paymentRequestList", paymentList).addObject(
-				"transactionRequestList", transactionList).addObject("message",processResult);
+				.addObject("paymentRequestList", paymentList)
+				.addObject("transactionRequestList", transactionList)
+				.addObject("message", processResult);
 	}
 	
 	
-	
+	//EmpAuthorizePaymentRequestModel
 	@RequestMapping(value="/internal/authorizePaymentRequest", method=RequestMethod.POST)
-	public ModelAndView processTransaction(@RequestParam("transactionRequestId") long transactionRequestId,@RequestParam("manageTransactionAction") String manageAction,HttpSession session) 
+	public ModelAndView processTransaction(
+			@ModelAttribute("authorizePaymentRequest") @Valid EmpAuthorizePaymentRequestModel empAuthorizePaymentRequestModel,
+			BindingResult validateResult,
+			
+			HttpSession session) 
 	{
-		
+		////////////////modified by fei
 		String processResult = null;
+		long transactionRequestId = empAuthorizePaymentRequestModel.getTransactionRequestId();
+		String manageAction = empAuthorizePaymentRequestModel.getManageTransactionAction();
 		
+		if(validateResult.hasErrors())
+		{
+			List<PaymentRequestDTO> paymentList = employeeUserService
+					.getPaymentRequest();
+			List<TransactionDTO> transactionList = employeeUserService
+					.getTransactionRequest();
+			System.out.println(processResult);
+			return new ModelAndView("/internal/EmpManageExtTransactions")
+			.addObject("paymentRequestList", paymentList).addObject(
+					"transactionRequestList", transactionList).addObject("error","Invalid Input(s) detected in the process transaction section");
+		}
 		if(manageAction.equals("approved"))
 		{
-			boolean myresult =employeeUserService.updateTransactionRequest( transactionRequestId, "APPROVED_BANK");
+			String myresult =employeeUserService.updateTransactionRequest( transactionRequestId, "APPROVED_BANK");
 			
+			if(myresult.equals("NOTFOUND"))
+			{
+				List<PaymentRequestDTO> paymentList = employeeUserService
+						.getPaymentRequest();
+				List<TransactionDTO> transactionList = employeeUserService
+						.getTransactionRequest();
+				return new ModelAndView("/internal/EmpManageExtTransactions")
+				.addObject("paymentRequestList", paymentList).addObject(
+						"transactionRequestList", transactionList).addObject("error","Invalid Transaction ID input");
+			}
 			TransactionDTO transactiontDTO = employeeUserService.getTransactionDTOById(transactionRequestId);
 			
 			int toMemberId = employeeUserService.getMemberIdByAccount(transactiontDTO.getToAccount());
@@ -183,7 +244,7 @@ public class EmployeeUserController {
 				myresult2=employeeUserService.makeCredit(toMemberId,transactiontDTO.getAmount());
 			}
 			
-			if(myresult&&myresult2)
+			if((myresult.equals("success"))&&myresult2)
 				processResult="You have successfully approved one transaction";
 			else
 				processResult="Failed";
@@ -193,8 +254,18 @@ public class EmployeeUserController {
 		}
 		else if(manageAction.equals("declined"))
 		{
-			boolean myresult =employeeUserService.updateTransactionRequest( transactionRequestId, "DECLINED_BANK");
 			
+			String myresult =employeeUserService.updateTransactionRequest( transactionRequestId, "DECLINED_BANK");
+			if(myresult.equals("NOTFOUND"))
+			{
+				List<PaymentRequestDTO> paymentList = employeeUserService
+						.getPaymentRequest();
+				List<TransactionDTO> transactionList = employeeUserService
+						.getTransactionRequest();
+				return new ModelAndView("/internal/EmpManageExtTransactions")
+				.addObject("paymentRequestList", paymentList).addObject(
+						"transactionRequestList", transactionList).addObject("error","Invalid Transaction ID input");
+			}
 			TransactionDTO transactiontDTO = employeeUserService.getTransactionDTOById(transactionRequestId);
 			
 			int fromMemberId = employeeUserService.getMemberIdByAccount(transactiontDTO.getFromAccount());
@@ -211,13 +282,14 @@ public class EmployeeUserController {
 				myresult2 = employeeUserService.makeCredit(fromMemberId,transactiontDTO.getAmount());
 			}
 			
-			if(myresult&&myresult2)
+			if((myresult.equals("success"))&&myresult2)
 				processResult="You have successfully declined one transaction";
 			else
 				processResult="Failed";
 			
 		}
-		
+		else
+		{
 		List<PaymentRequestDTO> paymentList = employeeUserService
 				.getPaymentRequest();
 		List<TransactionDTO> transactionList = employeeUserService
@@ -225,7 +297,9 @@ public class EmployeeUserController {
 		System.out.println(processResult);
 		return new ModelAndView("/internal/EmpManageExtTransactions")
 		.addObject("paymentRequestList", paymentList).addObject(
-				"transactionRequestList", transactionList).addObject("message",processResult);
+				"transactionRequestList", transactionList).addObject("error","Invalid Process Action value");
+		}
+		return null;
 	}
 	
 	
