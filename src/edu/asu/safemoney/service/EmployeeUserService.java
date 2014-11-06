@@ -12,17 +12,29 @@ import edu.asu.safemoney.dto.RequestDTO;
 import edu.asu.safemoney.dto.TransactionDTO;
 import edu.asu.safemoney.dto.UserDTO;
 
+import java.math.BigInteger;
+import java.util.List;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+
+import edu.asu.safemoney.dto.AccountDTO;
+import edu.asu.safemoney.dto.PaymentRequestDTO;
+import edu.asu.safemoney.dto.RequestDTO;
+import edu.asu.safemoney.dto.TransactionDTO;
+import edu.asu.safemoney.dto.UserDTO;
+
 public interface EmployeeUserService {
 	
 	public boolean sendExtUserViewRequests(int customerId, int employeeId);
 	
 	public boolean sendExtUserTransactionViewRequests(int customerId, int employeeId);
 	
-	public boolean authorizeCreditTransaction(int requestId);
+	public boolean authorizeCreditTransaction(long requestId);
 	
-	public boolean authorizePaymentTransaction(int requestId);
+	public boolean authorizePaymentTransaction(long requestId);
 	
-	public boolean getViewRequestList(int requestId);
+	public boolean getViewRequestList(long requestId);
 	
 
 	public List<PaymentRequestDTO> getPaymentRequest();
@@ -51,3 +63,4 @@ public interface EmployeeUserService {
 	public List<TransactionDTO> getAllTransactions(int memberId);
 
 }
+

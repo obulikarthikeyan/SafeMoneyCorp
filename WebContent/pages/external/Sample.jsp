@@ -45,66 +45,17 @@
 						
 						</div>
 						<div class="tab-pane fade" id="update">
-							<form id="searchUser" role="form" method="POST" action="getEmp">
+							<form id="searchUser" role="form" method="POST" action="searchUser">
 							<div class="col-md-10 col-md-offset-1">
 								<label>Enter Employee Id</label>
-								<input class="form-control" type="text" id="memberId" name="memberId" placeholder="Member ID" value="${memberId}">
+								<input class="form-control" type="text" id="searchmemberId" placeholder="Member ID" >
 							</div>
 							
 							<div>
-							<button type="submit" class="btn btn-primary" value="getDetails"> Get details </button>
+							<button type="submit" class="btn btn-lg btn-success btn-block" value="getDetails"> Get details </button>
 							</div>
 							
 							</form>
-							<table style="width: 70%; height: 60%">
-
-							<tbody>
-								
-								<tr>
-									<td><b>Email ID</b></td>
-									<td>${employeeDetails.emailId}</td>
-
-								</tr>
-								<tr>
-									<td><b>Contact Number</b></td>
-									<td>${employeeDetails.contactNo}</td>
-								</tr>
-
-
-								<tr>
-									<td><b>Address1</b></td>
-									<td>${employeeDetails.address1}</td>
-								</tr>
-
-								<tr>
-									<td><b>Address2</b></td>
-									<td>${employeeDetails.address2}</td>
-								</tr>
-
-								<tr>
-									<td><b>City</b></td>
-									<td>${employeeDetails.city}</td>
-								</tr>
-
-								<tr>
-									<td><b>State</b></td>
-									<td>${employeeDetails.state}</td>
-								</tr>
-
-								<tr>
-									<td><b>Zip</b></td>
-									<td>${employeeDetails.zip}</td>
-								</tr>
-							</tbody>
-							</table>
-							<div>
-							<button type="button"> Modify</button>
-							</div>
-							<div>
-							<button type="button"> Delete</button>
-							</div>
-							
-							
 						</div>
 						
 						<div class="tab-pane fade in active in active" id="Create">

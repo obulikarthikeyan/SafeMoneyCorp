@@ -195,7 +195,7 @@ public class EmployeeUserServiceImpl implements EmployeeUserService{
 	
 	@Transactional
 	@Override
-	public boolean getViewRequestList(int requestId)
+	public boolean getViewRequestList(long requestId)
 	{
 		return false;
 
@@ -203,13 +203,13 @@ public class EmployeeUserServiceImpl implements EmployeeUserService{
 	
 	@Transactional
 	@Override
-	public boolean authorizeCreditTransaction(int requestId){
+	public boolean authorizeCreditTransaction(long requestId){
 		return false;
 	}
 	
 	@Transactional
 	@Override
-	public boolean authorizePaymentTransaction(int requsetId){
+	public boolean authorizePaymentTransaction(long requsetId){
 		return false;
 	}
 

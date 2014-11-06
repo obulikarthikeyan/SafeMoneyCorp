@@ -461,17 +461,7 @@ List<PaymentRequestDTO> requestList = manageExternalUserAccountService
 	}
 
 
-	/*
-	 * To load page from where External user can see and approve the 
-	 * View Account requests from the emp
-	 */
-	@RequestMapping("/external/viewAccountApproveRequests")
-	public ModelAndView viewAccountApproveRequests(HttpSession session)
-	{
-		int memberId= (int) session.getAttribute("memberId");
-		List<RequestDTO> viewAccountRequestList = manageExternalUserAccountService.getViewAccountRequests(memberId); 
-		return new ModelAndView("/external/viewAccountApproveRequests").addObject("viewAccountRequestList",viewAccountRequestList);
-	}
+	
 	
 	/*
 	 * To load page from where External user can see and approve the 
@@ -497,6 +487,7 @@ List<PaymentRequestDTO> requestList = manageExternalUserAccountService
 		return new ModelAndView("/external/viewAccountApproveRequests").addObject("isAuthorized",isAuthorized).addObject("viewAccountRequestList", viewAccountRequestList);
 	}
 	
+	
 	/*
 	 * To approve the view account request by customer or merchant on button click
 	 */
@@ -507,6 +498,22 @@ List<PaymentRequestDTO> requestList = manageExternalUserAccountService
 		boolean isAuthorized = manageExternalUserAccountService.authorizeViewTransactionsRequest(requestId);
 		List<RequestDTO> viewTransactionRequestList = manageExternalUserAccountService.getViewTransactionsRequests(memberId);		
 		return new ModelAndView("/external/viewTransactionApproveRequests").addObject("isAuthorized",isAuthorized).addObject("viewTransactionRequestList", viewTransactionRequestList);
+	}
+	
+	
+	
+
+
+	/*
+	 * To load page from where External user can see and approve the 
+	 * View Account requests from the emp
+	 */
+	@RequestMapping("/external/viewAccountApproveRequests")
+	public ModelAndView viewAccountApproveRequests(HttpSession session)
+	{
+		int memberId= (int) session.getAttribute("memberId");
+		List<RequestDTO> viewAccountRequestList = manageExternalUserAccountService.getViewAccountRequests(memberId); 
+		return new ModelAndView("/external/viewAccountApproveRequests").addObject("viewAccountRequestList",viewAccountRequestList);
 	}
 	
 	
@@ -521,6 +528,7 @@ List<PaymentRequestDTO> requestList = manageExternalUserAccountService
 		List<RequestDTO> viewAccountRequestList = manageExternalUserAccountService.getViewAccountRequests(memberId);		
 		return new ModelAndView("/external/viewAccountApproveRequests").addObject("isAuthorized",isAuthorized).addObject("viewAccountRequestList", viewAccountRequestList);
 	}
+	
 	
 	/*
 	 * To decline the view account request by customer or merchant on button click
