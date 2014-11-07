@@ -19,95 +19,42 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 public class UserModel {
 
-	@Nonnull
 	String firstName;
-
-
-	@Nonnull
 	String lastName;
-	
-	
-	@Nonnull
 	String emailId;
-	
-
-	
 	long contactNo;
-	
-	@Nonnull
 	String address1;
-	
-	@Nonnull
 	String address2;
-	
-	@Nonnull
 	String city;
-	
-	@Nonnull
 	String state;
-	
-
-
 	long zip;
-	
-
-
 	Date dateOfBirth;
 	
-	
-	@Nonnull
 	int age;
 
-
 	long ssn;
-	
-	@Nonnull
 	String userType;
 
-
-	@Nonnull	
 	String userName;
 
-	
-
-	@Nonnull
 	String password;
 
 
-	@Nonnull	
 	String secQuestion1;
-
-
-	@Nonnull	
 	String secQuestion2;
-
-
-	@Nonnull	
 	String secQuestion3;
-	
-	@Nonnull	
 	String secAnswer1;
-
-	
-	@Nonnull	
 	String secAnswer2;
-
-	@Nonnull	
 	String secAnswer3;
 	
-	
-	@Nonnull
 	String siteKey;
 	
 	
 	int userTypeMapId;
 	
 	String createdBy;
-	
 
 	Date createdDate;
-
- 
 	Date expiryDate;
 	
 	
@@ -118,7 +65,6 @@ public class UserModel {
 	String isCustomer;
 	
 	boolean isEmployee;
-	
 	
 	String designation;
 

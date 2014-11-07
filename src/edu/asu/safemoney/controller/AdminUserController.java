@@ -338,5 +338,12 @@ public class AdminUserController {
 				processResult);
 
 	}
+	
+	@RequestMapping("/admin/systemLog")
+	public ModelAndView getSystemLog()
+	{
+		return new ModelAndView("/admin/viewSystemLog");
+	}
+	
 }
 

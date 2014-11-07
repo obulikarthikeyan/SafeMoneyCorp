@@ -116,7 +116,6 @@
 
 						<sec:authorize access="hasRole('INT_BANK_ADMIN')">
 							<li><a href="<%=request.getContextPath() %>/admin/UsersList"><i class="fa fa-tasks fa-fw"></i>Legal User List<span class="fa arrow"></span></a></li>
-
 							<li><a href="#"><i class="fa fa-tasks fa-fw"></i> Manage Accounts<span class="fa arrow"></span></a>
 								<ul class="nav nav-second-level">
 									<li><a href="<%=request.getContextPath() %>/admin/employeeRegistration">Internal Users</a></li>
@@ -125,8 +124,8 @@
 							<li><a
 								href="<%=request.getContextPath() %>/admin/piiAuthorization"><i
 									class="fa fa-edit fa-fw"></i> View PII</a></li>
-<!-- 							<li><a href="#"><i class="fa fa-table fa-fw"></i> View
-									System Log</a></li> -->
+							<li><a href="<%=request.getContextPath() %>/admin/systemLog"><i class="fa fa-table fa-fw"></i> View
+									System Log</a></li>
 							<li><a href="<%=request.getContextPath()%>/admin/viewTransactionHistoryPage"><i class="fa fa-gear fa-fw"></i>
 									View Transactions</a></li>
 							<li><a href="<%=request.getContextPath()%>/admin/authorizeCriticalTransactions"><i class="fa fa-gear fa-fw"></i>
@@ -147,7 +146,6 @@
 									<li><a href="<%=request.getContextPath()%>/internal/transactionReview">Process Transaction Review Requests</a></li>
 									<li><a href="<%=request.getContextPath()%>/internal/manageTransactionRequest">Authorize Transactions</a></li>
 								</ul> <!-- /.nav-second-level --></li>	
-
 						</sec:authorize>
 
 
