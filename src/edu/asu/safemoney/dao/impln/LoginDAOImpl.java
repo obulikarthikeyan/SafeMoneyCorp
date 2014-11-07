@@ -279,10 +279,14 @@ public class LoginDAOImpl implements LoginDAO{
 	public void changePassword(String userName, String password)
 	{
 		
+	
 		Session session = sessionFactory.getCurrentSession();
+		//password encoding
+		String pw_hash = BCrypt.hashpw(password, BCrypt.gensalt());
+		//loginDTO.setPassword(pw_hash);
 		Query query = session.getNamedQuery("LoginDTO.findByUserName").setString("userName", userName);
 		LoginDTO loginDTO = (LoginDTO) query.uniqueResult();
-		loginDTO.setPassword(password);
+		loginDTO.setPassword(pw_hash);
 		session.saveOrUpdate(loginDTO);
 	}
 		

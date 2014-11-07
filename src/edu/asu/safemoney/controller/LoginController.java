@@ -3,6 +3,8 @@ package edu.asu.safemoney.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -175,21 +177,26 @@ public class LoginController {
 		}
 	}
 	
+	//changed
 	@RequestMapping(value="/shared/changePassword", method = RequestMethod.POST)
 	public ModelAndView getOtpCode(@RequestParam("changePassword") String changePassword, @RequestParam("checkPassword") String checkPassword,HttpSession session) {
 		System.out.println("In controller - change pass");
 		String userName = (String) session.getAttribute("userName");
 		
-		if(changePassword.equals(checkPassword))
+		if(changePassword.length()<=15 && checkPassword.length()<=15 && changePassword.length()==checkPassword.length() && changePassword.equals(checkPassword)&& !changePassword.isEmpty())
 		{
 			if(loginService.changePassword(userName, changePassword))
-				return new ModelAndView("/shared/changePassword").addObject("temp", "change password success");
-				else return new ModelAndView("/shared/login").addObject("temp", "change password fail");
+			{
+				System.out.println("change success");
+				return new ModelAndView("/shared/login").addObject("cpSuccess", "change password success");
+				
+			}
+			else return new ModelAndView("/shared/changePassword").addObject("cpError", "change password fail");
 		}
 		
 		else
 		{
-			return new ModelAndView("/shared/changePassword").addObject("temp", "change password fail, Try Again");
+			return new ModelAndView("/shared/changePassword").addObject("cpError", "change password fail, Try Again");
 		}
 		
 	
@@ -197,34 +204,47 @@ public class LoginController {
 			
 	}
 
-//otpValidator otpValidator
+//otpValidator otpValidator - changed above and this method are different please keep both
 @RequestMapping(value="/shared/otpValidator", method = RequestMethod.POST)
 public ModelAndView getOtpCode(@RequestParam("otpValidatorText") String userOtpCode,HttpSession session) {
 	System.out.println("In controller - opt valiaditor");
 	String userName = (String) session.getAttribute("userName");
 	
-	System.out.println("In controller - opt valiaditor"+ userOtpCode + "over");
+	//Pattern
+	Pattern px = Pattern.compile("[^0-9]", Pattern.CASE_INSENSITIVE);
+	Matcher m = px.matcher(userOtpCode);
+	boolean b = m.find();
+
+	if (b)
+	   System.out.println("There is a special character in my string");
 	
-	boolean correntSecAnswers= loginService.otpValidator(Long.parseLong(userOtpCode),userName);
-	System.out.println("CorrectAns+ in control - otp validator"+ correntSecAnswers);
-	if(correntSecAnswers)
-	{
-		return new ModelAndView("/shared/changePassword").addObject("temp", userName);
+	if(userOtpCode.length()==6 && !userOtpCode.isEmpty() && !b)
+	{	
+		System.out.println("In controller - opt valiaditor"+ userOtpCode + "over");
+	
+		boolean correntSecAnswers= loginService.otpValidator(Long.parseLong(userOtpCode),userName);
+		System.out.println("CorrectAns+ in control - otp validator"+ correntSecAnswers);
+		if(correntSecAnswers)
+		{
+			return new ModelAndView("/shared/changePassword").addObject("otpError", "");
+		}
+		else
+			return new ModelAndView("/shared/otpValidator").addObject("otpError", "Enter 6 digit code numeric code, No special characters. Don't copy paste and if you are not getting otp mail then let us know at priyanks@asu.edu - we are happy to help");
 	}
-	else
-		return new ModelAndView("/shared/forgetPassword").addObject("temp", userName);
+	
+	else return new ModelAndView("/shared/otpValidator").addObject("otpError", "Enter 6 digit code numeric code, No special characters. Don't copy paste and if you are not getting otp mail then let us know at priyanks@asu.edu - we are happy to help");
 }
 
 
 
-//Security Questions
+//Security Questions -changed
 @RequestMapping(value="/shared/secQuestionValidation", method = RequestMethod.POST)
 public ModelAndView getSecurityAnswers(@RequestParam("answer1") String userAnswer1, @RequestParam("answer2") String userAnswer2, @RequestParam("answer3") String userAnswer3,HttpSession session) {
 	String userName = (String) session.getAttribute("userName");
 	
 	//System.out.println("In controller");
 	boolean correntSecAnswers= loginService.getSecurityAnswers(userName, userAnswer1, userAnswer2, userAnswer3);
-	if(userAnswer1==null || userAnswer2==null || userAnswer3==null)
+	if(userAnswer1==null || userAnswer2==null || userAnswer3==null || userAnswer1.length()>25|| userAnswer2.length()>25|| userAnswer3.length()>25)
 	{
 		SecurityQuestionsModel secQuestions = loginService.getSecurityQuestions(userName);
 		
