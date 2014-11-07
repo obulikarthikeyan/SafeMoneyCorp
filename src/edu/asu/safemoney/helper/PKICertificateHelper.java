@@ -164,7 +164,7 @@ public class PKICertificateHelper {
 			try {
 				// cHANGE THE PATH AS PER YOUR KEYSTORE LOCATION
 				fis = new
-					java.io.FileInputStream("F:/GoogleDriveSync/Keystore/pkikeystore.jks"); 
+					java.io.FileInputStream("c:/Tomcat/Keystore/pkikeystore.jks"); 
 			ks.load(fis, "changeit".toCharArray()); }  
 
 			finally {
@@ -182,7 +182,7 @@ public class PKICertificateHelper {
 		java.io.FileOutputStream fos = null; 
 		try { 
 			// CHANGE PATH
-			fos = new java.io.FileOutputStream("F:/GoogleDriveSync/Keystore/pkikeystore.jks"); 
+			fos = new java.io.FileOutputStream("C:/Tommcat/Keystore/pkikeystore.jks"); 
 			ks.store(fos,"changeit".toCharArray());
 		} 
 
