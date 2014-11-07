@@ -257,8 +257,8 @@
 											<div class="form-group">
 											
 													<input id="passwordConfirm" class="form-control" type="password"
-														placeholder="Confirm Password" name="password1" tabindex="17">
-														<div id="errorMessage"></div>
+														placeholder="Confirm Password" name="passwordConfirm" tabindex="17">
+														
 											</div>
 										
 											
@@ -298,21 +298,22 @@
 	
 	<script type="text/javascript">
 
-	window.onload = function () {
-	    document.getElementById("password").onchange = validatePassword;
-	    document.getElementById("passwordConfirm").onchange = validatePassword;
-	}
-	function validatePassword(){
-	var pass2=document.getElementById("passwordConfirm").value;
-	var pass1=document.getElementById("password").value;
-	if(pass1!=pass2)
-	    document.getElementById("passwordConfirm").setCustomValidity("Passwords Don't Match");
-	else
-	    document.getElementById("passwordConfirm").setCustomValidity('');  
+	jQuery.validator.addMethod( 'passwordMatch', function(value, element) 
+			{
+	    
+			    var password = $("#password").val();
+			    var passwordConfirm = $("#passwordConfirm").val();
+			 
+			    if (password != passwordConfirm ) 
+			    {
+			        return false;
+			    } 
+			    else 
+			    {
+			        return true;
+			    }	
+	    	}, "Your Passwords Must Match");
 
-	}
-
-	
 	$.validator.addMethod('alphabetsOnly', function( val, element ) {
 	    var regexp = new RegExp("^[a-zA-Z]+$");
 
@@ -438,12 +439,12 @@
 			},
 			password: {
 				required: true,
-				maxlength: 15,
+				maxlength: 15
 			},
 			passwordConfirm: {
 				required: true,
 				maxlength: 15,
-				equalTo: "#password"
+				passwordMatch:true
 			},
 			secQuestion1: {
 				required: true,
@@ -493,16 +494,24 @@
 			dateOfBirth: "Please Enter a valid date in (MM/DD/YYYY) format",
 			age: "Please Enter a valid date (maximum of 3 digits)",
 			userName: "Please Enter a vlaid user name (character range [5-15])",
-			password: "Please Enter a vlaid password (character range [8-15])",
-			passwordConfirm: "Passwords doesn't match",
+/* 			password: "Please Enter a vlaid password (character range [8-15])",
+			passwordConfirm: "Passwords doesn't match", */
 			secQuestion1: "Please Enter a valid Security question (character range [1-200])",
 			secQuestion2: "Please Enter a valid Security question (character range [1-200])",
 			secQuestion3: "Please Enter a valid Security question (character range [1-200])",
 			secAnswer1: "Please Enter a valid Security answer (character range [1-25])",
 			secAnswer2: "Please Enter a valid Security answer (character range [1-25])",
 			secAnswer3: "Please Enter a valid Security answer (character range [1-25])",
-			siteKey: "Please Enter a valid SiteKey (charcter range [5-20])"
-			
+			siteKey: "Please Enter a valid SiteKey (charcter range [5-20])",
+		        password: {
+		            required: "Please Enter a vlaid password (character range [8-15])",
+		            minlength: "Please Enter a vlaid password (character range [8-15])"
+		        },
+		        passwordConfirm: {
+		            required: "Please Enter a vlaid password (character range [8-15])",
+		            minlength: "Please Enter a vlaid password (character range [8-15])",
+		            passwordMatch: "Your Passwords Must Match"
+		        }
 		}
 			
 		}

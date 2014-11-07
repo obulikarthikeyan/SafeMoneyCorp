@@ -62,7 +62,7 @@
 						class="icon-bar"></span> <span class="icon-bar"></span> <span
 						class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="index.html"
+				<a class="navbar-brand" href="<%=request.getContextPath() %>/landing"
 					style="font-size: 24px; color: #5E5E5E"><strong>SafeMoneyCorp</strong></a>
 			</div>
 			<!-- /.navbar-header -->

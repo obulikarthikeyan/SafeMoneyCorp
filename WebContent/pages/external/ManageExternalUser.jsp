@@ -196,6 +196,8 @@
 										<label>Zip</label>
 										<input class="form-control" style="width: 25%" id="zip" name="zip"
 											tabindex="5" maxlength="5" value="${userDTO.zip}">
+										<label>Upload Your Certificate</label>	
+										<input type="file" name="certFile"/>
 									</div>
 									<div class="modal-footer">
 										<button type="button" class="btn btn-default"

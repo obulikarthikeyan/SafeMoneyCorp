@@ -288,6 +288,7 @@ public class LoginDAOImpl implements LoginDAO{
 		Query query = session.getNamedQuery("LoginDTO.findByUserName").setString("userName", userName);
 		LoginDTO loginDTO = (LoginDTO) query.uniqueResult();
 		loginDTO.setPassword(pw_hash);
+		loginDTO.setIsAccountNonLocked(true);
 		session.saveOrUpdate(loginDTO);
 	}
 		

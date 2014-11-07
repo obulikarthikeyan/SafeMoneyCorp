@@ -1,3 +1,5 @@
+
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
@@ -24,17 +26,33 @@
                 <hr style="position:absolute;left:320px; top:55px; width:680px; height:30px;border-color:#7C7C7C">
 				<img alt="SafeMoneyVault" src="./images/vault.jpg" style="position:absolute;left:355px; top:100px" width="600px" height="230px">
 				
-				<form id ="loginform" name="loginForm" target="_self" method="post" action="userNameLogin" style="margin:0px" class="form-inline">
+				<form:form id ="loginform" name="loginForm" target="_self" method="post" commandName="loginform" action="userNameLogin" style="margin:0px" class="form-inline">
 				
 				<h4 style="position:absolute;left:505px;top:375px;color:#FFF">Please Enter your UserName</h4>
 				<input name="userName" autofocus="autofocus" type="text" class="form-control" style="position:absolute;width:200px;left:505px;top:415px;z-index:2" placeholder="Username" maxlength="30"/>
 				
+				<%
+				if (request.getAttribute("message") != null) {
+				%>
+				<p class="label label-success" style="font-size:13px">${message }</p>
+				<br>
+				<%
+				}
+				%>
+				<%
+				if (request.getAttribute("error") != null) {
+				%>
+				<p class="label label-warning" style="font-size:13px">${error }</p>
+				<br>
+				<%
+				}
+				%>
 				<input name="login" type="submit" value="Log In" style="position:absolute;left:725px;top:415px;z-index:4;" class = "btn btn-primary" autofocus="autofocus"/>
 				
 				<span style="position:absolute;width:300px;left:505px;top:545px;">&nbsp;</span>
 				<h5 style="position:absolute;left:505px;top:500px;color:#FFF">Don't have an account?</h5>
 				
-				</form>
+				</form:form>
 				
 				<form method="post" action="signUp">
 					<input name="signUp" type="submit" value="Sign Up" style="position:absolute;width:300px;left:505px;top:527px;z-index:5;" class = "btn btn-primary"/>

@@ -97,7 +97,7 @@ private EmployeeUserService employeeUserService;
 			@ModelAttribute("updateUser") ModifyUserModel modifyUserModel, ModelMap model, @RequestParam("certFile") MultipartFile file, HttpSession session) {
 		// manageExternalUserAccountService.updateUser(userModel);
 		// Should redirect to "updateSuccess.jsp"
-		/*String filePath=System.getProperty("catalina.home");
+		String filePath=System.getProperty("catalina.home");
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if(auth != null)
 		{
@@ -118,7 +118,7 @@ private EmployeeUserService employeeUserService;
 				return new ModelAndView("external/ManageExternalUser").addObject("error", "File Upload Failed");
 			}
 		}
-		*/
+		
 		boolean isUpdated = manageExternalUserAccountService.updateUser(modifyUserModel);
 		UserDTO userDTO = manageExternalUserAccountService.displayUserAccount(modifyUserModel.getMemberId());
 		ModelAndView mv = new ModelAndView("external/ManageExternalUser").addObject("userDTO", userDTO);

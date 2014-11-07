@@ -35,6 +35,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import edu.asu.safemoney.model.SecurityQuestionsModel;
 import edu.asu.safemoney.model.UserModel;
+import edu.asu.safemoney.model.UserNameValidationModel;
 import edu.asu.safemoney.service.LoginService;
 
 @Controller
@@ -48,8 +49,20 @@ public class LoginController {
 	
 	
 	@RequestMapping(value="/userNameLogin", method=RequestMethod.POST)
-	public ModelAndView userNameValidation(@RequestParam("userName") String userName, HttpServletRequest request, HttpSession sessionID)
+	public ModelAndView userNameValidation(
+			@ModelAttribute("loginform") @Valid UserNameValidationModel userNameValidationModel,
+			BindingResult validateResult,
+			HttpServletRequest request, 
+			HttpSession sessionID)
 	{
+		
+		
+		String userName = userNameValidationModel.getUserName();
+		
+		if(validateResult.hasErrors())
+		{
+			return new ModelAndView("/shared/home").addObject("error","invalid characters in username");
+		}
 		String siteKey = loginService.getSiteKeyForUserName(userName);
 		boolean isUserNameAvailable = false;
 		if((siteKey != null) && !siteKey.isEmpty())

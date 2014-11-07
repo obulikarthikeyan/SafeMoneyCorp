@@ -17,6 +17,8 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.Email;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import edu.asu.safemoney.helper.FieldMatch;
+
 public class UserModel {
 
 	String firstName;
