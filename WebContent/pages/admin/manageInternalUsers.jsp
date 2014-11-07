@@ -34,13 +34,79 @@
 					<!-- Nav tabs -->
 					<ul class="nav nav-pills">
 						<li class="active"><a href="#Create" data-toggle="tab">Create Account</a></li>
-						<li><a href="#update" data-toggle="tab">Modify/Delete</a>
+						<li class ="update"><a href="#update" data-toggle="tab">Modify/Delete</a>
 						</li>			
 					</ul>
 
 
 					<!-- Tab panes -->
 					<div class="tab-content">
+						<div>
+						
+						</div>
+						<div class="tab-pane fade" id="update">
+							<form id="searchUser" role="form" method="POST" action="getEmp">
+							<div class="col-md-10 col-md-offset-1">
+								<label>Enter Employee Id</label>
+								<input class="form-control" type="text" id="memberId" name="memberId" placeholder="Member ID" value="${memberId}">
+							</div>
+							
+							<div>
+							<button type="submit" class="btn btn-primary" value="getDetails"> Get details </button>
+							</div>
+							
+							</form>
+							<table style="width: 70%; height: 60%">
+
+							<tbody>
+								
+								<tr>
+									<td><b>Email ID</b></td>
+									<td>${employeeDetails.emailId}</td>
+
+								</tr>
+								<tr>
+									<td><b>Contact Number</b></td>
+									<td>${employeeDetails.contactNo}</td>
+								</tr>
+
+
+								<tr>
+									<td><b>Address1</b></td>
+									<td>${employeeDetails.address1}</td>
+								</tr>
+
+								<tr>
+									<td><b>Address2</b></td>
+									<td>${employeeDetails.address2}</td>
+								</tr>
+
+								<tr>
+									<td><b>City</b></td>
+									<td>${employeeDetails.city}</td>
+								</tr>
+
+								<tr>
+									<td><b>State</b></td>
+									<td>${employeeDetails.state}</td>
+								</tr>
+
+								<tr>
+									<td><b>Zip</b></td>
+									<td>${employeeDetails.zip}</td>
+								</tr>
+							</tbody>
+							</table>
+							<div>
+							<button type="button"> Modify</button>
+							</div>
+							<div>
+							<button type="button"> Delete</button>
+							</div>
+							
+							
+						</div>
+						
 						<div class="tab-pane fade in active in active" id="Create">
 							<form id="signUpForm" role="form" method="POST" action="createEmployee">
 						<fieldset>

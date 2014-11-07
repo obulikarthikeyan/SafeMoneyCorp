@@ -1,4 +1,5 @@
 
+
 package edu.asu.safemoney.controller;
 
 import java.io.File;
@@ -7,6 +8,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -15,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -31,11 +34,17 @@ import edu.asu.safemoney.dto.TransactionDTO;
 import edu.asu.safemoney.dto.UserDTO;
 import edu.asu.safemoney.helper.PKICertificateHelper;
 import edu.asu.safemoney.model.AccountModel;
+import edu.asu.safemoney.model.AuthorizePaymentRequestModel;
 import edu.asu.safemoney.model.ModifyUserModel;
+import edu.asu.safemoney.model.SubmitAuthorizedPaymentModel;
 import edu.asu.safemoney.model.TransactionModel;
 import edu.asu.safemoney.model.UserModel;
+import edu.asu.safemoney.model.InitiatePaymentModel;
+import edu.asu.safemoney.model.DoTransferModel;
+import edu.asu.safemoney.model.DoCreditOrDebitModel;
 import edu.asu.safemoney.service.EmployeeUserService;
 import edu.asu.safemoney.service.ManageExternalUserAccountService;
+
 
 
 @Controller
@@ -134,15 +143,30 @@ private EmployeeUserService employeeUserService;
 		return aaa;
 	}
 
+	
+	
 	@RequestMapping(value = "/external/creditDebit", method = RequestMethod.POST)
 	public ModelAndView doCreditOrDebit(
-			@RequestParam("creditDebitAmount") double amount,
-			@RequestParam("optionsRadiosInline") Integer type,
+			@ModelAttribute("creditDebit") @Valid DoCreditOrDebitModel doCreditOrDebitModel,
+			BindingResult validateResult,
 			HttpSession session)
 	// @ModelAttribute("doCreditOrDebit") TransactionModel transaction
 	{
+		/////////////////////modified by fei
 		int memberId = (Integer) session.getAttribute("memberId");
 		List<PaymentRequestDTO> requestList = manageExternalUserAccountService.getPaymentRequest(memberId);
+		
+		Integer type=doCreditOrDebitModel.getOptionsRadiosInline();
+		double amount = doCreditOrDebitModel.getCreditDebitAmount();
+		
+		if(validateResult.hasErrors())
+		{
+			validateResult.rejectValue("creditDebitAmount", "error.credit", "Invalid Amount");
+			AccountModel accountModel = manageExternalUserAccountService.getAccountDetails(memberId);
+			return new ModelAndView("external/transactions")
+			.addObject("account",accountModel).addObject("requestList", requestList)
+			.addObject("error", "Transaction Failed. Invalid input(s) detected in credit/debit section");
+		}
 		if (type == 1) {
 			String result = manageExternalUserAccountService
 					.makeCreditTransaction(memberId, amount,memberId,"Credit");
@@ -209,19 +233,44 @@ private EmployeeUserService employeeUserService;
 	}
 
 	
+	
 	@RequestMapping(value = "/external/transfer", method = RequestMethod.POST)
 	public ModelAndView doTransform(
-			@RequestParam("toAccountNumber") long toAccount,
-			@RequestParam("transformAmount") double amount,
-			HttpSession session)
+			@ModelAttribute("Transform") @Valid DoTransferModel doTransferModel,
+			BindingResult validateResult, HttpSession session)
 
 	{
 		
+//////////////////////////////////modified by fei
 		int memberId = (Integer) session.getAttribute("memberId");
-		
-		if (manageExternalUserAccountService.findAccount(toAccount)) {
-			
+		long toAccount = doTransferModel.getToAccountNumber();
+		double amount = doTransferModel.getTransformAmount();
 
+		if (validateResult.hasErrors()) {
+			AccountModel accountModel = manageExternalUserAccountService
+					.getAccountDetails(memberId);
+
+			List<PaymentRequestDTO> requestList = manageExternalUserAccountService
+					.getPaymentRequest(memberId);
+			return new ModelAndView("external/transactions")
+					.addObject("account", accountModel)
+					.addObject("requestList", requestList)
+					.addObject("error",
+							"You have entered some invalid data in transfer page");
+		}
+		if (manageExternalUserAccountService.findAccount(toAccount)) {
+
+			if (!manageExternalUserAccountService.findIsEnabled(toAccount)) {
+				AccountModel accountModel = manageExternalUserAccountService
+						.getAccountDetails(memberId);
+
+				List<PaymentRequestDTO> requestList = manageExternalUserAccountService
+						.getPaymentRequest(memberId);
+				return new ModelAndView("external/transactions")
+						.addObject("account", accountModel)
+						.addObject("requestList", requestList)
+						.addObject("error", "Invalid Account");
+			}
 			String result = manageExternalUserAccountService.makeTransform(
 					memberId, amount, toAccount);
 			AccountModel accountModel = manageExternalUserAccountService
@@ -229,11 +278,12 @@ private EmployeeUserService employeeUserService;
 
 			List<PaymentRequestDTO> requestList = manageExternalUserAccountService
 					.getPaymentRequest(memberId);
-			
+
 			if (result.equals("success")) {
 
 				return new ModelAndView("external/transactions")
-						.addObject("message",
+						.addObject(
+								"message",
 								"Transfer need to be approve by employee, if not approved, the money will be refunded")
 						.addObject("account", accountModel)
 						.addObject("requestList", requestList);
@@ -250,26 +300,26 @@ private EmployeeUserService employeeUserService;
 						.addObject("requestList", requestList);
 			} else if (result.startsWith("Critical")) {
 				return new ModelAndView("external/transactions")
-						.addObject("message",
+						.addObject(
+								"message",
 								"Greater than 2000 is Critical, Transfer need to be approve by admin, if not approved, the money will be refunded")
 						.addObject("account", accountModel)
 						.addObject("requestList", requestList);
 			}
 			return new ModelAndView("external/transactions");
 		}
-		
-		else
-		{
-			AccountModel accountModel = manageExternalUserAccountService
-		.getAccountDetails(memberId);
 
-List<PaymentRequestDTO> requestList = manageExternalUserAccountService
-		.getPaymentRequest(memberId);
+		else {
+			AccountModel accountModel = manageExternalUserAccountService
+					.getAccountDetails(memberId);
+
+			List<PaymentRequestDTO> requestList = manageExternalUserAccountService
+					.getPaymentRequest(memberId);
 			return new ModelAndView("external/transactions")
-		.addObject("error",
-				"The account you input does not exist!")
-		.addObject("account", accountModel)
-		.addObject("requestList", requestList);
+					.addObject("error", "Invalid Account")
+					.addObject("account", accountModel)
+					.addObject("requestList", requestList);
+
 		}
 	}
 	
@@ -289,19 +339,38 @@ List<PaymentRequestDTO> requestList = manageExternalUserAccountService
 		
 	}
 	
-	/*@RequestMapping(value = "/external/transfors", method = RequestMethod.GET)//????which one to map???
-	public ModelAndView getPaymentRequest(HttpSession session)
-	{
-		int memberId = (Integer) session.getAttribute("memberId");
-		
-		List<PaymentRequestDTO> requestList = manageExternalUserAccountService.getPaymentRequest(memberId);
-		return new ModelAndView("external/transactions").addObject("requestList", requestList);
-	}*/
+
+	
 	
 	@RequestMapping(value = "/external/authorizePaymentRequest", method = RequestMethod.POST)
-	public ModelAndView authorizePayment(@RequestParam("paymentRequestId") long paymentRequestId,@RequestParam("authorizeAction") String authorizeAction, @RequestParam("certFile") MultipartFile file, HttpSession session)
+	public ModelAndView authorizePayment(
+			@ModelAttribute("authorizePaymentRequest") @Valid AuthorizePaymentRequestModel authorizePaymentRequestModel,
+			BindingResult validateResult,
+			
+			@RequestParam("certFile") MultipartFile file, 
+			HttpSession session)
 	{
+		
+/////////////////////////////////////////modified by fei
 		String filePath = System.getProperty("catalina.home");
+		
+		long paymentRequestId = authorizePaymentRequestModel.getPaymentRequestId();
+		String authorizeAction = authorizePaymentRequestModel.getAuthorizeAction();
+		
+		if(validateResult.hasErrors())
+		{
+			
+			int memberId = (Integer) session.getAttribute("memberId");
+			AccountModel accountModel = manageExternalUserAccountService
+					.getAccountDetails(memberId);
+			List<PaymentRequestDTO> requestList = manageExternalUserAccountService
+					.getPaymentRequest(memberId);
+			return new ModelAndView("external/transactions")
+			.addObject("account", accountModel)
+			.addObject("requestList", requestList)
+			.addObject("error",
+					"Authorization failed. Invalid input(s) detected in authorization section");
+		}
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if(auth != null)
 		{
@@ -344,7 +413,15 @@ List<PaymentRequestDTO> requestList = manageExternalUserAccountService
 						.addObject("requestList", requestList)
 						.addObject("error",
 								"You don't have enough fund in your account");
-			} else {
+			} else if(result.equals("NOTFOUND"))
+			{
+				return new ModelAndView("external/transactions")
+				.addObject("account", accountModel)
+				.addObject("requestList", requestList)
+				.addObject("error",
+						"Invalid payment request ID");
+			}
+			else {
 				return new ModelAndView("external/transactions")
 						.addObject("account", accountModel)
 						.addObject("requestList", requestList)
@@ -353,43 +430,91 @@ List<PaymentRequestDTO> requestList = manageExternalUserAccountService
 
 			}
 		}
-		else
+		else if(authorizeAction.equals("declined"))
 		{
 			String result = manageExternalUserAccountService.declinePayment(paymentRequestId);
+			
 			int memberId = (Integer) session.getAttribute("memberId");
 			AccountModel accountModel = manageExternalUserAccountService
 					.getAccountDetails(memberId);
 			List<PaymentRequestDTO> requestList = manageExternalUserAccountService
 					.getPaymentRequest(memberId);
+			if(result.equals("NOTFOUND"))
+			{
+				return new ModelAndView("external/transactions")
+				.addObject("error",
+						"Invalid Payment Request ID")
+				.addObject("account", accountModel)
+				.addObject("requestList", requestList);
+			}
+			
 			return new ModelAndView("external/transactions")
 			.addObject("message",
 					"You have declined this payment")
 			.addObject("account", accountModel)
 			.addObject("requestList", requestList);
 		}
+		else
+		{
+			
+			int memberId = (Integer) session.getAttribute("memberId");
+			AccountModel accountModel = manageExternalUserAccountService
+					.getAccountDetails(memberId);
+			List<PaymentRequestDTO> requestList = manageExternalUserAccountService
+					.getPaymentRequest(memberId);
+			return new ModelAndView("external/transactions")
+			.addObject("error",
+					"invalid inpur data")
+			.addObject("account", accountModel)
+			.addObject("requestList", requestList);
+		}
+			
 	}
 	//requestingDate
 	
-	/*public ModelAndView approveExtUserAccountRequest(
-			@RequestParam("requestId") long requestId,
-			@RequestParam("requestType") String requestType) {
-		boolean isApproved = adminUserService.approveExtUserRequest(requestId);
-		List<RequestDTO> requestList = adminUserService
-				.getExterUserAccountRequests();*/
+	
+	
 	@RequestMapping(value = "/external/initiatePayment", method = RequestMethod.POST)
+	public ModelAndView initiatePayment(@ModelAttribute("initiatePayment") @Valid InitiatePaymentModel initiatementPaymentModel,
+			BindingResult validateResult,
+			HttpSession session) {
 
-	public ModelAndView initiatePayment(
-			@RequestParam("toMerchantAccountNumber") long toMerchantAccount,
-			@RequestParam("amount") double amount,
-			@RequestParam("description") String description, HttpSession session) {
-
-		
-
+/////////////////////////////////////////modified by fei
 		int memberId = (Integer) session.getAttribute("memberId");
 
+
+		long toMerchantAccount = initiatementPaymentModel.getToMerchantAccountNumber();
+		double amount = initiatementPaymentModel.getAmount();
+		String description = initiatementPaymentModel.getDescription();
+		
+		if(validateResult.hasErrors())
+		{
+			AccountModel accountModel = manageExternalUserAccountService
+					.getAccountDetails(memberId);
+			List<PaymentRequestDTO> requestList = manageExternalUserAccountService
+					.getPaymentRequest(memberId);
+			return new ModelAndView("external/transactions")
+					.addObject("account", accountModel)
+					.addObject("requestList", requestList)
+					.addObject("error", "Initiate Payment Failed. Invalid input(s) detected in initiate payment section");
+		}
 		
 
 		if (manageExternalUserAccountService.findAccount(toMerchantAccount)) {
+			
+			
+			if(!manageExternalUserAccountService.findIsEnabled(toMerchantAccount))
+			{
+				AccountModel accountModel = manageExternalUserAccountService
+						.getAccountDetails(memberId);
+				List<PaymentRequestDTO> requestList = manageExternalUserAccountService
+						.getPaymentRequest(memberId);
+				return new ModelAndView("external/transactions")
+						.addObject("account", accountModel)
+						.addObject("requestList", requestList)
+						.addObject("error", "Invalid Account");
+			}
+			
 			String result = manageExternalUserAccountService.initiatePayment(
 					memberId, toMerchantAccount, amount, description);
 			AccountModel accountModel = manageExternalUserAccountService
@@ -429,30 +554,58 @@ List<PaymentRequestDTO> requestList = manageExternalUserAccountService
 			List<PaymentRequestDTO> requestList = manageExternalUserAccountService
 					.getPaymentRequest(memberId);
 			return new ModelAndView("external/transactions")
-					.addObject("error", "The account you input does not exist!")
+					.addObject("error", "Invalid Account")
 					.addObject("account", accountModel)
 					.addObject("requestList", requestList);
 		}
+	
 
 	}
 	
-	//submitAuthorizedPaymentRequest
+	
+	
+	
 	@RequestMapping(value = "/external/submitAuthorizedPaymentRequest", method = RequestMethod.POST)
-	public ModelAndView submitAuthorizedPayment(@RequestParam("paymentRequestId2") long paymentRequestId,HttpSession session)
+	public ModelAndView submitAuthorizedPayment(@ModelAttribute("submitAuthorizedPaymentRequest") @Valid SubmitAuthorizedPaymentModel submitAuthorizedPaymentModel,
+			BindingResult validateResult,
+			HttpSession session)
 	{
+		/////////////////////////////////////////modified by fei	
+		int memberId = (Integer) session.getAttribute("memberId");
+		
+		long paymentRequestId = submitAuthorizedPaymentModel.getPaymentRequestId2();
+		
+		if(validateResult.hasErrors())
+		{
+			AccountModel accountModel = manageExternalUserAccountService.getAccountDetails(memberId);
+			List<PaymentRequestDTO> requestList = manageExternalUserAccountService.getPaymentRequest(memberId);
+			return new ModelAndView("external/transactions")
+			.addObject("account",accountModel).addObject("requestList", requestList)
+			.addObject("error", "Authorization Failed. Invalid input(s) detected in Authorization section");
+		}
 		
 		String result = manageExternalUserAccountService.submitPayment(paymentRequestId);
-		int memberId = (Integer) session.getAttribute("memberId");
-		AccountModel accountModel = manageExternalUserAccountService.getAccountDetails(memberId);
-		List<PaymentRequestDTO> requestList = manageExternalUserAccountService.getPaymentRequest(memberId);
+		if(result.equals("NOTFOUND"))
+		{
+			AccountModel accountModel = manageExternalUserAccountService.getAccountDetails(memberId);
+			List<PaymentRequestDTO> requestList = manageExternalUserAccountService.getPaymentRequest(memberId);
+			return new ModelAndView("external/transactions")
+			.addObject("account",accountModel).addObject("requestList", requestList)
+			.addObject("error", "Authorization Failed. Invalid input request ID in Authorization section");
+		}
+			
 		if(result.equals("success"))
 		{
+			AccountModel accountModel = manageExternalUserAccountService.getAccountDetails(memberId);
+			List<PaymentRequestDTO> requestList = manageExternalUserAccountService.getPaymentRequest(memberId);
 			return new ModelAndView("external/transactions").addObject("message",
 				"Payment Authorized Successfully!").addObject("account",
 						accountModel).addObject("requestList", requestList).addObject("message", "You have sibmitted payment successfully");
 		}
 		else
 		{
+			AccountModel accountModel = manageExternalUserAccountService.getAccountDetails(memberId);
+			List<PaymentRequestDTO> requestList = manageExternalUserAccountService.getPaymentRequest(memberId);
 			return new ModelAndView("external/transactions").addObject("message",
 					"Payment Authorized Successfully!").addObject("account",
 							accountModel).addObject("requestList", requestList).addObject("message", "Authorize failed because");
@@ -461,16 +614,18 @@ List<PaymentRequestDTO> requestList = manageExternalUserAccountService
 	}
 
 
+	
+	
 	/*
 	 * To load page from where External user can see and approve the 
 	 * View Account requests from the emp
 	 */
-	@RequestMapping("/external/viewAccountApproveRequests")
-	public ModelAndView viewAccountApproveRequests(HttpSession session)
+	@RequestMapping("/external/viewTransactionApproveRequests")
+	public ModelAndView viewTransactionApproveRequests(HttpSession session)
 	{
 		int memberId= (int) session.getAttribute("memberId");
-		List<RequestDTO> viewAccountRequestList = manageExternalUserAccountService.getViewAccountRequests(memberId); 
-		return new ModelAndView("/external/viewAccountApproveRequests").addObject("viewAccountRequestList",viewAccountRequestList);
+		List<RequestDTO> viewTransactionRequestList = manageExternalUserAccountService.getViewTransactionsRequests(memberId); 
+		return new ModelAndView("/external/viewTransactionApproveRequests").addObject("viewTransactionRequestList",viewTransactionRequestList);
 	}
 	
 	/*
@@ -485,6 +640,36 @@ List<PaymentRequestDTO> requestList = manageExternalUserAccountService
 		return new ModelAndView("/external/viewAccountApproveRequests").addObject("isAuthorized",isAuthorized).addObject("viewAccountRequestList", viewAccountRequestList);
 	}
 	
+	
+	/*
+	 * To approve the view account request by customer or merchant on button click
+	 */
+	@RequestMapping(value = "/external/approveViewUserTransactions", method=RequestMethod.POST)
+	public ModelAndView approveViewAccountApproveTransactions(@RequestParam("requestId") long requestId,HttpSession session)
+	{
+		int memberId= (int) session.getAttribute("memberId");
+		boolean isAuthorized = manageExternalUserAccountService.authorizeViewTransactionsRequest(requestId);
+		List<RequestDTO> viewTransactionRequestList = manageExternalUserAccountService.getViewTransactionsRequests(memberId);		
+		return new ModelAndView("/external/viewTransactionApproveRequests").addObject("isAuthorized",isAuthorized).addObject("viewTransactionRequestList", viewTransactionRequestList);
+	}
+	
+	
+	
+
+
+	/*
+	 * To load page from where External user can see and approve the 
+	 * View Account requests from the emp
+	 */
+	@RequestMapping("/external/viewAccountApproveRequests")
+	public ModelAndView viewAccountApproveRequests(HttpSession session)
+	{
+		int memberId= (int) session.getAttribute("memberId");
+		List<RequestDTO> viewAccountRequestList = manageExternalUserAccountService.getViewAccountRequests(memberId); 
+		return new ModelAndView("/external/viewAccountApproveRequests").addObject("viewAccountRequestList",viewAccountRequestList);
+	}
+	
+	
 	/*
 	 * To decline the view account request by customer or merchant on button click
 	 */
@@ -497,9 +682,23 @@ List<PaymentRequestDTO> requestList = manageExternalUserAccountService
 		return new ModelAndView("/external/viewAccountApproveRequests").addObject("isAuthorized",isAuthorized).addObject("viewAccountRequestList", viewAccountRequestList);
 	}
 	
+	
+	/*
+	 * To decline the view account request by customer or merchant on button click
+	 */
+	@RequestMapping(value = "/external/declineViewUserTransactions", method=RequestMethod.POST)
+	public ModelAndView declineViewTransactionsApproveRequests(@RequestParam("requestId") long requestId,HttpSession session)
+	{
+		int memberId= (int) session.getAttribute("memberId");
+		boolean isAuthorized = manageExternalUserAccountService.declineViewTransactionsRequest(requestId);
+		List<RequestDTO> viewTransactionRequestList = manageExternalUserAccountService.getViewTransactionsRequests(memberId);		
+		return new ModelAndView("/external/viewTransactionApproveRequests").addObject("isAuthorized",isAuthorized).addObject("viewTransactionRequestList", viewTransactionRequestList);
+	}
+	
 	@RequestMapping(value="/external/modifyTransaction", method=RequestMethod.POST)
 	public ModelAndView modifyTransaction(@ModelAttribute("modifyTransactionForm") TransactionModel transactionModel, HttpSession session)
 	{	
+		
 		int memberId = (Integer) session.getAttribute("memberId");
 		boolean isReviewSubmitted = manageExternalUserAccountService.sendTransactionModificationRequest(transactionModel, memberId);
 		List<TransactionDTO> approvedTransactionList = manageExternalUserAccountService.getApprovedTransactionListForUser(memberId);

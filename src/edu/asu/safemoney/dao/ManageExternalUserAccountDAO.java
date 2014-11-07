@@ -34,7 +34,8 @@ public interface ManageExternalUserAccountDAO {
 	public boolean updateTransactionRequest(TransactionDTO transactionDTO);
 	public boolean addPaymentRequest(PaymentRequestDTO paymentRequestDTO);
 
-	boolean findAccount(long accountNumber);
+	public boolean findAccount(long accountNumber);
+	public boolean findIsEnabled(long accountNumber);
 	
 	
 	public boolean addTransactionReview(TransactionReviewDTO transactionReviewDTO);
@@ -53,9 +54,14 @@ public interface ManageExternalUserAccountDAO {
 	
 	public List<RequestDTO> getViewAccountRequestsForCustomer(int memberId);
 	
+	public List<RequestDTO> getViewTransactionsRequestsForCustomer(int memberId);
+	
 	public boolean authorizeViewAccountRequest(long requestId);
 	
+	public boolean authorizeViewTransactionsRequest(long requestId);
+	
 	public boolean declineViewAccountRequest(long requestId);
+	public boolean declineViewTransactionsRequest(long requestId);
 	
 	public boolean isTransactionExists(long transactionId);
 	

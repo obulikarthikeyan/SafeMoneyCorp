@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import edu.asu.safemoney.dao.AdminUserDAO;
+import edu.asu.safemoney.dao.EmployeeUserDAO;
 import edu.asu.safemoney.dao.LoginDAO;
 import edu.asu.safemoney.dao.ManageExternalUserAccountDAO;
 import edu.asu.safemoney.dao.RequestDAO;
@@ -34,6 +35,7 @@ import edu.asu.safemoney.dto.RequestDTO;
 import edu.asu.safemoney.dto.TransactionDTO;
 import edu.asu.safemoney.dto.UserDTO;
 import edu.asu.safemoney.helper.ExternalUserHelper;
+import edu.asu.safemoney.model.ModifyUserModel;
 import edu.asu.safemoney.model.UserModel;
 import edu.asu.safemoney.service.AdminUserService;
 
@@ -52,7 +54,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 	private ManageExternalUserAccountDAO extUserAccountDAO;
 	
 	@Autowired
-	private AdminUserDAO employeeUserDAO;
+	private EmployeeUserDAO employeeUserDAO;
 	
 	@Transactional
 	@Override
@@ -280,6 +282,14 @@ public String sendWithAttachment(String userName, String path) {
 		else 
 			return false;
 
+	}
+	
+	@Transactional
+	@Override
+	public ModifyUserModel getEmployee(int memberId){
+		ModifyUserModel modifyUserModel= employeeUserDAO.getEmployeeDetails(memberId); 
+		
+		return modifyUserModel;
 	}
 
 	

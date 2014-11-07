@@ -95,14 +95,14 @@
 							<li><a
 								href="<%=request.getContextPath()%>/external/displayExternalUserDetails"><i
 									class="fa fa-edit fa-fw"></i> Manage Account</a></li>
-							<li><a href="">
+							<li><a href="<%=request.getContextPath()%>/external/viewTransactionHistoryPage">
 							<i class="fa fa-table fa-fw"></i> View
 									Transaction History</a></li>
 							<li><a href="#"><i class="fa fa-tasks fa-fw"></i> Manage
 									Requests<span class="fa arrow"></span></a>
 								<ul class="nav nav-second-level">
 									<li><a href="<%=request.getContextPath()%>/external/viewAccountApproveRequests">Approve View Account Requests</a></li>
-									<li><a href="#">Authorize Requests</a></li>
+									<li><a href="<%=request.getContextPath()%>/external/viewTransactionApproveRequests">Approve View Transaction Requests</a></li>
 								</ul> <!-- /.nav-second-level --></li>
 							<li><a href="<%=request.getContextPath()%>/external/review"><i class="fa fa-gear fa-fw"></i>
 									Transactional Requests / Review</a></li>

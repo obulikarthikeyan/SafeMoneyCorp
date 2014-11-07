@@ -107,69 +107,126 @@ public class EmployeeUserController {
 	
 	
 	@RequestMapping(value="/internal/processPaymentRequest", method=RequestMethod.POST)
-	public ModelAndView processPayment(@RequestParam("paymentRequestId2") long paymentRequestId,@RequestParam("managePaymentAction") String manageAction,HttpSession session) 
-	{
-		
+	public ModelAndView processPayment(
+			@ModelAttribute("processPaymentRequest") @Valid EmpProcessPaymentModel empProcessPaymentModel,
+			BindingResult validateResult,
+			HttpSession session) {
+		// ////////////////////////modified by fei
 		String processResult = null;
-		
-		if(manageAction.equals("approved"))
-		{
-			boolean myresult =employeeUserService.updatePaymentRequest( paymentRequestId, "APPROVED_BANK");
+
+		long paymentRequestId = empProcessPaymentModel.getPaymentRequestId2();
+		String manageAction = empProcessPaymentModel.getManagePaymentAction();
+			if(validateResult.hasErrors())
+			{
+				List<PaymentRequestDTO> paymentList = employeeUserService
+						.getPaymentRequest();
+				List<TransactionDTO> transactionList = employeeUserService
+						.getTransactionRequest();
+
+				return new ModelAndView("/internal/EmpManageExtTransactions")
+						.addObject("paymentRequestList", paymentList)
+						.addObject("transactionRequestList", transactionList)
+						.addObject("error", "Invalid input(s) detected in the process payment section");
+			}
+		if (manageAction.equals("approved")) {
+			String myresult = employeeUserService.updatePaymentRequest(
+					paymentRequestId, "APPROVED_BANK");
 			//
-			PaymentRequestDTO paymentDTO = employeeUserService.getPaymentDTOById(paymentRequestId);
+			if(myresult.equals("NOTFOUND"))
+			{
+				List<PaymentRequestDTO> paymentList = employeeUserService
+						.getPaymentRequest();
+				List<TransactionDTO> transactionList = employeeUserService
+						.getTransactionRequest();
+
+				return new ModelAndView("/internal/EmpManageExtTransactions")
+						.addObject("paymentRequestList", paymentList)
+						.addObject("transactionRequestList", transactionList)
+						.addObject("error", "Invalid request Id Input");
+			}
+			PaymentRequestDTO paymentDTO = employeeUserService
+					.getPaymentDTOById(paymentRequestId);
 			//
 			UserDTO metchantDTO = paymentDTO.getMerchantMemberId();
-			
-			boolean myresult2 = employeeUserService.makeCredit(metchantDTO.getMemberId(),paymentDTO.getAmount());
-			
-			if(myresult&&myresult2)
-			{
-				processResult="You have successfully approved one payment request";
-			}
-			else
-			{
+
+			boolean myresult2 = employeeUserService.makeCredit(
+					metchantDTO.getMemberId(), paymentDTO.getAmount());
+
+			if ((myresult.equals("success")) && myresult2) {
+				processResult = "You have successfully approved one payment request";
+			} else {
 				processResult = "Approve payment request failed";
 			}
-		}
-		else if(manageAction.equals("declined"))
-		{
-			boolean myresult =employeeUserService.updatePaymentRequest( paymentRequestId, "DECLINED_BANK");
-			PaymentRequestDTO paymentDTO = employeeUserService.getPaymentDTOById(paymentRequestId);
-			
-			boolean myresult2 = employeeUserService.makeCredit(paymentDTO.getAuthorizerMemberId(),paymentDTO.getAmount());
-			
-			if(myresult&&myresult2)
-			{
-				processResult="You have successfully declined one payment request";
-			}
-			else
-			{
+		} else if (manageAction.equals("declined")) {
+			String myresult = employeeUserService.updatePaymentRequest(
+					paymentRequestId, "DECLINED_BANK");
+			PaymentRequestDTO paymentDTO = employeeUserService
+					.getPaymentDTOById(paymentRequestId);
+
+			boolean myresult2 = employeeUserService.makeCredit(
+					paymentDTO.getAuthorizerMemberId(), paymentDTO.getAmount());
+
+			if ((myresult.equals("success")) && myresult2) {
+				processResult = "You have successfully declined one payment request";
+			} else {
 				processResult = "declined payment request failed";
 			}
 		}
-		
+		else
+		{
+			processResult = "Invalid manage action input";
+		}
+
 		List<PaymentRequestDTO> paymentList = employeeUserService
 				.getPaymentRequest();
 		List<TransactionDTO> transactionList = employeeUserService
 				.getTransactionRequest();
-		
+
 		return new ModelAndView("/internal/EmpManageExtTransactions")
-		.addObject("paymentRequestList", paymentList).addObject(
-				"transactionRequestList", transactionList).addObject("message",processResult);
+				.addObject("paymentRequestList", paymentList)
+				.addObject("transactionRequestList", transactionList)
+				.addObject("message", processResult);
 	}
 	
 	
-	
+	//EmpAuthorizePaymentRequestModel
 	@RequestMapping(value="/internal/authorizePaymentRequest", method=RequestMethod.POST)
-	public ModelAndView processTransaction(@RequestParam("transactionRequestId") long transactionRequestId,@RequestParam("manageTransactionAction") String manageAction,HttpSession session) 
+	public ModelAndView processTransaction(
+			@ModelAttribute("authorizePaymentRequest") @Valid EmpAuthorizePaymentRequestModel empAuthorizePaymentRequestModel,
+			BindingResult validateResult,
+			
+			HttpSession session) 
 	{
-		
+		////////////////modified by fei
 		String processResult = null;
+		long transactionRequestId = empAuthorizePaymentRequestModel.getTransactionRequestId();
+		String manageAction = empAuthorizePaymentRequestModel.getManageTransactionAction();
 		
+		if(validateResult.hasErrors())
+		{
+			List<PaymentRequestDTO> paymentList = employeeUserService
+					.getPaymentRequest();
+			List<TransactionDTO> transactionList = employeeUserService
+					.getTransactionRequest();
+			System.out.println(processResult);
+			return new ModelAndView("/internal/EmpManageExtTransactions")
+			.addObject("paymentRequestList", paymentList).addObject(
+					"transactionRequestList", transactionList).addObject("error","Invalid Input(s) detected in the process transaction section");
+		}
 		if(manageAction.equals("approved"))
 		{
-			boolean myresult =employeeUserService.updateTransactionRequest( transactionRequestId, "APPROVED_BANK");
+			String myresult =employeeUserService.updateTransactionRequest( transactionRequestId, "APPROVED_BANK");
 			
+			if(myresult.equals("NOTFOUND"))
+			{
+				List<PaymentRequestDTO> paymentList = employeeUserService
+						.getPaymentRequest();
+				List<TransactionDTO> transactionList = employeeUserService
+						.getTransactionRequest();
+				return new ModelAndView("/internal/EmpManageExtTransactions")
+				.addObject("paymentRequestList", paymentList).addObject(
+						"transactionRequestList", transactionList).addObject("error","Invalid Transaction ID input");
+			}
 			TransactionDTO transactiontDTO = employeeUserService.getTransactionDTOById(transactionRequestId);
 			
 			int toMemberId = employeeUserService.getMemberIdByAccount(transactiontDTO.getToAccount());
@@ -188,7 +245,7 @@ public class EmployeeUserController {
 				myresult2=employeeUserService.makeCredit(toMemberId,transactiontDTO.getAmount());
 			}
 			
-			if(myresult&&myresult2)
+			if((myresult.equals("success"))&&myresult2)
 				processResult="You have successfully approved one transaction";
 			else
 				processResult="Failed";
@@ -198,8 +255,18 @@ public class EmployeeUserController {
 		}
 		else if(manageAction.equals("declined"))
 		{
-			boolean myresult =employeeUserService.updateTransactionRequest( transactionRequestId, "DECLINED_BANK");
 			
+			String myresult =employeeUserService.updateTransactionRequest( transactionRequestId, "DECLINED_BANK");
+			if(myresult.equals("NOTFOUND"))
+			{
+				List<PaymentRequestDTO> paymentList = employeeUserService
+						.getPaymentRequest();
+				List<TransactionDTO> transactionList = employeeUserService
+						.getTransactionRequest();
+				return new ModelAndView("/internal/EmpManageExtTransactions")
+				.addObject("paymentRequestList", paymentList).addObject(
+						"transactionRequestList", transactionList).addObject("error","Invalid Transaction ID input");
+			}
 			TransactionDTO transactiontDTO = employeeUserService.getTransactionDTOById(transactionRequestId);
 			
 			int fromMemberId = employeeUserService.getMemberIdByAccount(transactiontDTO.getFromAccount());
@@ -216,13 +283,14 @@ public class EmployeeUserController {
 				myresult2 = employeeUserService.makeCredit(fromMemberId,transactiontDTO.getAmount());
 			}
 			
-			if(myresult&&myresult2)
+			if((myresult.equals("success"))&&myresult2)
 				processResult="You have successfully declined one transaction";
 			else
 				processResult="Failed";
 			
 		}
-		
+		else
+		{
 		List<PaymentRequestDTO> paymentList = employeeUserService
 				.getPaymentRequest();
 		List<TransactionDTO> transactionList = employeeUserService
@@ -230,55 +298,107 @@ public class EmployeeUserController {
 		System.out.println(processResult);
 		return new ModelAndView("/internal/EmpManageExtTransactions")
 		.addObject("paymentRequestList", paymentList).addObject(
-				"transactionRequestList", transactionList).addObject("message",processResult);
+				"transactionRequestList", transactionList).addObject("error","Invalid Process Action value");
+		}
+		return null;
 	}
 	
-	
-		
 	/*
 	 * Actually sends the View Account request from the employee
 	 * to customer
 	 */
 	@RequestMapping(value="/internal/requestTransactionAccess", method=RequestMethod.POST)
-	public ModelAndView sendViewRequests(@RequestParam("memberId") int memberId, HttpServletRequest request, HttpSession session)
+	public ModelAndView sendViewRequests(@ModelAttribute("sendRequestForm") @Valid RequestModel requestModel, BindingResult result, HttpServletRequest request, HttpSession session)
 	{
-		boolean isUserNameAvailable = false;
-		int currentEmployeeId = (Integer)session.getAttribute("memberId");
-		int internalUserId = memberId;
-
-		//UserDTO currentEmployeeDTO = manageExternalUserAccountService.displayUserAccount(currentEmployeeId);	
-		List<RequestDTO> requestList = null; 
-		if (memberId<0)
+		if(result.hasErrors())
 		{
-			logger.error("The member Id cannot be negative");
-			isUserNameAvailable=false;
+			return new ModelAndView("/internal/EmpRequestCustView").addObject("error","Invalid Request");
 		}
 		else
 		{
-			isUserNameAvailable=true;
-		}
-		
-		if(isUserNameAvailable)
-		{		
+			boolean isUserNameAvailable = false;
+			int currentEmployeeId = (Integer)session.getAttribute("memberId");
+			int internalUserId = requestModel.getMemberId();
+	
+			//UserDTO currentEmployeeDTO = manageExternalUserAccountService.displayUserAccount(currentEmployeeId);	
+			List<RequestDTO> requestList = null; 
+			if (requestModel.getMemberId()<0)
+			{
+				logger.error("The member Id cannot be negative");
+				isUserNameAvailable=false;
+			}
+			else
+			{
+				isUserNameAvailable=true;
+			}
 			
-			isRequestSent = employeeUserService.sendExtUserViewRequests(internalUserId, currentEmployeeId);
-			requestList = employeeUserService.getRequestList(currentEmployeeId);
-		}
-		else
-		{
+			if(isUserNameAvailable)
+			{		
+				
+				isRequestSent = employeeUserService.sendExtUserViewRequests(internalUserId, currentEmployeeId);
+				requestList = employeeUserService.getRequestList(currentEmployeeId);
+			}
+			else
+			{
+				
+				return new ModelAndView("/internal/EmpRequestCustView").addObject("error","Invalid Member Id").addObject("requestList",requestList);
+			}
 			
-			return new ModelAndView("/internal/EmpRequestCustView").addObject("error","Invalid Member Id").addObject("requestList",requestList);
-		}
-		
-		if(isRequestSent)
-		{
-			return new ModelAndView("/internal/EmpRequestCustView").addObject("message","Request Sent to User").addObject("requestList",requestList);
-		}
-		else
-		{
-			return new ModelAndView("/internal/EmpRequestCustView").addObject("error","Request Failed").addObject("requestList",requestList);
+			if(isRequestSent)
+			{
+				return new ModelAndView("/internal/EmpRequestCustView").addObject("message","Request Sent to User").addObject("requestList",requestList);
+			}
+			else
+			{
+				return new ModelAndView("/internal/EmpRequestCustView").addObject("error","Request Failed").addObject("requestList",requestList);
+			}
 		}
 	}
+		
+//	/*
+//	 * Actually sends the View Account request from the employee
+//	 * to customer
+//	 */
+//	@RequestMapping(value="/internal/requestTransactionAccess", method=RequestMethod.POST)
+//	public ModelAndView sendViewRequests(@RequestParam("memberId") int memberId, HttpServletRequest request, HttpSession session)
+//	{
+//		boolean isUserNameAvailable = false;
+//		int currentEmployeeId = (Integer)session.getAttribute("memberId");
+//		int internalUserId = memberId;
+//
+//		//UserDTO currentEmployeeDTO = manageExternalUserAccountService.displayUserAccount(currentEmployeeId);	
+//		List<RequestDTO> requestList = null; 
+//		if (memberId<0)
+//		{
+//			logger.error("The member Id cannot be negative");
+//			isUserNameAvailable=false;
+//		}
+//		else
+//		{
+//			isUserNameAvailable=true;
+//		}
+//		
+//		if(isUserNameAvailable)
+//		{		
+//			
+//			isRequestSent = employeeUserService.sendExtUserViewRequests(internalUserId, currentEmployeeId);
+//			requestList = employeeUserService.getRequestList(currentEmployeeId);
+//		}
+//		else
+//		{
+//			
+//			return new ModelAndView("/internal/EmpRequestCustView").addObject("error","Invalid Member Id").addObject("requestList",requestList);
+//		}
+//		
+//		if(isRequestSent)
+//		{
+//			return new ModelAndView("/internal/EmpRequestCustView").addObject("message","Request Sent to User").addObject("requestList",requestList);
+//		}
+//		else
+//		{
+//			return new ModelAndView("/internal/EmpRequestCustView").addObject("error","Request Failed").addObject("requestList",requestList);
+//		}
+//	}
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -313,14 +433,31 @@ public class EmployeeUserController {
 	}
 	
 	@RequestMapping(value = "/internal/viewUserAccounts", method = RequestMethod.POST)
-	public ModelAndView sendRequestId(@RequestParam("requestId") int requestId, HttpServletRequest request, HttpSession session)
+	public ModelAndView sendRequestId(@ModelAttribute("viewsUserAccounts") @Valid RequestModel requestModel, BindingResult result, HttpServletRequest request, HttpSession session)
 	{
-		int customerId = employeeUserService.getCustomerId(requestId);
+		if(result.hasErrors())
+		{
+			return new ModelAndView("/internal/customerAccount").addObject("error","Invalid Request");
+		}
+		else
+		{
+		int customerId = employeeUserService.getCustomerId(requestModel.getRequestId());
 		UserDTO customerDTO = manageExternalUserAccountService.displayUserAccount(customerId);
 //		long accountNo = customerDTO.getAccountDTOList().get(0).getAccountNo();
 		long accountNo = employeeUserService.getAccountNo(customerId);
 		return new ModelAndView("/internal/customerAccount").addObject("customerInfo",customerDTO).addObject("accountNo",accountNo);
+		}
 	}
+	
+//	@RequestMapping(value = "/internal/viewUserAccounts", method = RequestMethod.POST)
+//	public ModelAndView sendRequestId(@RequestParam("requestId") long requestId, HttpServletRequest request, HttpSession session)
+//	{
+//		int customerId = employeeUserService.getCustomerId(requestId);
+//		UserDTO customerDTO = manageExternalUserAccountService.displayUserAccount(customerId);
+////		long accountNo = customerDTO.getAccountDTOList().get(0).getAccountNo();
+//		long accountNo = employeeUserService.getAccountNo(customerId);
+//		return new ModelAndView("/internal/customerAccount").addObject("customerInfo",customerDTO).addObject("accountNo",accountNo);
+//	}
 	
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
@@ -358,43 +495,51 @@ public class EmployeeUserController {
 	 * To reload page once transactions have been submitted to show the updated list of requests
 	 */
 	@RequestMapping(value="/internal/requestTransaction", method=RequestMethod.POST)
-	public ModelAndView sendTransactionRequests(@RequestParam("memberId") int memberId, HttpServletRequest request, HttpSession session)
+	public ModelAndView sendTransactionRequests(@ModelAttribute("sendRequestForm") @Valid RequestModel requestModel, BindingResult result, HttpServletRequest request, HttpSession session)
 	{
-		boolean isUserNameAvailable = false;
-		int currentEmployeeId = (Integer)session.getAttribute("memberId");
-		int internalUserId = memberId;
-
-		//UserDTO currentEmployeeDTO = manageExternalUserAccountService.displayUserAccount(currentEmployeeId);	
-		List<RequestDTO> transactionRequestList = null; 
-		if (memberId<0)
+		if(result.hasErrors())
 		{
-			logger.error("The member Id cannot be negative");
-			isUserNameAvailable=false;
-		}
-		else
-		{
-			isUserNameAvailable=true;
-		}
-		
-		if(isUserNameAvailable)
-		{		
-			
-			isRequestSent = employeeUserService.sendExtUserTransactionViewRequests(internalUserId, currentEmployeeId);
-			transactionRequestList = employeeUserService.getTransactionRequestList(currentEmployeeId);
+			return new ModelAndView("/internal/empCustTransactionRequest").addObject("error","Invalid Request");
 		}
 		else
 		{
 			
-			return new ModelAndView("/internal/empCustTransactionRequest").addObject("error","Invalid Member Id").addObject("transactionRequestList",transactionRequestList);
-		}
-		
-		if(isRequestSent)
-		{
-			return new ModelAndView("/internal/empCustTransactionRequest").addObject("message","Request Sent to User").addObject("transactionRequestList",transactionRequestList);
-		}
-		else
-		{
-			return new ModelAndView("/internal/empCustTransactionRequest").addObject("error","Request Failed").addObject("transactionRequestList",transactionRequestList);
+			boolean isUserNameAvailable = false;
+			int currentEmployeeId = (Integer)session.getAttribute("memberId");
+			int internalUserId = requestModel.getMemberId();
+	
+			//UserDTO currentEmployeeDTO = manageExternalUserAccountService.displayUserAccount(currentEmployeeId);	
+			List<RequestDTO> transactionRequestList = null; 
+			if (requestModel.getMemberId()<0)
+			{
+				logger.error("The member Id cannot be negative");
+				isUserNameAvailable=false;
+			}
+			else
+			{
+				isUserNameAvailable=true;
+			}
+			
+			if(isUserNameAvailable)
+			{		
+				
+				isRequestSent = employeeUserService.sendExtUserTransactionViewRequests(internalUserId, currentEmployeeId);
+				transactionRequestList = employeeUserService.getTransactionRequestList(currentEmployeeId);
+			}
+			else
+			{
+				
+				return new ModelAndView("/internal/empCustTransactionRequest").addObject("error","Invalid Member Id").addObject("transactionRequestList",transactionRequestList);
+			}
+			
+			if(isRequestSent)
+			{
+				return new ModelAndView("/internal/empCustTransactionRequest").addObject("message","Request Sent to User").addObject("transactionRequestList",transactionRequestList);
+			}
+			else
+			{
+				return new ModelAndView("/internal/empCustTransactionRequest").addObject("error","Request Failed").addObject("transactionRequestList",transactionRequestList);
+			}
 		}
 	}
 	
@@ -428,15 +573,34 @@ public class EmployeeUserController {
 	}
 	
 	@RequestMapping(value = "/internal/viewUserTransactions", method = RequestMethod.POST)
-	public ModelAndView showTransactionsPage(@RequestParam("requestId") int requestId, HttpServletRequest request, HttpSession session)
+	public ModelAndView showTransactionsPage(@ModelAttribute("viewsUserTransactions") @Valid RequestModel requestModel, BindingResult result, HttpServletRequest request, HttpSession session)
 	{
-		int customerId = employeeUserService.getCustomerId(requestId);
-		UserDTO customerDTO = manageExternalUserAccountService.displayUserAccount(customerId);
-		
-		List<TransactionDTO> transactionInfo = employeeUserService.getAllTransactions(customerId);
+		if(result.hasErrors())
+		{
+			return new ModelAndView("/internal/customerTransactionAccount").addObject("error", "Invalid Request");
+		}
+		else
+		{
+			int customerId = employeeUserService.getCustomerId(requestModel.getRequestId());
+			UserDTO customerDTO = manageExternalUserAccountService.displayUserAccount(customerId);
+			
+			List<TransactionDTO> transactionInfo = employeeUserService.getAllTransactions(customerId);
 
-		return new ModelAndView("/internal/customerTransactionAccount").addObject("transactionInfo",transactionInfo);
+			return new ModelAndView("/internal/customerTransactionAccount").addObject("transactionInfo",transactionInfo);
+		}
+
 	}
+	
+//	@RequestMapping(value = "/internal/viewUserTransactions", method = RequestMethod.POST)
+//	public ModelAndView showTransactionsPage(@RequestParam("requestId") int requestId, HttpServletRequest request, HttpSession session)
+//	{
+//		int customerId = employeeUserService.getCustomerId(requestId);
+//		UserDTO customerDTO = manageExternalUserAccountService.displayUserAccount(customerId);
+//		
+//		List<TransactionDTO> transactionInfo = employeeUserService.getAllTransactions(customerId);
+//
+//		return new ModelAndView("/internal/customerTransactionAccount").addObject("transactionInfo",transactionInfo);
+//	}
 	
 	@RequestMapping(value="/internal/getMemberIdLog")
 	public ModelAndView getMemberIdList(HttpSession session)

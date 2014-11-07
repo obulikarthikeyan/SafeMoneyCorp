@@ -6,6 +6,8 @@ import edu.asu.safemoney.dto.PaymentRequestDTO;
 import edu.asu.safemoney.dto.RequestDTO;
 import edu.asu.safemoney.dto.TransactionDTO;
 import edu.asu.safemoney.dto.TransactionReviewDTO;
+import edu.asu.safemoney.dto.UserDTO;
+import edu.asu.safemoney.model.ModifyUserModel;
 
 public interface EmployeeUserDAO {
 	public List<PaymentRequestDTO> getPaymentRequest();
@@ -15,7 +17,7 @@ public interface EmployeeUserDAO {
 	public boolean makeDebit(int memberID, double amount);
 	public boolean makeCredit(int memberID, double amount);
 	public int getMemberIdByAccount(long accountNumber);
-	
+	public ModifyUserModel getEmployeeDetails(int memberID);
 
 	public List<RequestDTO> displayEmployeeUserAccountDAO(int memberId);
 	public long returnCustomerAccountNo(int memberId);

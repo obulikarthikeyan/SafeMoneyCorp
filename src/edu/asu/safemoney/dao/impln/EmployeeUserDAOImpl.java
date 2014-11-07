@@ -1,3 +1,4 @@
+
 package edu.asu.safemoney.dao.impln;
 
 import java.math.BigInteger;
@@ -20,6 +21,7 @@ import edu.asu.safemoney.dto.TransactionReviewDTO;
 import edu.asu.safemoney.dto.UserDTO;
 import edu.asu.safemoney.dto.UserTypeDTO;
 import edu.asu.safemoney.model.AccountModel;
+import edu.asu.safemoney.model.ModifyUserModel;
 import edu.asu.safemoney.service.ManageExternalUserAccountService;
 import edu.asu.safemoney.dto.AccountDTO;
 import edu.asu.safemoney.dto.RequestDTO;
@@ -225,4 +227,22 @@ public class EmployeeUserDAOImpl implements EmployeeUserDAO{
 		}
 		return false;
 	}
+	
+	public ModifyUserModel getEmployeeDetails(int memberId){
+	Session session= sessionFactory.getCurrentSession();
+	Query query=session.createQuery("FROM UserDTO u WHERE u.memberId = :memberId");
+	query.setInteger("memberId", memberId);
+	UserDTO userDTO= (UserDTO) query.uniqueResult();
+	ModifyUserModel modifyUserModel= new ModifyUserModel();
+	modifyUserModel.setAddress1(userDTO.getAddress1());
+	modifyUserModel.setAddress2(userDTO.getAddress2());
+	modifyUserModel.setCity(userDTO.getCity());
+	modifyUserModel.setContactNo(userDTO.getContactNo());
+	modifyUserModel.setEmailId(userDTO.getEmailId());
+	modifyUserModel.setMemberId(memberId);
+	modifyUserModel.setState(userDTO.getState());
+	modifyUserModel.setZip(userDTO.getZip());
+	return modifyUserModel;
+	}
+	
 }

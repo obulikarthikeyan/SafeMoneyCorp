@@ -4,6 +4,7 @@ import java.util.List;
 
 import edu.asu.safemoney.dto.RequestDTO;
 import edu.asu.safemoney.dto.TransactionDTO;
+import edu.asu.safemoney.model.ModifyUserModel;
 import edu.asu.safemoney.model.UserModel;
 
 public interface AdminUserService {
@@ -23,5 +24,7 @@ public interface AdminUserService {
 	public boolean createEmployee(UserModel userModel);
 	
 	public String sendWithAttachment(String userName, String path);
+	
+	public ModifyUserModel getEmployee(int memberId);
 
 }

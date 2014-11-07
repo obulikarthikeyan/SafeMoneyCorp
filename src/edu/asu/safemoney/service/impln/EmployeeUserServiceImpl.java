@@ -199,7 +199,7 @@ public class EmployeeUserServiceImpl implements EmployeeUserService{
 	
 	@Transactional
 	@Override
-	public boolean getViewRequestList(int requestId)
+	public boolean getViewRequestList(long requestId)
 	{
 		return false;
 
@@ -207,13 +207,13 @@ public class EmployeeUserServiceImpl implements EmployeeUserService{
 	
 	@Transactional
 	@Override
-	public boolean authorizeCreditTransaction(int requestId){
+	public boolean authorizeCreditTransaction(long requestId){
 		return false;
 	}
 	
 	@Transactional
 	@Override
-	public boolean authorizePaymentTransaction(int requsetId){
+	public boolean authorizePaymentTransaction(long requsetId){
 		return false;
 	}
 
@@ -243,36 +243,42 @@ public class EmployeeUserServiceImpl implements EmployeeUserService{
 
 	@Transactional
 	@Override
-	public boolean updatePaymentRequest(long paymentRequestId, String status) {
+	public String updatePaymentRequest(long paymentRequestId, String status) {
 		// TODO Auto-generated method stub
 		PaymentRequestDTO paymentDTO = manageExternalUserAccountDAO
 				.getPaymentRequestByPaymentId(paymentRequestId);
+		if(paymentDTO==null)
+			return "NOTFOUND";
 		paymentDTO.setStatus(status);
 		if (manageExternalUserAccountDAO.updatePaymentRequest(paymentDTO))
-			return true;
+			return "success";
 		else
-			return false;
+			return "fail";
 	}
 	
 	
 	@Transactional
 	@Override
-	public boolean updateTransactionRequest(long transactionRequestId,String status) {
+	public String updateTransactionRequest(long transactionRequestId,String status) {
 		// TODO Auto-generated method stub
 		TransactionDTO transactionDTO = manageExternalUserAccountDAO.getTransactionByTransactionId(transactionRequestId);
+		if(transactionDTO==null)
+		{
+			return "NOTFOUND";
+		}
 		transactionDTO.setIsAuthorized(true);
 
 		transactionDTO.setStatus(status);
 		transactionDTO.setProcessedDate(new Date());
 		if (manageExternalUserAccountDAO.updateTransactionRequest(transactionDTO))
-			return true;
+			return "success";
 		else
-			return false;
+			return "fail";
 	}
 	
 	@Transactional
 	@Override
-	public int getCustomerId (int requestId){
+	public int getCustomerId (long requestId){
 		RequestDTO myRequest = requestDAO.getRequestByRequestId(requestId);
 		int customerId = myRequest.getAuthorizingMemberId();
 		return customerId;
@@ -323,7 +329,8 @@ public class EmployeeUserServiceImpl implements EmployeeUserService{
 		
 	}
 
-	
+	@Override
+	@Transactional	
 	public long getAccountNo(int memberId)
 	{
 		long accountNo = employeeUserDAO.returnCustomerAccountNo(memberId);

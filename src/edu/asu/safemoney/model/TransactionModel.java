@@ -2,20 +2,44 @@ package edu.asu.safemoney.model;
 
 import java.util.Date;
 
+import javax.annotation.Nonnull;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
+
 import org.springframework.format.annotation.DateTimeFormat;
 
 public class TransactionModel {
 	
+	@Nonnull @Min(0)
+	@Digits(integer = 11, fraction = 0)	
 	private long transactionId;
+	
+	@Nonnull @Min(0)
+	@Digits(integer = 11, fraction = 0)	
 	private long fromAccount;
+	
+	@Nonnull @Min(0)
+	@Digits(integer = 11, fraction = 0)	
 	private long toAccount;
 	
+	@DateTimeFormat(pattern="MM/dd/yyyy")
+    @NotNull 
 	private Date transactionDate;
+
+	@Nonnull @Min(1)
+	@Digits(integer = 11, fraction = 0)	
 	private double transactionAmount;
+	
 	private String transactionStatus;
 	private String transactionType;
 	private boolean isCritical;
 	private boolean isAuthorized;
+
+	@Nonnull @Min(1)
+	@Digits(integer = 11, fraction = 2)	
 	private double amount;
 	
 	public double getAmount() {

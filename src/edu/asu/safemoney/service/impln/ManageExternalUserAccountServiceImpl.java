@@ -370,6 +370,8 @@ public class ManageExternalUserAccountServiceImpl implements
 	public String authorizePayment(long paymentId) {
 		// TODO Auto-generated method stub
 		PaymentRequestDTO paymentDTO =  manageExternalUserAccountDAO.getPaymentRequestByPaymentId(paymentId);
+		if(paymentDTO==null)
+			return "NOTFOUND";
 		UserDTO merchantDTO = paymentDTO.getMerchantMemberId();
 		
 		int merchantMemberId = merchantDTO.getMemberId();
@@ -393,6 +395,8 @@ public class ManageExternalUserAccountServiceImpl implements
 	public String declinePayment(long paymentId) {
 		// TODO Auto-generated method stub
 		PaymentRequestDTO paymentDTO =  manageExternalUserAccountDAO.getPaymentRequestByPaymentId(paymentId);
+		if(paymentDTO==null)
+			return "NOTFOUND";
 		paymentDTO.setStatus("DECLINED_CUST");
 		manageExternalUserAccountDAO.updatePaymentRequest(paymentDTO);
 		
@@ -505,6 +509,8 @@ public class ManageExternalUserAccountServiceImpl implements
 	public String submitPayment(long paymentId) {
 		// TODO Auto-generated method stub
 		PaymentRequestDTO paymentDTO =  manageExternalUserAccountDAO.getPaymentRequestByPaymentId(paymentId);
+		if(paymentDTO==null)
+			return "NOTFOUND";
 		paymentDTO.setStatus("PENDING_BANK");
 		if (manageExternalUserAccountDAO.updatePaymentRequest(paymentDTO))
 			return "success";
@@ -698,6 +704,14 @@ public class ManageExternalUserAccountServiceImpl implements
 		return result;
 	}
 	
+	@Override
+	@Transactional
+	public boolean findIsEnabled(long accountNumber) {
+		// TODO Auto-generated method stub
+		boolean result =  manageExternalUserAccountDAO.findIsEnabled( accountNumber);
+		return result;
+	}
+	
 	@Transactional
 	@Override
 	public boolean createRequest(TransactionModel transactionModel, int memberId) {
@@ -748,11 +762,29 @@ public class ManageExternalUserAccountServiceImpl implements
 		return viewAccountRequests;
 	}
 	
+
+	
+	@Transactional
+	@Override
+	public List<RequestDTO> getViewTransactionsRequests(int memberId){
+		List<RequestDTO> viewTransactionRequests =  manageExternalUserAccountDAO.getViewTransactionsRequestsForCustomer(memberId);
+		return viewTransactionRequests;
+	}
+	
 	@Transactional
 	@Override
 	public boolean authorizeViewAccountRequest(long requestId)
 	{
 		boolean isAuthorized = manageExternalUserAccountDAO.authorizeViewAccountRequest(requestId);
+		
+		return isAuthorized;
+	}
+	
+	@Transactional
+	@Override
+	public boolean authorizeViewTransactionsRequest(long requestId)
+	{
+		boolean isAuthorized = manageExternalUserAccountDAO.authorizeViewTransactionsRequest(requestId);
 		
 		return isAuthorized;
 	}
@@ -771,4 +803,15 @@ public class ManageExternalUserAccountServiceImpl implements
 	{
 		return manageExternalUserAccountDAO.isTransactionExists(transactionId);
 	}
+
+	
+	@Transactional
+	@Override
+	public boolean declineViewTransactionsRequest(long requestId)
+	{
+		boolean isAuthorized = manageExternalUserAccountDAO.declineViewAccountRequest(requestId);
+		
+		return isAuthorized;
+	}
+
 }
