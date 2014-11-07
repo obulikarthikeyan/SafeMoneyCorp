@@ -492,6 +492,7 @@ public class ManageExternalUserAccountDAOImpl implements ManageExternalUserAccou
 		Session session= sessionFactory.getCurrentSession();
 		Query query= session.createQuery("FROM UserDTO r WHERE r.isEmployee = :isEmployee");
 		query.setBoolean("isEmployee", false);
+		//query.setInteger("userTypeId",123);
 		List<UserDTO> memberList = (List<UserDTO>)query.list();
 		return memberList;
 	}

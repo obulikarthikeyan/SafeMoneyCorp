@@ -19,8 +19,7 @@ public class AdminAuthorizePaymentRequest {
 	@Nonnegative
 	private long transactionRequestId;
 	
-	@Nonnull
-	@NotEmpty
+	@Nonnull	
 	@Pattern(regexp = "[a-z-A-Z-0-9 ]*", message="Invalid description")
 	private String manageTransactionAction;
 	

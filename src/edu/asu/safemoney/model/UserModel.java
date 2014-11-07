@@ -15,64 +15,37 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 
 public class UserModel {
 
 	String firstName;
-
-
 	String lastName;
-	
-	
 	String emailId;
-	
-
 	long contactNo;
-	
 	String address1;
-	
 	String address2;
-	
 	String city;
-	
 	String state;
-	
 	long zip;
-	
 	Date dateOfBirth;
-	
 	
 	int age;
 
 	long ssn;
-	
 	String userType;
 
-
 	String userName;
-
-	
 
 	String password;
 
 
 	String secQuestion1;
-
-
 	String secQuestion2;
-
-
 	String secQuestion3;
-	
 	String secAnswer1;
-
-	
 	String secAnswer2;
-
 	String secAnswer3;
-	
 	
 	String siteKey;
 	
@@ -80,9 +53,8 @@ public class UserModel {
 	int userTypeMapId;
 	
 	String createdBy;
-	
+
 	Date createdDate;
-	
 	Date expiryDate;
 	
 	

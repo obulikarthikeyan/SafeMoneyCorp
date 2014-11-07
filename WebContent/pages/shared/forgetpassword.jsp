@@ -79,7 +79,15 @@
     <div class="">
     <br>
       <input type="submit" class="btn btn-primary" value="Generate OTP"/>
-  
+      
+      
+      <%
+				if(request.getAttribute("IncorrectAnswers") != null)
+				{%>
+				<p style="position:absolute;left:505px;top:470px;color:red;font-size:13px" class="label label-warning">* ${IncorrectAnswers} *</p>	
+				<%}%>
+      
+ 
     </div>
   </div>
 </form>

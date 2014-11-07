@@ -15,12 +15,12 @@ public class AccountModel {
 	private long accountNo;
 	
 	@Nonnull
-	@NotEmpty @Size(max=25)
+	@Size(max=25)
 	@Pattern(regexp = "[a-z-A-Z]*", message = "First name has invalid characters")
 	private String firstName;
 	
 	@Nonnull
-	@NotEmpty @Size(max=25)
+	@Size(max=25)
 	@Pattern(regexp = "[a-z-A-Z]*", message = "Last name has invalid characters")
 	private String lastName;
 	

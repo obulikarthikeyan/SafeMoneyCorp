@@ -7,6 +7,7 @@
 <title>SafeMoneyCorp - System Logs</title>
 </head>
 <body>
+<jsp:include page="/pages/sidebar.jsp"></jsp:include>
 <jsp:include page="systemLog.html"></jsp:include>
 </body>
 </html>

@@ -21,7 +21,6 @@ public class EmpProcessPaymentModel {
 	private long paymentRequestId2;
 	
 	@Nonnull
-	@NotEmpty
 	@Pattern(regexp = "[a-z-A-Z-0-9 ]*", message="Invalid description")
 	private String managePaymentAction;
 	
