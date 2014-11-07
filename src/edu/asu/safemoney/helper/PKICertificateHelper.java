@@ -1,3 +1,4 @@
+
 package edu.asu.safemoney.helper;
 
 import java.io.File;
@@ -163,7 +164,7 @@ public class PKICertificateHelper {
 			try {
 				// cHANGE THE PATH AS PER YOUR KEYSTORE LOCATION
 				fis = new
-					java.io.FileInputStream("C:/Tomcat/Keystore/pkikeystore.jks"); 
+					java.io.FileInputStream("F:/GoogleDriveSync/Keystore/pkikeystore.jks"); 
 			ks.load(fis, "changeit".toCharArray()); }  
 
 			finally {
@@ -181,7 +182,7 @@ public class PKICertificateHelper {
 		java.io.FileOutputStream fos = null; 
 		try { 
 			// CHANGE PATH
-			fos = new java.io.FileOutputStream("C:/Tomcat/Keystore/pkikeystore.jks"); 
+			fos = new java.io.FileOutputStream("F:/GoogleDriveSync/Keystore/pkikeystore.jks"); 
 			ks.store(fos,"changeit".toCharArray());
 		} 
 

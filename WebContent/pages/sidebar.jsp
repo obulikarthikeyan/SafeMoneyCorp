@@ -123,7 +123,7 @@
 							<li><a
 								href="<%=request.getContextPath() %>/admin/piiAuthorization"><i
 									class="fa fa-edit fa-fw"></i> View PII</a></li>
-							<li><a href="#"><i class="fa fa-table fa-fw"></i> View
+							<li><a href="<%=request.getContextPath() %>/admin/systemLog"><i class="fa fa-table fa-fw"></i> View
 									System Log</a></li>
 							<li><a href="<%=request.getContextPath()%>/admin/viewTransactionHistoryPage"><i class="fa fa-gear fa-fw"></i>
 									View Transactions</a></li>

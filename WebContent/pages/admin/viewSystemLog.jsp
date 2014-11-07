@@ -4,9 +4,9 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+<title>SafeMoneyCorp - System Logs</title>
 </head>
 <body>
-
+<jsp:include page="systemLog.html"></jsp:include>
 </body>
 </html>
