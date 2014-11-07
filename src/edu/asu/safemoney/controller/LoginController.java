@@ -183,12 +183,12 @@ public class LoginController {
 		{
 			if(loginService.changePassword(userName, changePassword))
 				return new ModelAndView("/shared/changePassword").addObject("temp", "change password success");
-				else return new ModelAndView("/shared/changePassword").addObject("temp", "change password fail");
+				else return new ModelAndView("/shared/login").addObject("temp", "change password fail");
 		}
 		
 		else
 		{
-			return new ModelAndView("/shared/changePassword").addObject("temp", "change password fail");
+			return new ModelAndView("/shared/changePassword").addObject("temp", "change password fail, Try Again");
 		}
 		
 	
@@ -223,7 +223,15 @@ public ModelAndView getSecurityAnswers(@RequestParam("answer1") String userAnswe
 	
 	//System.out.println("In controller");
 	boolean correntSecAnswers= loginService.getSecurityAnswers(userName, userAnswer1, userAnswer2, userAnswer3);
+	if(userAnswer1==null || userAnswer2==null || userAnswer3==null)
+	{
+		SecurityQuestionsModel secQuestions = loginService.getSecurityQuestions(userName);
+		
+		//ModelAndView forgetPassword(ModelAndView) (session);
+			return new ModelAndView("shared/forgetpassword").addObject("secQuestions", secQuestions).addObject("IncorrectAnswers", "Answers are Incorrect, Please Try Again");
 	
+	
+	}
 	if(correntSecAnswers)
 	{
 		return new ModelAndView("/shared/otpValidator").addObject("temp", userName);
@@ -231,8 +239,9 @@ public ModelAndView getSecurityAnswers(@RequestParam("answer1") String userAnswe
 		
 	else
 	{
+		SecurityQuestionsModel secQuestions = loginService.getSecurityQuestions(userName);
 		System.out.println("Controller incorrect");
-		return new ModelAndView("/shared/forgetpassword").addObject("IncorrectAnswers", "Answers are Incorrect, Please Try Again");
+		return new ModelAndView("shared/forgetpassword").addObject("secQuestions", secQuestions).addObject("IncorrectAnswers", "Answers are Incorrect, Please Try Again");
 	}
 
 	//return new ModelAndView("shared/forgetpassword").addObject("secQuestions", secModel);
