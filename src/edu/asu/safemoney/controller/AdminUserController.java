@@ -49,6 +49,15 @@ public class AdminUserController {
 
 	}
 	
+	@RequestMapping("/admin/UsersList")
+	public ModelAndView getLegalUsersList(HttpSession session)
+	{	
+		List<UserDTO> externalUserList= manageExternalUserAccountService.getMemberList();
+		List<UserDTO> internalUserList= employeeUserService.getInternalUserListForAdmin();
+		return new ModelAndView("/admin/LegalUsers").addObject("externalUserList", externalUserList).addObject("internalUserList",internalUserList);
+
+	}
+	
 	@RequestMapping(value="/admin/getEmp", method=RequestMethod.POST)
 	public ModelAndView getEmployee(@RequestParam("memberId") int memberId){
 		System.out.println("member Id: " + memberId);
@@ -329,5 +338,12 @@ public class AdminUserController {
 				processResult);
 
 	}
+	
+	@RequestMapping("/admin/systemLog")
+	public ModelAndView getSystemLog()
+	{
+		return new ModelAndView("/admin/viewSystemLog");
+	}
+	
 }
 

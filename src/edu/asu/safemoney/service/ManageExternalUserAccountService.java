@@ -66,4 +66,7 @@ public interface ManageExternalUserAccountService {
 	public File writeCertFile(MultipartFile file, String filePath, String userName);
 	
 	public boolean isTransactionExists(long transactionId);
+	
+	public List<UserDTO> getExternalUserListForAdmin();
+
 }

@@ -244,5 +244,14 @@ public class EmployeeUserDAOImpl implements EmployeeUserDAO{
 	modifyUserModel.setZip(userDTO.getZip());
 	return modifyUserModel;
 	}
-	
+
+	@Override
+	public List<UserDTO> getInternalUsersListForDisplay() {
+		Session session= sessionFactory.getCurrentSession();
+		Query query= session.createQuery("FROM UserDTO r WHERE r.isEmployee = :isEmployee");
+		query.setBoolean("isEmployee", true);
+		List<UserDTO> memberList = (List<UserDTO>)query.list();
+		return memberList;
+	}
+
 }

@@ -32,4 +32,7 @@ public interface EmployeeUserDAO {
 	
 	public boolean updateTransactionReviewDTO(TransactionReviewDTO reviewDTO);
 
+	public List<UserDTO> getInternalUsersListForDisplay();
+
+
 }

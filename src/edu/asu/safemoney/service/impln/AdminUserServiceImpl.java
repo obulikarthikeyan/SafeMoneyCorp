@@ -84,8 +84,10 @@ public class AdminUserServiceImpl implements AdminUserService {
 		boolean isEnabledUpdated = extUserAccountDAO.updateIsEnabled(memberId, true);
 		if(isAccountCreated && isEnabledUpdated)
 		{
-			String catalinaPath = System.getProperty("catalina.base") + File.separator + "UserCertificates";
-			sendWithAttachment(userDTO.getLoginDTO().getUserName(), catalinaPath + File.separator + userDTO.getLoginDTO().getUserName() + ".cer");
+			String catalinaPath = System.getProperty("catalina.base") + File.separator + "UserCertificates" + File.separator + userDTO.getLoginDTO().getUserName() + ".cer";
+			//String catalinaPath = System.getProperty("catalina.base") + File.separator + "UserCertificates" + File.separator + "text.txt";
+			System.out.println("PATH = " + catalinaPath);
+			sendWithAttachment(userDTO.getLoginDTO().getUserName(), catalinaPath);
 			return true;
 		}
 		return false;

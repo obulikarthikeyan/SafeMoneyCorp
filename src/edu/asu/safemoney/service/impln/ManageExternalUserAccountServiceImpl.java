@@ -814,4 +814,10 @@ public class ManageExternalUserAccountServiceImpl implements
 		return isAuthorized;
 	}
 
+	@Override
+	public List<UserDTO> getExternalUserListForAdmin() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
