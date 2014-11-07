@@ -267,7 +267,7 @@ public String sendWithAttachment(String userName, String path) {
 		userModel.setCreatedDate(new Date());
 		userModel.setIsCustomer("false");
 		userModel.setUserType("INT_BANK_EMP");
-		userModel.setUserTypeId(123);
+		userModel.setUserTypeId(125);
 		boolean created= loginDAO.createEmployee(userModel);
 		System.out.println("returned true at service");
 		return created;

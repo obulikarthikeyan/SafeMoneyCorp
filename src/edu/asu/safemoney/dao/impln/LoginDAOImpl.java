@@ -382,7 +382,12 @@ public class LoginDAOImpl implements LoginDAO{
 			
 			LoginDTO loginDTO = new LoginDTO();
 			loginDTO.setUserName(userModel.getUserName());
-			loginDTO.setPassword(userModel.getPassword());
+			// loginDTO.setPassword(userModel.getPassword());
+			String plainPassword = userModel.getPassword();
+			//password encoding
+			String pw_hash = BCrypt.hashpw(plainPassword, BCrypt.gensalt());
+			loginDTO.setPassword(pw_hash);
+			
 			loginDTO.setSiteKey(userModel.getSiteKey());
 			loginDTO.setUserDTO(userDTO);
 			loginDTO.setMemberId(userDTO.getMemberId());
