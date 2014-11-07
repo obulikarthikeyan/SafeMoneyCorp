@@ -27,7 +27,6 @@ public class InitiatePaymentModel {
 	private double amount;
 	
 	@Nonnull
-	@NotEmpty
 	@Pattern(regexp = "[a-z-A-Z-0-9 ]*", message="Invalid description")
 	private String description;
 

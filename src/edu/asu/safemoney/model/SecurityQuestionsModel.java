@@ -9,32 +9,32 @@ import org.hibernate.validator.constraints.NotEmpty;
 public class SecurityQuestionsModel {
 	
 	@Nonnull
-	@NotEmpty @Size(max=200)
+	@Size(max=200)
 	@Pattern(regexp = "[a-z-A-Z0-9]*", message = "Invalid Security question")
 	private String question1;
 	
 	@Nonnull
-	@NotEmpty @Size(max=200)
+	@Size(max=200)
 	@Pattern(regexp = "[a-z-A-Z0-9]*", message = "Invalid Security question")
 	private String question2;
 	
 	@Nonnull
-	@NotEmpty @Size(max=200)
+	@Size(max=200)
 	@Pattern(regexp = "[a-z-A-Z0-9]*", message = "Invalid Security question")
 	private String question3;
 	
 	@Nonnull
-	@NotEmpty @Size(max=25)
+	@Size(max=25)
 	@Pattern(regexp = "[a-z-A-Z0-9]*", message = "Invalid Security answer")
 	private String answer1;
 	
 	@Nonnull
-	@NotEmpty @Size(max=25)
+	@Size(max=25)
 	@Pattern(regexp = "[a-z-A-Z0-9]*", message = "Invalid Security answer")
 	private String answer2;
 	
 	@Nonnull
-	@NotEmpty @Size(max=25)
+	@Size(max=25)
 	@Pattern(regexp = "[a-z-A-Z0-9]*", message = "Invalid Security answer")
 	private String answer3;
 

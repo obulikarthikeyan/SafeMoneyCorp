@@ -12,7 +12,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 public class ModifyUserModel {
 
-	@NotEmpty @Email
+	@Email
 	String emailId;
 	
 	@Nonnull @Min(0) @Size(min=10)
@@ -20,22 +20,22 @@ public class ModifyUserModel {
 	long contactNo;
 	
 	@Nonnull
-	@NotEmpty @Size(max=50)
+	@Size(max=50)
 	@Pattern(regexp = "[a-z-A-Z]*", message = "Address has invalid characters")
 	String address1;
 	
 	@Nonnull
-	@NotEmpty @Size(max=50)
+	@Size(max=50)
 	@Pattern(regexp = "[a-z-A-Z]*", message = "Address has invalid characters")
 	String address2;
 	
 	@Nonnull
-	@NotEmpty @Size(max=15)
+	@Size(max=15)
 	@Pattern(regexp = "[a-z-A-Z]*", message = "City has invalid characters")
 	String city;
 	
 	@Nonnull
-	@NotEmpty @Size(min=2,max=2)
+	@Size(min=2,max=2)
 	@Pattern(regexp = "[a-z-A-Z]*", message = "State has invalid characters")
 	String state;
 	

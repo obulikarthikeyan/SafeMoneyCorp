@@ -22,7 +22,6 @@ public class AuthorizePaymentRequestModel {
 	public long paymentRequestId;
 	
 	@Nonnull
-	@NotEmpty
 	@Pattern(regexp = "[a-z-A-Z-0-9 ]*", message="Invalid description")
 	public String authorizeAction;
 	

@@ -31,5 +31,6 @@ public interface EmployeeUserDAO {
 	public boolean updateTransaction(TransactionDTO txnDTO);
 	
 	public boolean updateTransactionReviewDTO(TransactionReviewDTO reviewDTO);
+	public List<UserDTO> getInternalUsersListForDisplay();
 
 }

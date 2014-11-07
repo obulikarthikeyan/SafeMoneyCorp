@@ -414,4 +414,11 @@ public class EmployeeUserServiceImpl implements EmployeeUserService{
 		}
 		return false;
 	}
+
+	@Override
+	@Transactional	
+	public List<UserDTO> getInternalUserListForAdmin() {
+		List<UserDTO> memberList = employeeUserDAO.getInternalUsersListForDisplay();
+		return memberList;
+	}
 }
