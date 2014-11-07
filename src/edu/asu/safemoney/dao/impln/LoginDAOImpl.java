@@ -103,7 +103,7 @@ public class LoginDAOImpl implements LoginDAO{
 			loginDTO.setMemberId(userDTO.getMemberId());
 			loginDTO.setFailedAttemptCount(0);
 			loginDTO.setIsAccountNonLocked(true);
-			loginDTO.setIsEnabled(true);
+			loginDTO.setIsEnabled(false);
 			userDTO.setLoginDTO(loginDTO);
 			
 			session.save(userDTO);
@@ -332,6 +332,26 @@ public class LoginDAOImpl implements LoginDAO{
 		}
 		return false;
 	}
+	
+	
+	public boolean setLoginDate(String userName)
+	{
+		Session session = sessionFactory.openSession();
+		Transaction tx = session.beginTransaction();
+		Query query = session.getNamedQuery("LoginDTO.findByUserName").setString("userName", userName);
+		LoginDTO loginDTO = (LoginDTO) query.uniqueResult();
+		if(loginDTO != null)
+		{
+			loginDTO.setFailedAttemptCount(0);
+			loginDTO.setIsAccountNonLocked(true);
+			session.saveOrUpdate(loginDTO);
+			session.close();
+			tx.commit();
+			return true;
+		}
+		return false;
+	}
+	
 	
 	public int getFailureAttemptCount(String userName)
 	{
