@@ -68,4 +68,5 @@ public interface ManageExternalUserAccountService {
 	public boolean isTransactionExists(long transactionId);
 	
 	public List<UserDTO> getExternalUserListForAdmin();
+
 }

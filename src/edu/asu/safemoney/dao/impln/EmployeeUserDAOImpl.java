@@ -253,5 +253,5 @@ public class EmployeeUserDAOImpl implements EmployeeUserDAO{
 		List<UserDTO> memberList = (List<UserDTO>)query.list();
 		return memberList;
 	}
-	
+
 }

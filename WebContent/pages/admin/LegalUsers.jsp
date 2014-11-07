@@ -6,14 +6,14 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>SafeMoneyCorp - User PII Info</title>
+<title>SafeMoneyCorp - Users Log</title>
 </head>
 <body>
 	<jsp:include page="/pages/sidebar.jsp"></jsp:include>
 	<div id="page-wrapper">
 		<div class="row">
 			<div class="col-lg-12">
-				<h1 class="page-header">Personal Identifiable Information</h1>
+				<h1 class="page-header">User List</h1>
 			</div>
 			<!-- /.col-lg-12 -->
 		</div>
@@ -30,21 +30,37 @@
 								<tr>
 									<th>First Name</th>
 									<th>Last Name</th>
-									<th>Social Security No.</th>
-									<th>Age</th>
-									<th>D.O.B.</th>
+									<th>Member Id</th>
+									<th>User Role</th>
 								</tr>
 							</thead>
 							<tbody>
-								<c:if test="${not empty userPII}">
-										<c:forEach var="request" items="${userPII}" varStatus="status">
+								<c:if test="${not empty externalUserList}">
+										<c:forEach var="request" items="${externalUserList}" varStatus="status">
 											<tr>
-												
-												<td>${request.firstName }</td>
-												<td>${request.lastName }</td>
-												<td>${request.ssn }</td>
-												<td><strong>${request.age }</strong></td>
-												<td><strong>${request.dateOfBirth }</strong></td>
+												<c:if test="${request.userTypeId.userTypeId != 123 }">												
+													<td>${request.firstName }</td>
+													<td>${request.lastName }</td>
+													<td>${request.memberId }</td>
+													<c:if test="${request.isCustomer == true }">
+													<td>Customer</td>
+													</c:if>
+													<c:if test="${request.isCustomer == false }">
+													<td>Merchant</td>
+													</c:if>
+												</c:if>																						
+											</tr>
+										</c:forEach>
+									</c:if>
+									<c:if test="${not empty internalUserList}">
+										<c:forEach var="request" items="${internalUserList}" varStatus="status">
+											<tr>
+												<c:if test="${request.userTypeId.userTypeId != 123 }">
+													<td>${request.firstName }</td>
+													<td>${request.lastName }</td>
+													<td>${request.memberId }</td>
+													<td>Employee</td>
+												</c:if>
 											</tr>
 										</c:forEach>
 									</c:if>
@@ -57,7 +73,7 @@
 				<!-- /#page-wrapper -->
 			</div>
 		</div>
-
+	
 	<!-- Bootstrap Core JavaScript -->
 	<script src="js/bootstrap.min.js"></script>
 	

@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
 <html>
@@ -27,34 +28,74 @@
 <br>
 <br><h4>Change Password</h4>
 <br>
-<form class="form-horizontal" role="form" action="changePassword" method="post"  style="padding-left: 2%; padding-top: 2%;"> 
-	<!-- <form class="form-horizontal" role="form" action="LoginController" method="post"> -->
+
+<form:form id="changePasswordForm" role="form" commandName="changePassword" class="form-horizontal" action="changePassword" method="post"  style="padding-left: 2%; padding-top: 2%;"> 
+
   
    
   <div class="form-group">
     <label for="inputPassword1c" class="col-sm-2 control-label">Password</label>
     <div class="col-sm-10">
-      <input type="input" class="form-control" placeholder="Password" name="changePassword" id="changePassword">
+      <id="changePassword" input type="password" class="form-control" placeholder="Password"  name="changePassword">
     </div>
-    
-     <label for="inputPassword2c" class="col-sm-2 control-label">Password</label>
+    <br>
+    <br>
+    <br>
+     <label for="inputPassword2c" class="col-sm-2 control-label"> Confirm Password</label>
     <div class="col-sm-10">
-      <input type="input" class="form-control" placeholder="Confirm Password" name="checkPassword" id="checkPassword">
+      <id="checkPassword" input type="password" class="form-control" placeholder="Confirm Password" name="checkPassword">
     </div>
-  </div>
+ 	<br>
+    <br>
+    <br>
   <div class="form-group">
-    <div class="col-sm-offset-2 col-sm-10">
     
-    </div>
+    <input type="submit" class="btn btn-lg btn-success btn-block" value="Change Your Password"/>
+   
   </div>
-  <div class="form-group">
-    <div class="col-sm-offset-2 col-sm-10">
-      <button type="submit" class="btn btn-default">Generate OTP</button>
-    </div>
   </div>
-</form>
+</form:form>
 </div>
-<script src="js/jquery-1.11.0.js"></script>
-<script src="js/bootstrap.js"></script>
+<!-- Bootstrap Core JavaScript -->
+	<script src="js/bootstrap.min.js"></script>
+	
+	<script src="http://jqueryvalidation.org/files/dist/additional-methods.min.js"></script>
+
+	<!-- Metis Menu Plugin JavaScript -->
+	<script src="js/plugins/metisMenu/metisMenu.min.js"></script>
+
+	<!-- Custom Theme JavaScript -->
+	<script src="js/sb-admin-2.js"></script>
+
+
+<script type="text/javascript">
+$.validator.addMethod('passwordField', function( val, element ) {
+    var regexp = new RegExp("/^.*(?=.{8,})(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%&]).*$/;");
+
+    if (!regexp.test(val)) {
+       return false;
+    }
+    return true;
+}, "Please make your password strong by having atleast 8 characters<br>"+
+	"[atleast 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character in [@#$%&]]");
+$("#changePasswordForm").validate({
+	rules: {
+		changePassword: {
+		required: true,
+		maxlength: 15,
+	},
+	checkPassword: {
+		required: true,
+		maxlength: 15,
+		
+	},
+	messages: {
+		changePassword: "Please Enter a valid password (character range [8-15])",
+		checkPassword: "Passwords doesn't match"	
+			}
+	}
+	});
+</script>
+
 </body>
 </html>
