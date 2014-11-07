@@ -124,7 +124,7 @@ public class PKICertificateHelper {
 	public void convertToCertificateFile(String userName, Certificate certificate) {
 		try {
 			// CHANGE THE PATH FOR STORING THE .CER FILES 
-			String catalinaPath = System.getProperty("catalina.home");
+			String catalinaPath = System.getProperty("catalina.base");
 			File dir = new File(catalinaPath + File.separator + "UserCertificates");
             if (!dir.exists())
                 dir.mkdirs();
@@ -163,7 +163,7 @@ public class PKICertificateHelper {
 			try {
 				// cHANGE THE PATH AS PER YOUR KEYSTORE LOCATION
 				fis = new
-					java.io.FileInputStream("F:/GoogleDriveSync/Keystore/pkikeystore.jks"); 
+					java.io.FileInputStream("C:/Tomcat/Keystore/pkikeystore.jks"); 
 			ks.load(fis, "changeit".toCharArray()); }  
 
 			finally {
@@ -181,7 +181,7 @@ public class PKICertificateHelper {
 		java.io.FileOutputStream fos = null; 
 		try { 
 			// CHANGE PATH
-			fos = new java.io.FileOutputStream("F:/GoogleDriveSync/Keystore/pkikeystore.jks"); 
+			fos = new java.io.FileOutputStream("C:/Tomcat/Keystore/pkikeystore.jks"); 
 			ks.store(fos,"changeit".toCharArray());
 		} 
 

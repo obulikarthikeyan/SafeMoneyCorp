@@ -106,6 +106,14 @@ public class LoginServiceImpl implements LoginService, UserDetailsService {
 		String siteKey = "";
 		if (userName != null && !userName.isEmpty()) {
 			siteKey = loginDAO.getSiteKey(userName);
+			if(siteKey != null && !siteKey.isEmpty())
+			{
+				LoginDTO loginDTO = loginDAO.getLoginDetails(userName);
+				if(loginDTO != null)
+				{
+					//
+				}
+			}
 		}
 		return siteKey;
 	}

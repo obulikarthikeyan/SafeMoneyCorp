@@ -1,5 +1,6 @@
 package edu.asu.safemoney.service.impln;
 
+import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -83,7 +84,8 @@ public class AdminUserServiceImpl implements AdminUserService {
 		boolean isEnabledUpdated = extUserAccountDAO.updateIsEnabled(memberId, true);
 		if(isAccountCreated && isEnabledUpdated)
 		{
-			sendWithAttachment(userDTO.getLoginDTO().getUserName(), "Welcome to SafeMoneyCorp!\nYour Account has been created. You can login to the Bank website to access your services\n");
+			String catalinaPath = System.getProperty("catalina.base") + File.separator + "UserCertificates";
+			sendWithAttachment(userDTO.getLoginDTO().getUserName(), catalinaPath + File.separator + userDTO.getLoginDTO().getUserName() + ".cer");
 			return true;
 		}
 		return false;
@@ -133,7 +135,7 @@ public String sendWithAttachment(String userName, String path) {
 			String filename = path;
 			DataSource source = new FileDataSource(filename);
 			messageBodyPart.setDataHandler(new DataHandler(source));
-			messageBodyPart.setFileName("DigitalCertificate.txt");
+			messageBodyPart.setFileName("DigitalCertificate.cer");
 			multipart.addBodyPart(messageBodyPart);
 			// Send the complete message parts
 			message.setContent(multipart);

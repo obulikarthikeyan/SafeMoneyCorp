@@ -74,7 +74,7 @@ public class LoginController {
 	public String login(ModelMap model) {
 		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
+		
 		if (!(auth instanceof AnonymousAuthenticationToken)) {
 		    return "redirect:/landing";
 		}
