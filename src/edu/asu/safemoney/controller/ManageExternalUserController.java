@@ -94,9 +94,31 @@ private EmployeeUserService employeeUserService;
 	// Form name should be "ExternalUserUpdateForm".
 	@RequestMapping(value = "/external/updateExternalUserDetails", method = RequestMethod.POST)
 	public ModelAndView doUpdateAccount(
-			@ModelAttribute("updateUser") ModifyUserModel modifyUserModel, ModelMap model) {
+			@ModelAttribute("updateUser") ModifyUserModel modifyUserModel, ModelMap model, @RequestParam("certFile") MultipartFile file, HttpSession session) {
 		// manageExternalUserAccountService.updateUser(userModel);
 		// Should redirect to "updateSuccess.jsp"
+		/*String filePath=System.getProperty("catalina.home");
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if(auth != null)
+		{
+			int memberId = (Integer) session.getAttribute("memberId");
+			AccountModel accountModel = manageExternalUserAccountService
+					.getAccountDetails(memberId);
+			List<PaymentRequestDTO> requestList = manageExternalUserAccountService
+					.getPaymentRequest(memberId);
+			File userCertFile = manageExternalUserAccountService.writeCertFile(file, filePath, auth.getName());
+			if(userCertFile != null)
+			{
+				PKICertificateHelper pkiHelper = new PKICertificateHelper();
+				pkiHelper.verifyCertificate(userCertFile.getAbsolutePath(), auth.getName());
+				return new ModelAndView("external/ManageExternalUser").addObject("error", "Certificate Verification Failed");
+			}
+			else
+			{
+				return new ModelAndView("external/ManageExternalUser").addObject("error", "File Upload Failed");
+			}
+		}
+		*/
 		boolean isUpdated = manageExternalUserAccountService.updateUser(modifyUserModel);
 		UserDTO userDTO = manageExternalUserAccountService.displayUserAccount(modifyUserModel.getMemberId());
 		ModelAndView mv = new ModelAndView("external/ManageExternalUser").addObject("userDTO", userDTO);

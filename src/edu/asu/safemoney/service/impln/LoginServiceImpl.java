@@ -338,8 +338,8 @@ try {
 					InternetAddress.parse(e_mail));
 			OTPGenerator otp =new OTPGenerator();
 			String otpCode = otp.generateOTP(6);
-			message.setSubject("Your OTP Code : "+ otpCode);
-			message.setText("Thank you for banking with us!: Your Security and Privacy is Our Priority");
+			message.setSubject("Your OTP Code");
+			message.setText("Your OTP Code : "+ otpCode + "\nThank you for banking with us!: Your Security and Privacy is Our Priority");
  
 			
 			Transport.send(message);

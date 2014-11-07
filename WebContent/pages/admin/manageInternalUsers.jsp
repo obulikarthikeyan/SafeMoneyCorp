@@ -34,7 +34,7 @@
 					<!-- Nav tabs -->
 					<ul class="nav nav-pills">
 						<li class="active"><a href="#Create" data-toggle="tab">Create Account</a></li>
-						<li class ="update"><a href="#update" data-toggle="tab">Modify/Delete</a>
+						<li class ="update"><a href="#update" data-toggle="tab">View</a>
 						</li>			
 					</ul>
 
@@ -98,11 +98,6 @@
 							</tbody>
 							</table>
 							<div>
-							<button type="button"> Modify</button>
-							</div>
-							<div>
-							<button type="button"> Delete</button>
-							</div>
 							
 							
 						</div>
