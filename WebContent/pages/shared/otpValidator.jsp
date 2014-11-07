@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -68,6 +69,15 @@
     <div class="col-sm-offset-2 col-sm-10">
       <button type="submit" class="btn btn-default">Submit OTP Code	</button>
     </div>
+    <br>
+    <br>
+    <br>
+    
+     <%
+				if(request.getAttribute("otpError") != null)
+				{%>
+				<p style="position:absolute;left:505px;top:470px;color:red;font-size:13px" class="label label-warning">* ${otpError} *</p>	
+				<%}%>
 
 </div>
 <!-- <script src="js/jquery-1.11.0.js"></script>
@@ -75,6 +85,7 @@
 
  <script type="text/javascript">
  /*!
+ Code Reference: Open source
  jQuery UI Virtual Keyboard
  Version 1.18.12
 

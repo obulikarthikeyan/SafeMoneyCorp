@@ -109,8 +109,8 @@
 
 						</sec:authorize>
 						<sec:authorize access="hasRole('EXT_MERCHANT')">
-							<li><a href="#"><i class="fa fa-gear fa-fw"></i> Payment
-									Requests</a></li>
+<!-- 							<li><a href="#"><i class="fa fa-gear fa-fw"></i> Payment
+									Requests</a></li> -->
 						</sec:authorize>
 
 
@@ -146,7 +146,6 @@
 									<li><a href="<%=request.getContextPath()%>/internal/transactionReview">Process Transaction Review Requests</a></li>
 									<li><a href="<%=request.getContextPath()%>/internal/manageTransactionRequest">Authorize Transactions</a></li>
 								</ul> <!-- /.nav-second-level --></li>	
-
 						</sec:authorize>
 
 

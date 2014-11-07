@@ -258,6 +258,7 @@
 											
 													<input id="passwordConfirm" class="form-control" type="password"
 														placeholder="Confirm Password" name="password1" tabindex="17">
+														<div id="errorMessage"></div>
 											</div>
 										
 											
@@ -296,6 +297,22 @@
 	</div> 
 	
 	<script type="text/javascript">
+
+	window.onload = function () {
+	    document.getElementById("password").onchange = validatePassword;
+	    document.getElementById("passwordConfirm").onchange = validatePassword;
+	}
+	function validatePassword(){
+	var pass2=document.getElementById("passwordConfirm").value;
+	var pass1=document.getElementById("password").value;
+	if(pass1!=pass2)
+	    document.getElementById("passwordConfirm").setCustomValidity("Passwords Don't Match");
+	else
+	    document.getElementById("passwordConfirm").setCustomValidity('');  
+
+	}
+
+	
 	$.validator.addMethod('alphabetsOnly', function( val, element ) {
 	    var regexp = new RegExp("^[a-zA-Z]+$");
 

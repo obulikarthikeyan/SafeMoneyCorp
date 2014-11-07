@@ -29,21 +29,21 @@
 <br><h4>Change Password</h4>
 <br>
 
-<form:form id="changePasswordForm" role="form" commandName="changePassword" class="form-horizontal" action="changePassword" method="post"  style="padding-left: 2%; padding-top: 2%;"> 
+<form id="changePasswordForm" role="form"  class="form-horizontal" action="changePassword" method="post"  style="padding-left: 2%; padding-top: 2%;"> 
 
   
    
   <div class="form-group">
     <label for="inputPassword1c" class="col-sm-2 control-label">Password</label>
     <div class="col-sm-10">
-      <id="changePassword" input type="password" class="form-control" placeholder="Password"  name="changePassword">
+      <input type="password" id="changePassword" class="form-control" placeholder="Password"  name="changePassword">
     </div>
     <br>
     <br>
     <br>
      <label for="inputPassword2c" class="col-sm-2 control-label"> Confirm Password</label>
     <div class="col-sm-10">
-      <id="checkPassword" input type="password" class="form-control" placeholder="Confirm Password" name="checkPassword">
+      <input type="password" id="checkPassword" class="form-control" placeholder="Confirm Password" name="checkPassword">
     </div>
  	<br>
     <br>
@@ -53,8 +53,14 @@
     <input type="submit" class="btn btn-lg btn-success btn-block" value="Change Your Password"/>
    
   </div>
+  <%
+				if(request.getAttribute("cpError") != null)
+				{%>
+				<p style="position:absolute;left:505px;top:470px;color:red;font-size:13px" class="label label-warning">* ${cpError} *</p>	
+				<%}%>
+  
   </div>
-</form:form>
+</form>
 </div>
 <!-- Bootstrap Core JavaScript -->
 	<script src="js/bootstrap.min.js"></script>
