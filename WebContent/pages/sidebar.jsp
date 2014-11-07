@@ -109,8 +109,8 @@
 
 						</sec:authorize>
 						<sec:authorize access="hasRole('EXT_MERCHANT')">
-							<li><a href="#"><i class="fa fa-gear fa-fw"></i> Payment
-									Requests</a></li>
+<!-- 							<li><a href="#"><i class="fa fa-gear fa-fw"></i> Payment
+									Requests</a></li> -->
 						</sec:authorize>
 
 
@@ -125,8 +125,8 @@
 							<li><a
 								href="<%=request.getContextPath() %>/admin/piiAuthorization"><i
 									class="fa fa-edit fa-fw"></i> View PII</a></li>
-							<li><a href="#"><i class="fa fa-table fa-fw"></i> View
-									System Log</a></li>
+<!-- 							<li><a href="#"><i class="fa fa-table fa-fw"></i> View
+									System Log</a></li> -->
 							<li><a href="<%=request.getContextPath()%>/admin/viewTransactionHistoryPage"><i class="fa fa-gear fa-fw"></i>
 									View Transactions</a></li>
 							<li><a href="<%=request.getContextPath()%>/admin/authorizeCriticalTransactions"><i class="fa fa-gear fa-fw"></i>
