@@ -110,8 +110,15 @@ private EmployeeUserService employeeUserService;
 			if(userCertFile != null)
 			{
 				PKICertificateHelper pkiHelper = new PKICertificateHelper();
-				pkiHelper.verifyCertificate(userCertFile.getAbsolutePath(), auth.getName());
-				return new ModelAndView("external/ManageExternalUser").addObject("error", "Certificate Verification Failed");
+				boolean state= pkiHelper.verifyCertificate(userCertFile.getAbsolutePath(), auth.getName());
+				if(state)
+				{
+					return new ModelAndView("external/ManageExternalUser").addObject("message", "Certificate Verification Successful");
+				}
+				else
+				{
+					return new ModelAndView("external/ManageExternalUser").addObject("error", "Certificate Verification Failed");
+				}
 			}
 			else
 			{
@@ -405,9 +412,17 @@ private EmployeeUserService employeeUserService;
 			if(userCertFile != null)
 			{
 				PKICertificateHelper pkiHelper = new PKICertificateHelper();
-				pkiHelper.verifyCertificate(userCertFile.getAbsolutePath(), auth.getName());
+				boolean state = pkiHelper.verifyCertificate(userCertFile.getAbsolutePath(), auth.getName());
+				if(state)
+				{
+				/*	return new ModelAndView("external/transactions").addObject("account", accountModel)
+							.addObject("requestList", requestList).addObject("message", "Certificate Correct");*/
+				}
+				else
+				{
 				return new ModelAndView("external/transactions").addObject("account", accountModel)
-						.addObject("requestList", requestList).addObject("error", "Certificate Verification Failed");
+						.addObject("requestList", requestList).addObject("error", "Certificate Incorrect");
+				}
 			}
 			else
 			{

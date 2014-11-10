@@ -182,7 +182,7 @@ public class PKICertificateHelper {
 		java.io.FileOutputStream fos = null; 
 		try { 
 			// CHANGE PATH
-			fos = new java.io.FileOutputStream("C:/Tommcat/Keystore/pkikeystore.jks"); 
+			fos = new java.io.FileOutputStream("C:/Tomcat/Keystore/pkikeystore.jks"); 
 			ks.store(fos,"changeit".toCharArray());
 		} 
 
@@ -216,7 +216,7 @@ public class PKICertificateHelper {
 		try {
 			if(ks != null)
 			{
-				Certificate bankCertificate = ks.getCertificate(userName + "Certificate");
+				Certificate bankCertificate = ks.getCertificate(userName+"Certificate");
 				Certificate userCertificate = getCertificateFromFile(fileName);
 				userCertificate.verify(bankCertificate.getPublicKey());
 				return true;
